@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -21,6 +22,7 @@ namespace EzEvade
 {
     public class AdEvade
     {
+        public const string LastUpdate = "10:53 AM Thursday, 22 October 2015";
         public static SpellDetector SpellDetector;
         private static SpellDrawer _spellDrawer;
         //private static EvadeTester _evadeTester;
@@ -97,6 +99,36 @@ namespace EzEvade
 
                 Menu = MainMenu.AddMenu("AdEvade", "AdEvade");
                 
+                Menu.AddGroupLabel("AdEvade (EzEvade Port)");
+                Menu.AddLabel("Please report any bugs or anything you think is a ");
+                Menu.AddLabel("problem / issue, on the GitHub Issues Section");
+                Menu.Add("OpenGithub", new CheckBox("Open Githubs Issues Section in browser", false)).OnValueChange +=
+                    delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
+                    {
+                        if (changeArgs.OldValue == false && changeArgs.NewValue)
+                        {
+                            sender.CurrentValue = false;
+                            Process.Start(@"https://github.com/coman3/EloBuddy.Addons/issues");
+                        }
+                    };
+                Menu.AddSeparator();
+                Menu.AddLabel("All Credit for the actual evading (Movement and detection) in this assembly ");
+                Menu.AddLabel("goes to the creator of EzEvade.");
+                Menu.AddSeparator(100);
+
+                Menu.AddLabel("Created By: Coman3");
+                Menu.AddLabel("     Github: https://github.com/coman3/");
+                Menu.Add("OpenGithubComan3", new CheckBox("Open Coman3's Github in Browser", false)).OnValueChange +=
+                   delegate (ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
+                   {
+                       if (changeArgs.OldValue == false && changeArgs.NewValue)
+                       {
+                           sender.CurrentValue = false;
+                           Process.Start(@"https://github.com/coman3/");
+                       }
+                   };
+                Menu.AddLabel("Last Update: " + LastUpdate);
+
                 Menu mainMenu = Menu.AddSubMenu("Main", "Main");
                 mainMenu.Add("DodgeSkillShots", new DynamicKeyBind("DodgeSkillShots", "Dodge SkillShots", true, KeyBind.BindTypes.PressToggle, 'K').KeyBind);
                 mainMenu.Add("ActivateEvadeSpells", new DynamicKeyBind("ActivateEvadeSpells", "Use Evade Spells", true, KeyBind.BindTypes.PressToggle, 'K').KeyBind);
@@ -115,11 +147,13 @@ namespace EzEvade
                             sender.CurrentValue = false;
                         }
                     };
+                mainMenu.AddSeparator();
                 mainMenu.Add("DodgeDangerousKeyEnabled", new DynamicCheckBox(ConfigDataType.Data, "DodgeDangerousKeyEnabled", "Enable Dodge Only Dangerous Keys", false).CheckBox);
 
                 mainMenu.Add("DodgeDangerousKey", new DynamicKeyBind("DodgeDangerousKey", "Dodge Only Dangerous Key", false, KeyBind.BindTypes.HoldActive, 32).KeyBind);
                 mainMenu.Add("DodgeDangerousKey2", new DynamicKeyBind("DodgeDangerousKey2", "Dodge Only Dangerous Key 2", false, KeyBind.BindTypes.HoldActive, 'V').KeyBind);
 
+                mainMenu.AddSeparator();
                 mainMenu.AddGroupLabel("Evade Mode");
 
                 var sliderEvadeMode = mainMenu.Add("EvadeMode", new Slider("Smooth", 0, 0, 2));

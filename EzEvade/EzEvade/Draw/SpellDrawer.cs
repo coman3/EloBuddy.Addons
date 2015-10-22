@@ -162,7 +162,7 @@ namespace EzEvade.Draw
                 }
             }
 
-            DrawEvadeStatus();
+            //DrawEvadeStatus();
 
             if (Config.Config.GetData<bool>("DrawSkillShots") == false)
             {
