@@ -59,13 +59,6 @@ namespace DrawingBuddy
             return Color.FromArgb(GetValue(ColorBytes.Red), GetValue(ColorBytes.Green), GetValue(ColorBytes.Blue));
         }
 
-        public void Hide()
-        {
-            _savedValues = new int[3] {RedSlider.CurrentValue, GreenSlider.CurrentValue, BlueSlider.CurrentValue};
-            Menu.Remove(RedSlider.SerializationId);
-            Menu.Remove(BlueSlider.SerializationId);
-            Menu.Remove(GreenSlider.SerializationId);
-        }
     }
 
     public enum ColorBytes

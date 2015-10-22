@@ -17,7 +17,7 @@ namespace DrawingBuddy
     // complex way that I use
     public static class Config
     {
-        private const string MenuName = "AddonTemplate";
+        private const string MenuName = "DrawingBuddy";
 
         private static readonly Menu Menu;
         
@@ -25,9 +25,7 @@ namespace DrawingBuddy
         {
             // Initialize the menu
             Menu = MainMenu.AddMenu(MenuName, MenuName.ToLower());
-            Menu.AddGroupLabel("Welcome to this AddonTemplate!");
-            Menu.AddLabel("To change the menu, please have a look at the");
-            Menu.AddLabel("Config.cs class inside the project, now have fun!");
+            Menu.AddGroupLabel("DrawingBuddy, the most advanced drawing addon!");
             
         }
 
@@ -117,7 +115,7 @@ namespace DrawingBuddy
                 private static CheckBox _EnableRangesOfAllies;
                 private static CheckBox _EnableRangesOfEnemies;
                 private static CheckBox _OnlyShowRangesWhenReady;
-                public static List<KeyValuePair<AIHeroClient, HeroSpellCheckBoxConfig>> HeroRanges;
+                public static Dictionary<AIHeroClient, HeroSpellCheckBoxConfig> HeroRanges;
                 public static bool EnableRangesOfEnemies
                 {
                     get { return _EnableRangesOfEnemies.CurrentValue; }
@@ -132,7 +130,7 @@ namespace DrawingBuddy
                 }
                 static Champions()
                 {
-                    HeroRanges = new List<KeyValuePair<AIHeroClient, HeroSpellCheckBoxConfig>>();
+                    HeroRanges = new Dictionary<AIHeroClient, HeroSpellCheckBoxConfig>();
                 }
 
                 public static void Initialize()
@@ -148,18 +146,18 @@ namespace DrawingBuddy
                     foreach (var hero in EntityManager.Heroes.Allies)
                     {
                         Menu.AddGroupLabel(hero.ChampionName + " - " + hero.Name);
-                        HeroRanges.Add(new KeyValuePair<AIHeroClient, HeroSpellCheckBoxConfig>(hero, new HeroSpellCheckBoxConfig(Menu, hero, "Show Range Of")));
+                        HeroRanges[hero] = new HeroSpellCheckBoxConfig(Menu, hero, "Show Range Of");
                     }
                     Menu.AddSeparator(5);
-                    Menu.AddGroupLabel("Enemies");
+                    //Menu.AddGroupLabel("Enemies");
 
-                    _EnableRangesOfEnemies = new CheckBox("Enable All Enemies", true);
-                    Menu.Add("EnableRangesOfEnemies", _EnableRangesOfEnemies);
-                    foreach (var hero in EntityManager.Heroes.Enemies)
-                    {
-                        Menu.AddGroupLabel(hero.ChampionName + " - " + hero.Name);
-                        HeroRanges.Add(new KeyValuePair<AIHeroClient, HeroSpellCheckBoxConfig>(hero, new HeroSpellCheckBoxConfig(Menu, hero, "Show Range Of")));
-                    }
+                    //_EnableRangesOfEnemies = new CheckBox("Enable All Enemies", true);
+                    //Menu.Add("EnableRangesOfEnemies", _EnableRangesOfEnemies);
+                    //foreach (var hero in EntityManager.Heroes.Enemies)
+                    //{
+                    //    Menu.AddGroupLabel(hero.ChampionName + " - " + hero.Name);
+                    //    HeroRanges[hero] = new HeroSpellCheckBoxConfig(Menu, hero, "Show Range Of");
+                    //}
                 }
             }
         }
@@ -167,35 +165,25 @@ namespace DrawingBuddy
         public static class Colors
         {
             private static readonly Menu Menu;
-            public static List<KeyValuePair<SpellSlot, ColorConfig>> SpellColors;
+            public static Dictionary<SpellSlot, ColorConfig> SpellColors;
             public static ColorConfig TurrentColor;
             public static CheckBox TurrentSmoothCircle;
 
             public static ColorConfig MovementLineColor;
             public static ColorConfig MovementCircleColor;
 
-            private static CheckBox HideMovement;
-            private static CheckBox HideTurrents;
-            private static CheckBox HideSpells;
 
             public static bool DrawSmoothTurrentRange { get { return TurrentSmoothCircle.CurrentValue; } }
+
             static Colors()
             {
                 Menu = Config.Menu.AddSubMenu("Colors");
-                SpellColors = new List<KeyValuePair<SpellSlot, ColorConfig>>();
-                Game.OnTick += Game_OnTick;
-            }
-
-            private static void Game_OnTick(EventArgs args)
-            {
-                //TurrentColor.Hide();
+                SpellColors = new Dictionary<SpellSlot, ColorConfig>();
             }
 
             public static void Initialize()
             {
                 Menu.AddGroupLabel("Turrents");
-                //HideTurrents = new CheckBox("Hide");
-                //Menu.Add("HideTurrents", HideTurrents);
                 TurrentColor = new ColorConfig(Menu, "TurrentsColor");
                 TurrentSmoothCircle = new CheckBox("Enable Smooth Circle");
                 Menu.Add("TurrentSmoothCircle", TurrentSmoothCircle);
@@ -212,8 +200,7 @@ namespace DrawingBuddy
                 foreach (var slot in Program.SpellSlots)
                 {
                     Menu.AddLabel(Enum.GetName(typeof(SpellSlot), slot));
-                    SpellColors.Add(new KeyValuePair<SpellSlot, ColorConfig>(slot,
-                        new ColorConfig(Menu, "Spell" + Enum.GetName(typeof (SpellSlot), slot) + "Color"))); 
+                    SpellColors[slot] = new ColorConfig(Menu, "Spell" + Enum.GetName(typeof (SpellSlot), slot) + "Color"); 
                     Menu.AddSeparator(10);
                 }
 

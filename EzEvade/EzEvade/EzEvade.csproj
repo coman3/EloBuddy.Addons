@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{648946D0-6BAC-4E3E-A200-3C6FBEA532B8}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EzEvade</RootNamespace>
+    <AssemblyName>EzEvade</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EloBuddy">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.dll</HintPath>
+    </Reference>
+    <Reference Include="EloBuddy.SDK">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdEvade.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\DynamicCheckBox.cs" />
+    <Compile Include="Config\DynamicKeyBind.cs" />
+    <Compile Include="Config\DynamicSlider.cs" />
+    <Compile Include="Config\EvadeSpellConfigControl.cs" />
+    <Compile Include="Config\SpellConfigControl.cs" />
+    <Compile Include="Config\StringSlider.cs" />
+    <Compile Include="Data\ChampionPlugin.cs" />
+    <Compile Include="Data\GameData.cs" />
+    <Compile Include="Data\ObjectTracker.cs" />
+    <Compile Include="Data\PositionInfo.cs" />
+    <Compile Include="Data\SpecialSpells\AllChampions.cs" />
+    <Compile Include="Data\SpecialSpells\Ashe.cs" />
+    <Compile Include="Data\SpecialSpells\Ekko.cs" />
+    <Compile Include="Data\SpecialSpells\Fizz.cs" />
+    <Compile Include="Data\SpecialSpells\JarvanIV.cs" />
+    <Compile Include="Data\SpecialSpells\Jayce.cs" />
+    <Compile Include="Data\SpecialSpells\Jinx.cs" />
+    <Compile Include="Data\SpecialSpells\Lucian.cs" />
+    <Compile Include="Data\SpecialSpells\Lulu.cs" />
+    <Compile Include="Data\SpecialSpells\Lux.cs" />
+    <Compile Include="Data\SpecialSpells\Malzahar.cs" />
+    <Compile Include="Data\SpecialSpells\Orianna.cs" />
+    <Compile Include="Data\SpecialSpells\Sion.cs" />
+    <Compile Include="Data\SpecialSpells\Syndra.cs" />
+    <Compile Include="Data\SpecialSpells\Viktor.cs" />
+    <Compile Include="Data\SpecialSpells\Xerath.cs" />
+    <Compile Include="Data\SpecialSpells\Yasuo.cs" />
+    <Compile Include="Data\SpecialSpells\Zed.cs" />
+    <Compile Include="Data\SpecialSpells\Ziggs.cs" />
+    <Compile Include="Data\SpellData.cs" />
+    <Compile Include="Data\SpellDatabase.cs" />
+    <Compile Include="Data\SpellWindupDatabase.cs" />
+    <Compile Include="Draw\RenderCircle.cs" />
+    <Compile Include="Draw\RenderLine.cs" />
+    <Compile Include="Draw\RenderObject.cs" />
+    <Compile Include="Draw\RenderText.cs" />
+    <Compile Include="Draw\SpellDrawer.cs" />
+    <Compile Include="EvadeSpells\EvadeSpell.cs" />
+    <Compile Include="EvadeSpells\EvadeSpellData.cs" />
+    <Compile Include="EvadeSpells\EvadeSpellDatabase.cs" />
+    <Compile Include="EvadeSpells\SpecialEvadeSpell.cs" />
+    <Compile Include="Helpers\AutoSetPing.cs" />
+    <Compile Include="Helpers\EvadeCommand.cs" />
+    <Compile Include="Helpers\EvadeHelper.cs" />
+    <Compile Include="Helpers\Position.cs" />
+    <Compile Include="Helpers\Situation.cs" />
+    <Compile Include="Items.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Render.cs" />
+    <Compile Include="Spell.cs" />
+    <Compile Include="SpellDetector.cs" />
+    <Compile Include="Utils\DelayAction.cs" />
+    <Compile Include="Utils\EvadeUtils.cs" />
+    <Compile Include="Utils\MathUtils.cs" />
+    <Compile Include="Utils\MathUtilsCPA.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
