@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdEvade.cs" />
+    <Compile Include="Config\ColorConfig.cs" />
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\DynamicCheckBox.cs" />
     <Compile Include="Config\DynamicKeyBind.cs" />

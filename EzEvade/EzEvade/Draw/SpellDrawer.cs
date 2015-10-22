@@ -16,7 +16,10 @@ namespace EzEvade.Draw
         public static Menu Menu;
 
         private static AIHeroClient MyHero { get { return ObjectManager.Player; } }
-
+        public ColorConfig LowDanger;
+        public ColorConfig NormalDanger;
+        public ColorConfig HighDanger;
+        public ColorConfig ExtremeDanger;
 
         public SpellDrawer(Menu mainMenu)
         {
@@ -37,20 +40,27 @@ namespace EzEvade.Draw
             drawMenu.Add("DrawSpellPos", new DynamicCheckBox(ConfigDataType.Data, "DrawSpellPos", "Draw Spell Position", false).CheckBox);
             drawMenu.Add("DrawEvadePosition", new DynamicCheckBox(ConfigDataType.Data, "DrawEvadePosition", "Draw Evade Position", false).CheckBox);
 
-            Menu dangerMenu = drawMenu.Parent.AddSubMenu("DangerLevel Drawings", "DangerLevelDrawings");
-            Menu lowDangerMenu = dangerMenu.Parent.AddSubMenu("   Low", "LowDrawing");
-            
+            Menu dangerMenu = drawMenu.Parent.AddSubMenu("Danger Drawings", "DangerLevelDrawings");
+
+            Menu lowDangerMenu = dangerMenu.Parent.AddSubMenu("    Low", "LowDrawing");
             lowDangerMenu.Add("LowWidth", new DynamicSlider(ConfigDataType.Data, "LowWidth", "Line Width", 3, 1, 15).Slider);
+            lowDangerMenu.AddGroupLabel("Color");
+            LowDanger = new ColorConfig(lowDangerMenu, "LowDangerColorConfig", Color.LightGray);
 
             Menu normalDangerMenu = dangerMenu.Parent.AddSubMenu("    Normal", "NormalDrawing");
             normalDangerMenu.Add("NormalWidth", new DynamicSlider(ConfigDataType.Data, "NormalWidth", "Line Width", 3, 1, 15).Slider);
+            normalDangerMenu.AddGroupLabel("Color");
+            NormalDanger = new ColorConfig(normalDangerMenu, "NormalDangerColorConfig", Color.White);
 
             Menu highDangerMenu = dangerMenu.Parent.AddSubMenu("    High", "HighDrawing");
             highDangerMenu.Add("HighWidth", new DynamicSlider(ConfigDataType.Data, "HighWidth", "Line Width", 4, 1, 15).Slider);
+            highDangerMenu.AddGroupLabel("Color");
+            HighDanger = new ColorConfig(highDangerMenu, "HighDangerColorConfig", Color.DarkOrange);
 
             Menu extremeDangerMenu = dangerMenu.Parent.AddSubMenu("    Extreme", "ExtremeDrawing");
             extremeDangerMenu.Add("ExtremeWidth", new DynamicSlider(ConfigDataType.Data, "ExtremeWidth", "Line Width", 4, 1, 15).Slider);
-
+            extremeDangerMenu.AddGroupLabel("Color");
+            ExtremeDanger = new ColorConfig(extremeDangerMenu, "ExtremeDangerColorConfig", Color.OrangeRed);
             /*
             Menu undodgeableDangerMenu = new Menu("Undodgeable", "Undodgeable");
             undodgeableDangerMenu.AddItem(new MenuItem("Width", "Line Width").SetValue(new Slider(6, 1, 15)));
@@ -116,6 +126,23 @@ namespace EzEvade.Draw
             }
         }
 
+        private Color GetSpellColor(int dangerLevel)
+        {
+            switch (dangerLevel)
+            {
+                case 0:
+                    return LowDanger.GetSystemColor();
+                case 1:
+                    return NormalDanger.GetSystemColor();
+                case 2:
+                    return HighDanger.GetSystemColor();
+                case 3:
+                    return ExtremeDanger.GetSystemColor();
+                default:
+                    return NormalDanger.GetSystemColor();
+            }
+        }
+
         private void Drawing_OnDraw(EventArgs args)
         {
 
@@ -157,7 +184,7 @@ namespace EzEvade.Draw
                         Vector2 spellPos = spell.CurrentSpellPosition;
                         Vector2 spellEndPos = spell.GetSpellEndPosition();
 
-                        DrawLineRectangle(spellPos, spellEndPos, (int)spell.Radius, spellDrawingWidth, Color.Red);
+                        DrawLineRectangle(spellPos, spellEndPos, (int)spell.Radius, spellDrawingWidth, GetSpellColor(spell.Dangerlevel));
 
                         /*foreach (var hero in ObjectManager.Get<AIHeroClient>())
                         {
@@ -177,17 +204,17 @@ namespace EzEvade.Draw
                             /*if (spell.spellObject != null && spell.spellObject.IsValid && spell.spellObject.IsVisible &&
                                   spell.spellObject.Position.To2D().Distance(ObjectCache.myHeroCache.serverPos2D) < spell.info.range + 1000)*/
 
-                            Render.Circle.DrawCircle(new Vector3(spellPos.X, spellPos.Y, MyHero.Position.Z), (int)spell.Radius, Color.Red, spellDrawingWidth);
+                            Render.Circle.DrawCircle(new Vector3(spellPos.X, spellPos.Y, MyHero.Position.Z), (int)spell.Radius, GetSpellColor(spell.Dangerlevel), spellDrawingWidth);
                         }
 
                     }
                     else if (spell.SpellType == SpellType.Circular)
                     {
-                        Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int)spell.Radius, Color.Red, spellDrawingWidth);
+                        Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int)spell.Radius, GetSpellColor(spell.Dangerlevel), spellDrawingWidth);
 
                         if (spell.Info.SpellName == "VeigarEventHorizon")
                         {
-                            Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int)spell.Radius - 125, Color.Red, spellDrawingWidth);
+                            Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int)spell.Radius - 125, GetSpellColor(spell.Dangerlevel), spellDrawingWidth);
                         }
                     }
                     else if (spell.SpellType == SpellType.Arc)

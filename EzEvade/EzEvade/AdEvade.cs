@@ -103,8 +103,6 @@ namespace EzEvade
                 mainMenu.Add("DodgeDangerous", new DynamicCheckBox(ConfigDataType.Data, "DodgeDangerous", "Dodge Only Dangerous", false).CheckBox);
                 mainMenu.Add("DodgeFOWSpells", new DynamicCheckBox(ConfigDataType.Data, "DodgeFOWSpells", "Dodge FOW SkillShots", true).CheckBox);
                 mainMenu.Add("DodgeCircularSpells", new DynamicCheckBox(ConfigDataType.Data, "DodgeCircularSpells", "Dodge Circular SkillShots", true).CheckBox);
-                //var keyBind = mainMenu.Item("DodgeSkillShots").GetValue<KeyBind>();
-                //mainMenu.Item("DodgeSkillShots").SetValue(new KeyBind(keyBind.Key, KeyBindType.Toggle, true));
                 mainMenu.Add("DebugShow", new CheckBox("Show Debug Info", false)).OnValueChange +=
                     delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
                     {
@@ -117,14 +115,26 @@ namespace EzEvade
                             sender.CurrentValue = false;
                         }
                     };
+                mainMenu.Add("DodgeDangerousKeyEnabled", new DynamicCheckBox(ConfigDataType.Data, "DodgeDangerousKeyEnabled", "Enable Dodge Only Dangerous Keys", false).CheckBox);
+
+                mainMenu.Add("DodgeDangerousKey", new DynamicKeyBind("DodgeDangerousKey", "Dodge Only Dangerous Key", false, KeyBind.BindTypes.HoldActive, 32).KeyBind);
+                mainMenu.Add("DodgeDangerousKey2", new DynamicKeyBind("DodgeDangerousKey2", "Dodge Only Dangerous Key 2", false, KeyBind.BindTypes.HoldActive, 'V').KeyBind);
+
+                mainMenu.AddGroupLabel("Evade Mode");
+
+                var sliderEvadeMode = mainMenu.Add("EvadeMode", new Slider("Smooth", 0, 0, 2));
+                var modeArray = new[] { "Smooth", "Fastest", "Very Smooth" };
+
+                sliderEvadeMode.DisplayName = modeArray[sliderEvadeMode.CurrentValue];
+                sliderEvadeMode.OnValueChange +=
+                    delegate (ValueBase<int> sender, ValueBase<int>.ValueChangeArgs changeArgs)
+                    {
+                        sender.DisplayName = modeArray[changeArgs.NewValue];
+                        OnEvadeModeChange(sender, changeArgs);
+                    };
+
                 SpellDetector = new SpellDetector(Menu);
                 _evadeSpell = new EvadeSpell(Menu);
-
-                Menu keyMenu = Menu.AddSubMenu("Key Settings", "KeySettings");
-                keyMenu.Add("DodgeDangerousKeyEnabled", new DynamicCheckBox(ConfigDataType.Data, "DodgeDangerousKeyEnabled", "Enable Dodge Only Dangerous Keys", false).CheckBox);
-
-                keyMenu.Add("DodgeDangerousKey", new DynamicKeyBind("DodgeDangerousKey", "Dodge Only Dangerous Key", false, KeyBind.BindTypes.HoldActive, 32).KeyBind);
-                keyMenu.Add("DodgeDangerousKey2", new DynamicKeyBind("DodgeDangerousKey2", "Dodge Only Dangerous Key 2", false, KeyBind.BindTypes.HoldActive, 'V').KeyBind);
 
                 Menu miscMenu = Menu.AddSubMenu("Misc Settings", "MiscSettings");
                 miscMenu.Add("HigherPrecision", new DynamicCheckBox(ConfigDataType.Data, "HigherPrecision", "Enhanced Dodge Precision", false).CheckBox);
@@ -135,23 +145,15 @@ namespace EzEvade
                 miscMenu.Add("PreventDodgingUnderTower", new DynamicCheckBox(ConfigDataType.Data, "PreventDodgingUnderTower", "Prevent Dodging Under Tower", false).CheckBox);
                 miscMenu.Add("PreventDodgingNearEnemy", new DynamicCheckBox(ConfigDataType.Data, "PreventDodgingNearEnemy", "Prevent Dodging Near Enemies", false).CheckBox);
                 miscMenu.Add("AdvancedSpellDetection", new DynamicCheckBox(ConfigDataType.Data, "AdvancedSpellDetection", "Advanced Spell Detection", false).CheckBox);
-                //miscMenu.AddItem(new MenuItem("AllowCrossing", "Allow Crossing").SetValue(false));
-                //miscMenu.AddItem(new MenuItem("CalculateHeroPos", "Calculate Hero Position").SetValue(false));
+                miscMenu.AddGroupLabel("Reset");
+                miscMenu.Add("ResetConfig", new DynamicCheckBox(ConfigDataType.Data, "ResetConfig", "Reset Config", false).CheckBox);
 
-                Menu evadeModeMenu = Menu.AddSubMenu("Mode", "EvadeModeSettings");
-                evadeModeMenu.AddGroupLabel("Evade Mode");
+                Menu fastEvadeMenu = Menu.AddSubMenu("Fast Evade", "FastEvade");
+                fastEvadeMenu.Add("FastMovementBlock", new DynamicCheckBox(ConfigDataType.Data, "FastMovementBlock", "Fast Movement Block", false).CheckBox);
+                fastEvadeMenu.Add("FastEvadeActivationTime", new DynamicSlider(ConfigDataType.Data, "FastEvadeActivationTime", "FastEvade Activation Time", 65, 0, 500).Slider);
+                fastEvadeMenu.Add("SpellActivationTime", new DynamicSlider(ConfigDataType.Data, "SpellActivationTime", "Spell Activation Time", 200, 0, 1000).Slider);
+                fastEvadeMenu.Add("RejectMinDistance", new DynamicSlider(ConfigDataType.Data, "RejectMinDistance", "Collision Distance Buffer", 10, 0, 100).Slider);
 
-                var sliderEvadeMode = evadeModeMenu.Add("EvadeMode", new Slider("Smooth", 0, 0, 2));
-                var modeArray = new[] { "Smooth", "Fastest", "Very Smooth" };
-
-                sliderEvadeMode.DisplayName = modeArray[sliderEvadeMode.CurrentValue];
-                sliderEvadeMode.OnValueChange +=
-                    delegate (ValueBase<int> sender, ValueBase<int>.ValueChangeArgs changeArgs)
-                    {
-                        sender.DisplayName = modeArray[changeArgs.NewValue];
-                        OnEvadeModeChange(sender, changeArgs);
-                    };
-                
                 Menu limiterMenu = Menu.AddSubMenu("Humanizer", "Limiter");
                 limiterMenu.Add("ClickOnlyOnce", new DynamicCheckBox(ConfigDataType.Data, "ClickOnlyOnce", "Click Only Once", true).CheckBox);
                 limiterMenu.Add("EnableEvadeDistance", new DynamicCheckBox(ConfigDataType.Data, "EnableEvadeDistance", "Extended Evade", false).CheckBox);
@@ -159,19 +161,9 @@ namespace EzEvade
                 limiterMenu.Add("SpellDetectionTime", new DynamicSlider(ConfigDataType.Data, "", "Spell Detection Time", 0, 0, 1000).Slider);
                 limiterMenu.Add("ReactionTime", new DynamicSlider(ConfigDataType.Data, "ReactionTime", "Reaction Time", 0, 0, 500).Slider);
                 limiterMenu.Add("DodgeInterval", new DynamicSlider(ConfigDataType.Data, "DodgeInterval", "Dodge Interval", 0, 0, 2000).Slider);
+                
 
-                Menu fastEvadeMenu = Menu.AddSubMenu("Fast Evade", "FastEvade");
-                fastEvadeMenu.Add("FastMovementBlock", new DynamicCheckBox(ConfigDataType.Data, "FastMovementBlock", "EFast Movement Block", false).CheckBox);
-                fastEvadeMenu.Add("FastEvadeActivationTime", new DynamicSlider(ConfigDataType.Data, "FastEvadeActivationTime", "FastEvade Activation Time", 65, 0, 500).Slider);
-                fastEvadeMenu.Add("SpellActivationTime", new DynamicSlider(ConfigDataType.Data, "SpellActivationTime", "Spell Activation Time", 200, 0, 1000).Slider);
-                fastEvadeMenu.Add("RejectMinDistance", new DynamicSlider(ConfigDataType.Data, "RejectMinDistance", "Collision Distance Buffer", 10, 0, 100).Slider);
-
-                /*Menu evadeSpellSettingsMenu = new Menu("Evade Spell", "EvadeSpellMisc");
-                evadeSpellSettingsMenu.AddItem(new MenuItem("EvadeSpellActivationTime", "Evade Spell Activation Time").SetValue(new Slider(150, 0, 500)));
-
-                miscMenu.AddSubMenuEx(evadeSpellSettingsMenu);*/
-
-                Menu bufferMenu = Menu.AddSubMenu("Extra Buffers", "ExtraBuffers");
+                Menu bufferMenu = Menu.AddSubMenu("Adv. Humanizer", "ExtraBuffers");
                 bufferMenu.Add("ExtraPingBuffer", new DynamicSlider(ConfigDataType.Data, "ExtraPingBuffer", "Extra Ping Buffer", 65, 0, 200).Slider);
                 bufferMenu.Add("ExtraCPADistance", new DynamicSlider(ConfigDataType.Data, "ExtraCPADistance", "Extra Collision Distance", 10, 0, 150).Slider);
                 bufferMenu.Add("ExtraSpellRadius", new DynamicSlider(ConfigDataType.Data, "ExtraSpellRadius", "Extra Spell Radius", 0, 0, 100).Slider);
@@ -180,15 +172,9 @@ namespace EzEvade
                 bufferMenu.Add("MinComfortZone", new DynamicSlider(ConfigDataType.Data, "MinComfortZone", "Min Distance to Champion", 550, 0, 1000).Slider);
 
 
-                Menu resetMenu = Menu.AddSubMenu("Reset Config", "ResetConfig");
-                resetMenu.Add("ResetConfig", new DynamicCheckBox(ConfigDataType.Data, "ResetConfig", "Reset Config", false).CheckBox);
-                resetMenu.Add("ResetConfig200", new DynamicCheckBox(ConfigDataType.Data, "ResetConfig200", "Set Patch Config", true).CheckBox);
+                _spellDrawer = new SpellDrawer(Menu);
 
-
-                Menu loadTestMenu = Menu.AddSubMenu("Tests", "LoadTests");
-                loadTestMenu.Add("LoadPingTester", new DynamicCheckBox(ConfigDataType.Data, "LoadPingTester", "Load Ping Tester", false).CheckBox).OnValueChange += OnLoadPingTesterChange;
-                loadTestMenu.Add("LoadSpellTester", new DynamicCheckBox(ConfigDataType.Data, "LoadSpellTester", "Load Spell Tester", false).CheckBox).OnValueChange += OnLoadSpellTesterChange;
-
+                
                 Player.OnIssueOrder += Game_OnIssueOrder;
                 Spellbook.OnCastSpell += Game_OnCastSpell;
                 Game.OnUpdate += Game_OnGameUpdate;
@@ -199,68 +185,13 @@ namespace EzEvade
                 SpellDetector.OnProcessDetectedSpells += SpellDetector_OnProcessDetectedSpells;
                 Orbwalker.OnPreAttack += Orbwalking_BeforeAttack;
                 Chat.Print("AdEvade Loaded");
-                /*Console.WriteLine("<font color=\"#66CCFF\" >Yomie's </font><font color=\"#CCFFFF\" >ezEvade</font> - " +
-                   "<font color=\"#FFFFFF\" >Version " + Assembly.GetExecutingAssembly().GetName().Version + "</font>");
-                */
 
-                _spellDrawer = new SpellDrawer(Menu);
-                //evadeTester = new EvadeTester(menu);
 
-                //Console.WriteLine("ezEvade Loaded");
             }
             catch (Exception e)
             {
                 Chat.Print(e);
             }
-        }
-
-        public static void ResetConfig()
-        {
-            //TODO
-            //menu.Item("DodgeSkillShots").SetValue(new KeyBind('K', KeyBindType.Toggle, true));
-            //menu.Item("ActivateEvadeSpells").SetValue(new KeyBind('K', KeyBindType.Toggle, true));
-            //menu.Item("DodgeDangerous").SetValue(false);
-            //menu.Item("DodgeFOWSpells").SetValue(true);
-            //menu.Item("DodgeCircularSpells").SetValue(true);
-
-            //menu.Item("DodgeDangerousKeyEnabled").SetValue(false);
-            //menu.Item("DodgeDangerousKey").SetValue(new KeyBind(32, KeyBindType.Press));
-            //menu.Item("DodgeDangerousKey2").SetValue(new KeyBind('V', KeyBindType.Press));
-
-            //menu.Item("HigherPrecision").SetValue(false);
-            //menu.Item("RecalculatePosition").SetValue(true);
-            //menu.Item("ContinueMovement").SetValue(true);
-            //menu.Item("CalculateWindupDelay").SetValue(true);
-            //menu.Item("CheckSpellCollision").SetValue(false);
-            //menu.Item("PreventDodgingUnderTower").SetValue(false);
-            //menu.Item("PreventDodgingNearEnemy").SetValue(true);
-            //menu.Item("AdvancedSpellDetection").SetValue(false);
-            //menu.Item("LoadPingTester").SetValue(true);
-
-            //menu.Item("EvadeMode").SetValue(new StringList(new[] {"Smooth", "Fastest", "Very Smooth"}, 0));
-
-            //menu.Item("TickLimiter").SetValue(new Slider(100, 0, 500));
-            //menu.Item("SpellDetectionTime").SetValue(new Slider(0, 0, 1000));
-            //menu.Item("ReactionTime").SetValue(new Slider(0, 0, 500));
-            //menu.Item("DodgeInterval").SetValue(new Slider(0, 0, 2000));
-
-            //menu.Item("FastEvadeActivationTime").SetValue(new Slider(65, 0, 500));
-            //menu.Item("SpellActivationTime").SetValue(new Slider(200, 0, 1000));
-            //menu.Item("RejectMinDistance").SetValue(new Slider(10, 0, 100));
-
-            //menu.Item("ExtraPingBuffer").SetValue(new Slider(65, 0, 200));
-            //menu.Item("ExtraCPADistance").SetValue(new Slider(10, 0, 150));
-            //menu.Item("ExtraSpellRadius").SetValue(new Slider(0, 0, 100));
-            //menu.Item("ExtraEvadeDistance").SetValue(new Slider(100, 0, 300));
-            //menu.Item("ExtraAvoidDistance").SetValue(new Slider(50, 0, 300));
-            //menu.Item("MinComfortZone").SetValue(new Slider(550, 0, 1000));
-        }
-
-        public static void SetPatchConfig()
-        {
-            Config.Config.SetData("FastEvadeActivationTime", 0);
-            //menu.Item("ExtraAvoidDistance").SetValue(new Slider(0, 0, 300));
-            //menu.Item("TickLimiter").SetValue(new Slider(100, 0, 500));
         }
 
         private void OnEvadeModeChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs changeArgs)
@@ -410,7 +341,7 @@ namespace EzEvade
             if (args.Order == GameObjectOrder.MoveTo)
             {
                 //movement block code goes in here
-                if (IsDodging && SpellDetector.Spells.Count() > 0)
+                if (IsDodging && SpellDetector.Spells.Count > 0)
                 {
                     CheckHeroInDanger();
 

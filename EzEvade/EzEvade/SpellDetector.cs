@@ -799,10 +799,8 @@ namespace EzEvade
                             if (!Config.Config.Spells.Any(x => x.Key == spell.SpellName))
                             {
                                 string menuName = spell.CharName + " (" + spell.SpellKey + ") Settings";
-                                Chat.Print(menuName);
                                 var enableSpell = !spell.DefaultOff;
                                 var spellConfig = new SpellConfigControl(SpellMenu, menuName, spell, enableSpell);
-                                Chat.Print(spell.Name + " : " + spell.SpellName);
                                 spellConfig.AddToMenu();
 
                                 Config.Config.SetSpell(spell.SpellName, spell.GetSpellConfig(spellConfig));
