@@ -17,7 +17,11 @@ namespace EzEvade.Data.SpecialSpells
         {
 
         }
-
+        public const string ChampionName = "Zed";
+        public string GetChampionName()
+        {
+            return ChampionName;
+        }
         public void LoadSpecialSpell(SpellData spellData)
         {
             if (spellData.SpellName == "ZedQ")

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using EloBuddy;
 using EloBuddy.SDK;
+using EzEvade.Draw;
 using EzEvade.Utils;
 using SharpDX;
 
@@ -13,13 +14,21 @@ namespace EzEvade.Data.SpecialSpells
 {
     class Lux : IChampionPlugin
     {
+        
         static Lux()
         {
 
         }
 
+        public const string ChampionName = "Lux";
+        public string GetChampionName()
+        {
+            return ChampionName;
+        }
+
         public void LoadSpecialSpell(SpellData spellData)
         {
+            Debug.DrawTopLeft("Loading Special Spell For: " + ChampionName);
             if (spellData.SpellName == "LuxMaliceCannon")
             {
                 var hero = EntityManager.Heroes.Enemies.FirstOrDefault(h => h.ChampionName == "Lux");

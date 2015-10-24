@@ -16,7 +16,11 @@ namespace EzEvade.Data.SpecialSpells
         {
 
         }
-
+        public const string ChampionName = "Syndra";
+        public string GetChampionName()
+        {
+            return ChampionName;
+        }
         public void LoadSpecialSpell(SpellData spellData)
         {
 

@@ -21,7 +21,11 @@ namespace EzEvade.Data.SpecialSpells
         {
 
         }
-
+        public const string ChampionName = "AllChampions";
+        public string GetChampionName()
+        {
+            return ChampionName;
+        }
         public void LoadSpecialSpell(SpellData spellData)
         {
             if (spellData.IsThreeWay && !PDict.ContainsKey("ProcessSpell_ProcessThreeWay"))
