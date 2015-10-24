@@ -23,7 +23,7 @@ namespace EzEvade.Config
             menu.Add(spell.Name + "UseEvadeSpell", UseSpellCheckBox.CheckBox);
             menu.Add(spell.Name + "EvadeSpellDangerLevel", DangerLevelSlider.Slider.Slider);
             menu.Add(spell.Name + "EvadeSpellMode", SpellModeSlider.Slider.Slider);
-            Config.SetEvadeSpell(spell.Name, new EvadeSpellConfig { DangerLevel = spell.Dangerlevel, Use = true, SpellMode = EvadeSpell.GetDefaultSpellMode(spell) });
+            Properties.SetEvadeSpell(spell.Name, new EvadeSpellConfig { DangerLevel = spell.Dangerlevel, Use = true, SpellMode = EvadeSpell.GetDefaultSpellMode(spell) });
         }
 
         public Menu GetMenu()

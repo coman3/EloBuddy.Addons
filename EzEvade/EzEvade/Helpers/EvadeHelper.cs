@@ -28,7 +28,7 @@ namespace EzEvade.Helpers
                 pos = GameData.HeroInfo.ServerPos2D;
             }
 
-            var extraDist = Config.Config.GetData<int>("ExtraCPADistance");
+            var extraDist = Config.Properties.GetData<int>("ExtraCPADistance");
 
             var posInfo = CanHeroWalkToPos(pos, GameData.HeroInfo.MoveSpeed, extraDelayBuffer + Game.Ping, extraDist);
             posInfo.IsDangerousPos = pos.CheckDangerousPos(6);
@@ -41,14 +41,14 @@ namespace EzEvade.Helpers
             posInfo.PosDistToChamps = pos.GetDistanceToChampions();
             posInfo.Speed = GameData.HeroInfo.MoveSpeed;
 
-            if (Config.Config.GetData<int>("RejectMinDistance") > 0
-                && Config.Config.GetData<int>("RejectMinDistance") >
+            if (Config.Properties.GetData<int>("RejectMinDistance") > 0
+                && Config.Properties.GetData<int>("RejectMinDistance") >
                 posInfo.ClosestDistance) //reject closestdistance
             {
                 posInfo.RejectPosition = true;
             }
 
-            if (Config.Config.GetData<int>("MinComfortZone") >
+            if (Config.Properties.GetData<int>("MinComfortZone") >
                 posInfo.PosDistToChamps)
             {
                 posInfo.HasComfortZone = false;
@@ -67,10 +67,10 @@ namespace EzEvade.Helpers
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2D;
             Vector2 lastMovePos = Game.CursorPos.To2D();
 
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
-            var extraEvadeDistance = Config.Config.GetData<int>("ExtraEvadeDistance");
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
+            var extraEvadeDistance = Config.Properties.GetData<int>("ExtraEvadeDistance");
 
-            if (Config.Config.GetData<bool>("HigherPrecision"))
+            if (Config.Properties.GetData<bool>("HigherPrecision"))
             {
                 maxPosToCheck = 150;
                 posRadius = 25;
@@ -140,13 +140,13 @@ namespace EzEvade.Helpers
 
             bool fastEvadeMode = false;
 
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
-            var extraEvadeDistance = Config.Config.GetData<int>("ExtraEvadeDistance");
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
+            var extraEvadeDistance = Config.Properties.GetData<int>("ExtraEvadeDistance");
 
             SpellDetector.UpdateSpells();
             CalculateEvadeTime();
 
-            if (Config.Config.GetData<bool>("CalculateWindupDelay"))
+            if (Config.Properties.GetData<bool>("CalculateWindupDelay"))
             {
                 var extraWindupDelay = AdEvade.LastWindupTime - EvadeUtils.TickCount;
                 if (extraWindupDelay > 0)
@@ -157,7 +157,7 @@ namespace EzEvade.Helpers
 
             extraDelayBuffer += (int)(AdEvade.AvgCalculationTime);
 
-            if (Config.Config.GetData<bool>("HigherPrecision"))
+            if (Config.Properties.GetData<bool>("HigherPrecision"))
             {
                 maxPosToCheck = 150;
                 posRadius = 25;
@@ -210,7 +210,7 @@ namespace EzEvade.Helpers
 
             IOrderedEnumerable<PositionInfo> sortedPosTable;
 
-            if (Config.Config.GetData<string>("EvadeMode") == "Fastest")
+            if (Config.Properties.GetData<string>("EvadeMode") == "Fastest")
             {
                 sortedPosTable =
                 posTable.OrderBy(p => p.IsDangerousPos)
@@ -221,8 +221,8 @@ namespace EzEvade.Helpers
                 fastEvadeMode = true;
 
             }
-            else if (Config.Config.GetData<int>("FastEvadeActivationTime") > 0
-               && Config.Config.GetData<int>("FastEvadeActivationTime") + Game.Ping + extraDelayBuffer > lowestEvadeTime)
+            else if (Config.Properties.GetData<int>("FastEvadeActivationTime") > 0
+               && Config.Properties.GetData<int>("FastEvadeActivationTime") + Game.Ping + extraDelayBuffer > lowestEvadeTime)
             {
                 sortedPosTable =
                 posTable.OrderBy(p => p.IsDangerousPos)
@@ -303,15 +303,15 @@ namespace EzEvade.Helpers
             int posRadius = 50;
             int radiusIndex = 0;
 
-            var extraEvadeDistance = Config.Config.GetData<int>("ExtraAvoidDistance");
+            var extraEvadeDistance = Config.Properties.GetData<int>("ExtraAvoidDistance");
 
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2D;
             Vector2 lastMovePos = movePos;//Game.CursorPos.To2D(); //movePos
 
             List<PositionInfo> posTable = new List<PositionInfo>();
 
-            var extraDist = Config.Config.GetData<int>("ExtraCPADistance");
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
+            var extraDist = Config.Properties.GetData<int>("ExtraCPADistance");
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
 
             while (posChecked < maxPosToCheck)
             {
@@ -365,7 +365,7 @@ namespace EzEvade.Helpers
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2DPing;
             Vector2 lastMovePos = Game.CursorPos.To2D();
 
-            int minComfortZone = Config.Config.GetData<int>("MinComfortZone");
+            int minComfortZone = Config.Properties.GetData<int>("MinComfortZone");
 
             List<PositionInfo> posTable = new List<PositionInfo>();
 
@@ -418,9 +418,9 @@ namespace EzEvade.Helpers
             int posRadius = 50;
             int radiusIndex = 0;
 
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
             var extraEvadeDistance = 100;// Evade.menu.SubMenu("MiscSettings").SubMenu("ExtraBuffers").Item("ExtraEvadeDistance");
-            var extraDist = Config.Config.GetData<int>("ExtraCPADistance");
+            var extraDist = Config.Properties.GetData<int>("ExtraCPADistance");
 
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2DPing;
             Vector2 lastMovePos = Game.CursorPos.To2D();
@@ -495,9 +495,9 @@ namespace EzEvade.Helpers
                 }
             }*/
 
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
             var extraEvadeDistance = 100;// Evade.menu.SubMenu("MiscSettings").SubMenu("ExtraBuffers").Item("ExtraEvadeDistance");
-            var extraDist = Config.Config.GetData<int>("ExtraCPADistance");
+            var extraDist = Config.Properties.GetData<int>("ExtraCPADistance");
 
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2DPing;
             Vector2 lastMovePos = Game.CursorPos.To2D();
@@ -876,7 +876,7 @@ namespace EzEvade.Helpers
 
             Vector2 heroPos = GameData.HeroInfo.ServerPos2D;
 
-            var minComfortDistance = Config.Config.GetData<int>("MinComfortZone");
+            var minComfortDistance = Config.Properties.GetData<int>("MinComfortZone");
 
             if (useServerPosition == false)
             {

@@ -151,9 +151,9 @@ namespace EzEvade.Helpers
         {
             float posValue = pos.Distance(Game.CursorPos.To2D());
 
-            if (Config.Config.GetData<bool>("PreventDodgingNearEnemy"))
+            if (Config.Properties.GetData<bool>("PreventDodgingNearEnemy"))
             {
-                var minComfortDistance = Config.Config.GetData<int>("MinComfortZone");
+                var minComfortDistance = Config.Properties.GetData<int>("MinComfortZone");
                 var distanceToChampions = pos.GetDistanceToChampions();
 
                 if (minComfortDistance > distanceToChampions)
@@ -162,7 +162,7 @@ namespace EzEvade.Helpers
                 }
             }
 
-            if (Config.Config.GetData<bool>("PreventDodgingUnderTower"))
+            if (Config.Properties.GetData<bool>("PreventDodgingUnderTower"))
             {
                 var turretRange = 875 + GameData.HeroInfo.BoundingRadius;
                 var distanceToTurrets = pos.GetDistanceToTurrets();
@@ -205,7 +205,7 @@ namespace EzEvade.Helpers
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2D;
             Vector2 lastMovePos = Game.CursorPos.To2D();
 
-            List<Data.PositionInfo> posTable = new List<Data.PositionInfo>();
+            List<PositionInfo> posTable = new List<PositionInfo>();
 
             while (posChecked < maxPosToCheck)
             {

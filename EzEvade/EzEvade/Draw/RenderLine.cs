@@ -25,25 +25,25 @@ namespace ezEvade.Draw
         public RenderLine(Vector2 start, Vector2 end, float renderTime,
             int radius = 65, int width = 3)
         {
-            this.StartTime = EvadeUtils.TickCount;
-            this.EndTime = this.StartTime + renderTime;
-            this.Start = start;
-            this.End = end;
+            StartTime = EvadeUtils.TickCount;
+            EndTime = StartTime + renderTime;
+            Start = start;
+            End = end;
 
-            this.Width = width;
+            Width = width;
         }
 
         public RenderLine(Vector2 start, Vector2 end, float renderTime,
             Color color, int radius = 65, int width = 3)
         {
-            this.StartTime = EvadeUtils.TickCount;
-            this.EndTime = this.StartTime + renderTime;
-            this.Start = start;
-            this.End = end;
+            StartTime = EvadeUtils.TickCount;
+            EndTime = StartTime + renderTime;
+            Start = start;
+            End = end;
 
             this.color = color;
 
-            this.Width = width;
+            Width = width;
         }
 
         override public void Draw()

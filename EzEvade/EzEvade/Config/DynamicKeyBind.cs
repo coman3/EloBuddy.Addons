@@ -11,13 +11,13 @@ namespace EzEvade.Config
         {
             _configKey = key;
             KeyBind = new KeyBind(displayName, defaultValue, type, defaultKey1, defaultKey2);
-            Config.SetKey(_configKey, KeyBind);
+            Properties.SetKey(_configKey, KeyBind);
             KeyBind.OnValueChange += KeyBind_OnValueChange;
         }
 
         private void KeyBind_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
-            Config.SetKey(_configKey, KeyBind);
+            Properties.SetKey(_configKey, KeyBind);
         }
     }
 }

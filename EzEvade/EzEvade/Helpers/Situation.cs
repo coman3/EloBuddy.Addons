@@ -19,7 +19,7 @@ namespace EzEvade.Helpers
 
         public static bool IsNearEnemy(this Vector2 pos, float distance, bool alreadyNear = true)
         {
-            if (Config.Config.GetData<bool>("PreventDodgingNearEnemy"))
+            if (Config.Properties.GetData<bool>("PreventDodgingNearEnemy"))
             {
                 var curDistToEnemies = GameData.HeroInfo.ServerPos2D.GetDistanceToChampions();
                 var posDistToEnemies = pos.GetDistanceToChampions();
@@ -45,7 +45,7 @@ namespace EzEvade.Helpers
                 
         public static bool IsUnderTurret(this Vector2 pos, bool checkEnemy = true)
         {
-            if (!Config.Config.GetData<bool>("PreventDodgingUnderTower"))
+            if (!Config.Properties.GetData<bool>("PreventDodgingUnderTower"))
             {
                 return false;
             }
@@ -78,7 +78,7 @@ namespace EzEvade.Helpers
 
         public static bool ShouldDodge()
         {
-            if (Config.Config.Keys["DodgeSkillShots"].CurrentValue == false
+            if (Config.Properties.Keys["DodgeSkillShots"].CurrentValue == false
                 || CommonChecks()
                 )
             {
@@ -105,7 +105,7 @@ namespace EzEvade.Helpers
 
         public static bool ShouldUseEvadeSpell()
         {
-            if (Config.Config.Keys["ActivateEvadeSpells"].CurrentValue == false
+            if (Config.Properties.Keys["ActivateEvadeSpells"].CurrentValue == false
                 || CommonChecks()
                 || AdEvade.LastWindupTime - EvadeUtils.TickCount > 0
                 )
@@ -123,11 +123,11 @@ namespace EzEvade.Helpers
                 AdEvade.IsChanneling
                 || MyHero.IsDead
                 || MyHero.IsInvulnerable
-                || MyHero.IsTargetable == false
+                || !MyHero.IsTargetable
                 || HasSpellShield(MyHero)
                 || ChampionSpecificChecks()
                 || Player.Instance.IsDashing()
-                || AdEvade.HasGameEnded == true;
+                || AdEvade.HasGameEnded;
         }
 
         public static bool ChampionSpecificChecks()

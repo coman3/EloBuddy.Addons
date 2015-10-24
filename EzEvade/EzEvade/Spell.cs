@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu.Values;
@@ -36,13 +37,24 @@ namespace EzEvade
 
         public float EvadeTime = float.MinValue;
         public float SpellHitTime = float.MinValue;
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Name: " + Info.SpellName + " : " + Info.CharName + " : " + Info.MissileName);
+            sb.AppendLine("Danger Level: " + Dangerlevel);
+            sb.AppendLine("Raduis: " + Info.Radius + "   Range: " + Info.Range + "   Is Fixed Range: " + Info.FixedRange);
+            sb.AppendLine("----- Location Info -----");
+            sb.AppendLine("StartTime: " + StartTime + "  EndTime: " + EndTime);
+            sb.AppendLine("Start Position: " + StartPos + "  End Position: " + EndPos + "  Direction: " + Direction);
+            return sb.ToString();
+        }
     }
     public static class SpellExtensions
     {
         public static float GetSpellRadius(this Spell spell)
         {
-            var radius = Config.Config.GetSpell(spell.Info.SpellName).Radius;
-            var extraRadius = Config.Config.GetData<int>("ExtraSpellRadius");
+            var radius = Config.Properties.GetSpell(spell.Info.SpellName).Radius;
+            var extraRadius = Config.Properties.GetData<int>("ExtraSpellRadius");
             if (spell.Info.HasEndExplosion && spell.SpellType == SpellType.Circular)
             {
                 return spell.Info.SecondaryRadius + extraRadius;
@@ -62,7 +74,7 @@ namespace EzEvade
         public static int GetSpellDangerLevel(this Spell spell)
         {
 
-            return Config.Config.GetSpell(spell.Info.SpellName).DangerLevel;
+            return Config.Properties.GetSpell(spell.Info.SpellName).DangerLevel;
         }
 
         public static string GetSpellDangerString(this Spell spell)

@@ -42,12 +42,12 @@ namespace EzEvade.Helpers
 
         public AutoSetPing(Menu mainMenu)
         {
-            AIHeroClient.OnNewPath += Hero_OnNewPath;
+            Obj_AI_Base.OnNewPath += Hero_OnNewPath;
             Player.OnIssueOrder += Hero_OnIssueOrder;
 
             Spellbook.OnCastSpell += Game_OnCastSpell;
-            MissileClient.OnCreate += Game_OnCreateObj;
-            AIHeroClient.OnProcessSpellCast += Game_ProcessSpell;
+            GameObject.OnCreate += Game_OnCreateObj;
+            Obj_AI_Base.OnProcessSpellCast += Game_ProcessSpell;
 
             //Game.OnUpdate += Game_OnUpdate;
 
@@ -113,7 +113,7 @@ namespace EzEvade.Helpers
                     )
                 {
                     //Draw.RenderObjects.Add(new Draw.RenderPosition(lastSpellCastServerPos, 1000, System.Drawing.Color.Red, 10));
-                    RenderObjects.Add(new RenderCircle(missile.StartPosition.To2D(), 1000, System.Drawing.Color.Red, 10));
+                    RenderObjects.Add(new RenderCircle(missile.StartPosition.To2D(), 1000, Color.Red, 10));
 
                     var distance = _lastSpellCastServerPos.Distance(missile.StartPosition.To2D());
                     float moveTime = 1000 * distance / MyHero.MoveSpeed;
@@ -130,7 +130,7 @@ namespace EzEvade.Helpers
             float moveTime = 1000 * distance / MyHero.MoveSpeed;
             //Console.WriteLine("Extra Delay: " + moveTime);
 
-            if (!Config.Config.GetData<bool>("AutoSetPingOn"))
+            if (!Properties.GetData<bool>("AutoSetPingOn"))
             {
                 return;
             }
@@ -155,7 +155,7 @@ namespace EzEvade.Helpers
 
         private void Hero_OnNewPath(Obj_AI_Base hero, GameObjectNewPathEventArgs args)
         {
-            if (!Config.Config.GetData<bool>("AutoSetPingOn"))
+            if (!Properties.GetData<bool>("AutoSetPingOn"))
             {
                 return;
             }
@@ -210,7 +210,7 @@ namespace EzEvade.Helpers
 
                         if (projection.IsOnSegment && dir1.AngleBetween(dir2) > 20 && dir1.AngleBetween(dir2) < 160)
                         {
-                            RenderObjects.Add(new RenderCircle(intersection, 1000, System.Drawing.Color.Red, 10));
+                            RenderObjects.Add(new RenderCircle(intersection, 1000, Color.Red, 10));
 
                             var distance = //args.Path.First().To2D().Distance(intersection);
                                 _lastMoveToServerPos.Distance(intersection);
@@ -231,17 +231,17 @@ namespace EzEvade.Helpers
 
                                 if (_maxExtraDelayTime == 0)
                                 {
-                                    _maxExtraDelayTime = Config.Config.GetData<int>("ExtraPingBuffer");
+                                    _maxExtraDelayTime = Properties.GetData<int>("ExtraPingBuffer");
                                 }
 
                                 if (_numExtraDelayTime % 100 == 0)
                                 {
                                     _pingList.Sort();
 
-                                    var percentile = Config.Config.GetData<int>("AutoSetPercentile");
+                                    var percentile = Properties.GetData<int>("AutoSetPercentile");
                                     int percentIndex = (int)Math.Floor(_pingList.Count() * (percentile / 100f)) - 1;
                                     _maxExtraDelayTime = Math.Max(_pingList.ElementAt(percentIndex) - Game.Ping,0);
-                                    Config.Config.SetData("ExtraPingBuffer", (int) _maxExtraDelayTime);
+                                    Properties.SetData("ExtraPingBuffer", (int) _maxExtraDelayTime);
 
                                     _pingList.Clear();
 

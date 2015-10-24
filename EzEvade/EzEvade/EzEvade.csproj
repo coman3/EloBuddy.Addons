@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,7 +56,8 @@
   <ItemGroup>
     <Compile Include="AdEvade.cs" />
     <Compile Include="Config\ColorConfig.cs" />
-    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\Properties.cs" />
+    <Compile Include="Config\Constants.cs" />
     <Compile Include="Config\DynamicCheckBox.cs" />
     <Compile Include="Config\DynamicKeyBind.cs" />
     <Compile Include="Config\DynamicSlider.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Data\SpellData.cs" />
     <Compile Include="Data\SpellDatabase.cs" />
     <Compile Include="Data\SpellWindupDatabase.cs" />
+    <Compile Include="Draw\Debug.cs" />
     <Compile Include="Draw\RenderCircle.cs" />
     <Compile Include="Draw\RenderLine.cs" />
     <Compile Include="Draw\RenderObject.cs" />

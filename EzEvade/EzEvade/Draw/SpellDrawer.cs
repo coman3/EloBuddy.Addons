@@ -90,12 +90,12 @@ namespace EzEvade.Draw
 
         private void DrawEvadeStatus()
         {
-            if (Config.Config.GetData<bool>("ShowStatus"))
+            if (Properties.GetData<bool>("ShowStatus"))
             {
                 var heroPos = Drawing.WorldToScreen(ObjectManager.Player.Position);
                 var dimension = Drawing.GetTextEntent("Evade: ON", 12);
 
-                if (Config.Config.GetData<bool>("DodgeSkillShots"))
+                if (Properties.Keys["DodgeSkillShots"].CurrentValue)
                 {
                     if (AdEvade.IsDodging)
                     {
@@ -111,7 +111,7 @@ namespace EzEvade.Draw
                 }
                 else
                 {
-                    if (Config.Config.Keys["ActivateEvadeSpells"].CurrentValue)
+                    if (Properties.Keys["ActivateEvadeSpells"].CurrentValue)
                     {
                         Drawing.DrawText(heroPos.X - dimension.Width / 2, heroPos.Y, Color.Purple, "Evade: Spell");
                     }
@@ -128,7 +128,7 @@ namespace EzEvade.Draw
 
         private Color GetSpellColor(int dangerLevel)
         {
-            switch (dangerLevel)
+            switch (dangerLevel - 1)
             {
                 case 0:
                     return LowDanger.GetSystemColor();
@@ -146,7 +146,7 @@ namespace EzEvade.Draw
         private void Drawing_OnDraw(EventArgs args)
         {
 
-            if (Config.Config.GetData<bool>("DrawEvadePosition"))
+            if (Properties.GetData<bool>("DrawEvadePosition"))
             {
                 //Render.Circle.DrawCircle(myHero.Position.ExtendDir(dir, 500), 65, Color.Red, 10);
 
@@ -162,9 +162,9 @@ namespace EzEvade.Draw
                 }
             }
 
-            //DrawEvadeStatus();
+            DrawEvadeStatus();
 
-            if (Config.Config.GetData<bool>("DrawSkillShots") == false)
+            if (Properties.GetData<bool>("DrawSkillShots") == false)
             {
                 return;
             }
@@ -175,9 +175,9 @@ namespace EzEvade.Draw
 
                 var dangerStr = spell.GetSpellDangerString();
                 //var spellDrawingConfig = ObjectCache.menuCache.cache[dangerStr + "Color"].GetValue<Circle>();
-                var spellDrawingWidth = Config.Config.GetData<int>(dangerStr + "Width");
+                var spellDrawingWidth = Properties.GetData<int>(dangerStr + "Width");
 
-                if (Config.Config.GetSpell(spell.Info.SpellName).Draw)
+                if (Properties.GetSpell(spell.Info.SpellName).Draw)
                 {
                     if (spell.SpellType == SpellType.Line)
                     {
@@ -191,7 +191,7 @@ namespace EzEvade.Draw
                             Render.Circle.DrawCircle(new Vector3(hero.ServerPosition.X, hero.ServerPosition.Y, myHero.Position.Z), (int)spell.radius, Color.Red, 5);
                         }*/
 
-                        if (Config.Config.GetData<bool>("DrawSpellPos"))// && spell.spellObject != null)
+                        if (Properties.GetData<bool>("DrawSpellPos"))// && spell.spellObject != null)
                         {
                             //spellPos = SpellDetector.GetCurrentSpellPosition(spell, true, ObjectCache.gamePing);
 

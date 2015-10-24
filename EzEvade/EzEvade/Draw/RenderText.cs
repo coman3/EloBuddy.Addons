@@ -23,23 +23,23 @@ namespace ezEvade.Draw
 
         public RenderText(string text, Vector2 renderPosition, float renderTime)
         {
-            this.StartTime = EvadeUtils.TickCount;
-            this.EndTime = this.StartTime + renderTime;
-            this.RenderPosition = renderPosition;
+            StartTime = EvadeUtils.TickCount;
+            EndTime = StartTime + renderTime;
+            RenderPosition = renderPosition;
 
-            this.Text = text;
+            Text = text;
         }
 
         public RenderText(string text, Vector2 renderPosition, float renderTime,
             Color color)
         {
-            this.StartTime = EvadeUtils.TickCount;
-            this.EndTime = this.StartTime + renderTime;
-            this.RenderPosition = renderPosition;
+            StartTime = EvadeUtils.TickCount;
+            EndTime = StartTime + renderTime;
+            RenderPosition = renderPosition;
 
             this.color = color;
 
-            this.Text = text;
+            Text = text;
         }
 
         override public void Draw()

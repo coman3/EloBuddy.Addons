@@ -649,12 +649,12 @@ namespace EzEvade.EvadeSpells
 
             #endregion
 
-            #region AllChampions
+            #region Properties.Constants.AllChampions
 
             Spells.Add(
             new EvadeSpellData
             {
-                CharName = "AllChampions",
+                CharName = Config.Constants.AllChampions,
                 Dangerlevel = 4,
                 Name = "Flash",
                 SpellName = "summonerflash",
@@ -670,7 +670,7 @@ namespace EzEvade.EvadeSpells
             Spells.Add(
             new EvadeSpellData
             {
-                CharName = "AllChampions",
+                CharName = Config.Constants.AllChampions,
                 Dangerlevel = 4,
                 Name = "Hourglass",
                 SpellName = "ZhonyasHourglass",
@@ -685,7 +685,7 @@ namespace EzEvade.EvadeSpells
             Spells.Add(
             new EvadeSpellData
             {
-                CharName = "AllChampions",
+                CharName = Config.Constants.AllChampions,
                 Dangerlevel = 4,
                 Name = "Witchcap",
                 SpellName = "Witchcap",
@@ -697,7 +697,7 @@ namespace EzEvade.EvadeSpells
                 ItemId = ItemId.Wooglets_Witchcap,
             });
 
-            #endregion AllChampions
+            #endregion Properties.Constants.AllChampions
         }
     }
 }

@@ -9,12 +9,12 @@ namespace EzEvade.Data
 
         static SpellDatabase()
         {
-            #region AllChampions
+            #region Properties.Constants.AllChampions
 
             Spells.Add(
             new SpellData
             {
-                CharName = "AllChampions",
+                CharName = Config.Constants.AllChampions,
                 Dangerlevel = 1,
                 MissileName = "SummonerSnowball",
                 Name = "Poro Throw",
@@ -30,7 +30,7 @@ namespace EzEvade.Data
 
             });
 
-            #endregion AllChampions
+            #endregion Properties.Constants.AllChampions
 
             #region Aatrox
 

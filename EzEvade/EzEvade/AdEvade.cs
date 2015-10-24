@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
-using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EzEvade.Config;
 using EzEvade.Data;
@@ -14,8 +14,13 @@ using EzEvade.EvadeSpells;
 using EzEvade.Helpers;
 using EzEvade.Utils;
 using SharpDX;
+using CheckBox = EloBuddy.SDK.Menu.Values.CheckBox;
 using PositionInfo = EzEvade.Data.PositionInfo;
 using SpellData = EzEvade.Data.SpellData;
+using Debug = EzEvade.Draw.Debug;
+using MainMenu = EloBuddy.SDK.Menu.MainMenu;
+using Menu = EloBuddy.SDK.Menu.Menu;
+
 // ReSharper disable AccessToStaticMemberViaDerivedType
 
 namespace EzEvade
@@ -135,18 +140,6 @@ namespace EzEvade
                 mainMenu.Add("DodgeDangerous", new DynamicCheckBox(ConfigDataType.Data, "DodgeDangerous", "Dodge Only Dangerous", false).CheckBox);
                 mainMenu.Add("DodgeFOWSpells", new DynamicCheckBox(ConfigDataType.Data, "DodgeFOWSpells", "Dodge FOW SkillShots", true).CheckBox);
                 mainMenu.Add("DodgeCircularSpells", new DynamicCheckBox(ConfigDataType.Data, "DodgeCircularSpells", "Dodge Circular SkillShots", true).CheckBox);
-                mainMenu.Add("DebugShow", new CheckBox("Show Debug Info", false)).OnValueChange +=
-                    delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
-                    {
-                        if (changeArgs.OldValue == false && changeArgs.NewValue)
-                        {
-                            foreach (var o in Config.Config.Data)
-                            {
-                                Chat.Print(o.Key + " : " + o.Value);
-                            }
-                            sender.CurrentValue = false;
-                        }
-                    };
                 mainMenu.AddSeparator();
                 mainMenu.Add("DodgeDangerousKeyEnabled", new DynamicCheckBox(ConfigDataType.Data, "DodgeDangerousKeyEnabled", "Enable Dodge Only Dangerous Keys", false).CheckBox);
 
@@ -179,8 +172,10 @@ namespace EzEvade
                 miscMenu.Add("PreventDodgingUnderTower", new DynamicCheckBox(ConfigDataType.Data, "PreventDodgingUnderTower", "Prevent Dodging Under Tower", false).CheckBox);
                 miscMenu.Add("PreventDodgingNearEnemy", new DynamicCheckBox(ConfigDataType.Data, "PreventDodgingNearEnemy", "Prevent Dodging Near Enemies", false).CheckBox);
                 miscMenu.Add("AdvancedSpellDetection", new DynamicCheckBox(ConfigDataType.Data, "AdvancedSpellDetection", "Advanced Spell Detection", false).CheckBox);
+                miscMenu.Add("ExtraDetectionRange", new DynamicSlider(ConfigDataType.Data, "ExtraDetectionRange", "Extra Detection / Drawing Range", 1000, 500, 5000).Slider);
+                miscMenu.AddSeparator(100);
                 miscMenu.AddGroupLabel("Reset");
-                miscMenu.Add("ResetConfig", new DynamicCheckBox(ConfigDataType.Data, "ResetConfig", "Reset Config", false).CheckBox);
+                miscMenu.Add("ResetConfig", new DynamicCheckBox(ConfigDataType.Data, "ResetConfig", "Reset Properties", false).CheckBox);
 
                 Menu fastEvadeMenu = Menu.AddSubMenu("Fast Evade", "FastEvade");
                 fastEvadeMenu.Add("FastMovementBlock", new DynamicCheckBox(ConfigDataType.Data, "FastMovementBlock", "Fast Movement Block", false).CheckBox);
@@ -192,7 +187,7 @@ namespace EzEvade
                 limiterMenu.Add("ClickOnlyOnce", new DynamicCheckBox(ConfigDataType.Data, "ClickOnlyOnce", "Click Only Once", true).CheckBox);
                 limiterMenu.Add("EnableEvadeDistance", new DynamicCheckBox(ConfigDataType.Data, "EnableEvadeDistance", "Extended Evade", false).CheckBox);
                 limiterMenu.Add("TickLimiter", new DynamicSlider(ConfigDataType.Data, "TickLimiter", "Tick Limiter", 100, 0, 500).Slider);
-                limiterMenu.Add("SpellDetectionTime", new DynamicSlider(ConfigDataType.Data, "", "Spell Detection Time", 0, 0, 1000).Slider);
+                limiterMenu.Add("SpellDetectionTime", new DynamicSlider(ConfigDataType.Data, "SpellDetectionTime", "Spell Detection Time", 0, 0, 1000).Slider);
                 limiterMenu.Add("ReactionTime", new DynamicSlider(ConfigDataType.Data, "ReactionTime", "Reaction Time", 0, 0, 500).Slider);
                 limiterMenu.Add("DodgeInterval", new DynamicSlider(ConfigDataType.Data, "DodgeInterval", "Dodge Interval", 0, 0, 2000).Slider);
                 
@@ -205,10 +200,26 @@ namespace EzEvade
                 bufferMenu.Add("ExtraAvoidDistance", new DynamicSlider(ConfigDataType.Data, "ExtraAvoidDistance", "Extra Avoid Distance", 50, 0, 300).Slider);
                 bufferMenu.Add("MinComfortZone", new DynamicSlider(ConfigDataType.Data, "MinComfortZone", "Min Distance to Champion", 550, 0, 1000).Slider);
 
+                Menu debugMenu = Menu.AddSubMenu("Debug", "DebugMenu");
 
+                debugMenu.AddGroupLabel("Debug");
+                debugMenu.Add("ShowDebugForm", new CheckBox("Show Debug / Config Data Form", false)).OnValueChange +=
+                    delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
+                    {
+                        if (!changeArgs.OldValue && changeArgs.NewValue)
+                        {
+                            Debug.ShowValueForm();
+                            sender.CurrentValue = false;
+                        }
+                    };
+                debugMenu.AddSeparator();
+                debugMenu.Add("DebugShow", new DynamicCheckBox(ConfigDataType.Data, "DebugShow", "Show Debug Info", false).CheckBox);
+                debugMenu.Add("DebugWithMySpells", new DynamicCheckBox(ConfigDataType.Data, "DebugWithMySpells", "Detect and draw my spells", false).CheckBox);
                 _spellDrawer = new SpellDrawer(Menu);
 
-                
+                Debug.DrawTopLeft("Showing Debug info...");
+
+
                 Player.OnIssueOrder += Game_OnIssueOrder;
                 Spellbook.OnCastSpell += Game_OnCastSpell;
                 Game.OnUpdate += Game_OnGameUpdate;
@@ -234,17 +245,17 @@ namespace EzEvade
 
             if (mode == "Very Smooth")
             {
-                Config.Config.SetData("FastEvadeActivationTime", 0);
-                Config.Config.SetData("RejectMinDistance", 0);
-                Config.Config.SetData("ExtraCPADistance", 0);
-                Config.Config.SetData("ExtraPingBuffer", 40);
+                Properties.SetData("FastEvadeActivationTime", 0);
+                Properties.SetData("RejectMinDistance", 0);
+                Properties.SetData("ExtraCPADistance", 0);
+                Properties.SetData("ExtraPingBuffer", 40);
             }
             else if (mode == "Smooth")
             {
-                Config.Config.SetData("FastEvadeActivationTime", 65);
-                Config.Config.SetData("RejectMinDistance",10);
-                Config.Config.SetData("ExtraCPADistance",10);
-                Config.Config.SetData("ExtraPingBuffer", 65);
+                Properties.SetData("FastEvadeActivationTime", 65);
+                Properties.SetData("RejectMinDistance",10);
+                Properties.SetData("ExtraCPADistance",10);
+                Properties.SetData("ExtraPingBuffer", 65);
             }
         }
 
@@ -327,8 +338,8 @@ namespace EzEvade
 
                         if (evadeSpell.EvadeType == EvadeType.Dash)
                         {
-                            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
-                            var extraDist = Config.Config.GetData<int>("ExtraCPADistance");
+                            var extraDelayBuffer = Properties.GetData<int>("ExtraPingBuffer");
+                            var extraDist = Properties.GetData<int>("ExtraCPADistance");
 
                             var dashPos = Game.CursorPos.To2D(); //real pos?
 
@@ -392,14 +403,14 @@ namespace EzEvade
                 else
                 {
                     var movePos = args.TargetPosition.To2D();
-                    var extraDelay = Config.Config.GetData<int>("ExtraPingBuffer");
+                    var extraDelay = Properties.GetData<int>("ExtraPingBuffer");
                     if (EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
                     {
-                        /*if (() Config.Config.Data["AllowCrossing"].Cast<CheckBox>().CurrentValue)
+                        /*if (() Properties.Properties.Data["AllowCrossing"].Cast<CheckBox>().CurrentValue)
                         {
-                            var extraDelayBuffer = () Config.Config.Data["ExtraPingBuffer"]
+                            var extraDelayBuffer = () Properties.Properties.Data["ExtraPingBuffer"]
                                  + 30;
-                            var extraDist = () Config.Config.Data["ExtraCPADistance"]
+                            var extraDist = () Properties.Properties.Data["ExtraCPADistance"]
                                  + 10;
 
                             var tPosInfo = EvadeHelper.CanHeroWalkToPos(movePos, GameData.HeroInfo.moveSpeed, extraDelayBuffer + Game.Ping, extraDist);
@@ -461,7 +472,7 @@ namespace EzEvade
                                 GameData.MyHero.AttackRange + GameData.HeroInfo.BoundingRadius + baseTarget.BoundingRadius)
                             {
                                 var movePos = args.TargetPosition.To2D();
-                                var extraDelay = Config.Config.GetData<int>("ExtraPingBuffer");
+                                var extraDelay = Properties.GetData<int>("ExtraPingBuffer");
                                 if (EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
                                 {
                                     args.Process = false; //Block the command
@@ -521,7 +532,7 @@ namespace EzEvade
                 IsChanneling = true;
                 ChannelPosition = GameData.MyHero.ServerPosition.To2D();
             }
-            if (Config.Config.GetData<bool>("CalculateWindupDelay"))
+            if (Properties.GetData<bool>("CalculateWindupDelay"))
             {
                 var castTime = (hero.Spellbook.CastTime - Game.Time) * 1000;
 
@@ -549,19 +560,19 @@ namespace EzEvade
                     IsChanneling = false;
                 }
 
-                //if (() Config.Config.Data["ResetConfig"].Cast<CheckBox>().CurrentValue)
+                //if (() Properties.Properties.Data["ResetConfig"].Cast<CheckBox>().CurrentValue)
                 //{
                 //    ResetConfig();
                 //    menu["ResetConfig"].Cast<CheckBox>().CurrentValue = false;
                 //}
 
-                //if (() Config.Config.Data["ResetConfig200"].Cast<CheckBox>().CurrentValue)
+                //if (() Properties.Properties.Data["ResetConfig200"].Cast<CheckBox>().CurrentValue)
                 //{
                 //    SetPatchConfig();
                 //    menu["ResetConfig200"].Cast<CheckBox>().CurrentValue = false;
                 //}
 
-                var limitDelay = Config.Config.GetData<int>("TickLimiter");
+                var limitDelay = Properties.GetData<int>("TickLimiter");
                 //Tick limiter                
                 if (EvadeUtils.TickCount - LastTickCount > limitDelay
                     && EvadeUtils.TickCount > LastStopEvadeTime)
@@ -584,7 +595,7 @@ namespace EzEvade
 
         private void RecalculatePath()
         {
-            if (Config.Config.GetData<bool>("RecalculatePosition") && IsDodging) //recheck path
+            if (Properties.GetData<bool>("RecalculatePosition") && IsDodging) //recheck path
             {
                 if (LastPosInfo != null && !LastPosInfo.RecalculatedPath)
                 {
@@ -624,10 +635,10 @@ namespace EzEvade
 
         private void ContinueLastBlockedCommand()
         {
-            if (Config.Config.GetData<bool>("ContinueMovement") && Situation.ShouldDodge())
+            if (Properties.GetData<bool>("ContinueMovement") && Situation.ShouldDodge())
             {
                 var movePos = LastBlockedUserMoveTo.TargetPosition;
-                var extraDelay = Config.Config.GetData<int>("ExtraPingBuffer");
+                var extraDelay = Properties.GetData<int>("ExtraPingBuffer");
 
                 if (IsDodging == false && LastBlockedUserMoveTo.IsProcessed == false
                     && EvadeUtils.TickCount - LastEvadeCommand.Timestamp > Game.Ping + extraDelay
@@ -662,7 +673,7 @@ namespace EzEvade
                         break;
                     }
 
-                    if (Config.Config.GetData<bool>("EnableEvadeDistance") && EvadeUtils.TickCount < LastPosInfo.EndTime)
+                    if (Properties.GetData<bool>("EnableEvadeDistance") && EvadeUtils.TickCount < LastPosInfo.EndTime)
                     {
                         playerInDanger = true;
                         break;
@@ -711,7 +722,7 @@ namespace EzEvade
 
                     Vector2 lastBestPosition = LastPosInfo.Position;
 
-                    if (Config.Config.GetData<bool>("ClickOnlyOnce") == false
+                    if (Properties.GetData<bool>("ClickOnlyOnce") == false
                         || !(GameData.MyHero.Path.Count() > 0 && LastPosInfo.Position.Distance(GameData.MyHero.Path.Last().To2D()) < 5))
                     //|| lastPosInfo.timestamp > lastEvadeOrderTime)
                     {
@@ -730,11 +741,11 @@ namespace EzEvade
 
                     if (EvadeHelper.CheckMovePath(movePos))
                     {
-                        /*if (() Config.Config.Data["AllowCrossing"].Cast<CheckBox>().CurrentValue)
+                        /*if (() Properties.Properties.Data["AllowCrossing"].Cast<CheckBox>().CurrentValue)
                         {
-                            var extraDelayBuffer = () Config.Config.Data["ExtraPingBuffer"]
+                            var extraDelayBuffer = () Properties.Properties.Data["ExtraPingBuffer"]
                                  + 30;
-                            var extraDist = () Config.Config.Data["ExtraCPADistance"]
+                            var extraDist = () Properties.Properties.Data["ExtraCPADistance"]
                                  + 10;
 
                             var tPosInfo = EvadeHelper.CanHeroWalkToPos(movePos, GameData.HeroInfo.moveSpeed, extraDelayBuffer + Game.Ping, extraDist);
@@ -759,7 +770,7 @@ namespace EzEvade
 
         public void CheckLastMoveTo()
         {
-            if (Config.Config.GetData<bool>("FastMovementBlock"))
+            if (Properties.GetData<bool>("FastMovementBlock"))
             {
                 if (IsDodging == false && LastIssueOrderArgs != null
                     && LastIssueOrderArgs.Order == GameObjectOrder.MoveTo
@@ -773,14 +784,14 @@ namespace EzEvade
 
         public static bool IsDodgeDangerousEnabled()
         {
-            if (Config.Config.GetData<bool>("DodgeDangerous"))
+            if (Properties.GetData<bool>("DodgeDangerous"))
             {
                 return true;
             }
 
-            if (Config.Config.GetData<bool>("DodgeDangerousKeyEnabled"))
+            if (Properties.GetData<bool>("DodgeDangerousKeyEnabled"))
             {
-                if (Config.Config.Keys["DodgeDangerousKey"].CurrentValue || Config.Config.Keys["DodgeDangerousKey2"].CurrentValue)
+                if (Properties.Keys["DodgeDangerousKey"].CurrentValue || Properties.Keys["DodgeDangerousKey2"].CurrentValue)
                     return true;
             }
 
@@ -810,8 +821,7 @@ namespace EzEvade
         private void SpellDetector_OnProcessDetectedSpells()
         {
             GameData.HeroInfo.UpdateInfo();
-
-            if (Config.Config.Keys["DodgeSkillShots"].CurrentValue == false)
+            if (!Properties.Keys["DodgeSkillShots"].CurrentValue)
             {
                 LastPosInfo = PositionInfo.SetAllUndodgeable();
                 EvadeSpell.UseEvadeSpell();

@@ -31,7 +31,7 @@ namespace EzEvade.Data
 
         public void UpdateInfo()
         {
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
 
             ServerPos2D = Hero.ServerPosition.To2D();
             ServerPos2DExtra = EvadeUtils.GetGamePosition(Hero, Game.Ping + extraDelayBuffer);

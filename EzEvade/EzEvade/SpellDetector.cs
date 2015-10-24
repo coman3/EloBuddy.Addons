@@ -5,10 +5,12 @@ using System.Reflection;
 using System.Reflection.Emit;
 using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EzEvade.Config;
 using EzEvade.Data;
+using EzEvade.Draw;
 using EzEvade.Utils;
 using SharpDX;
 using SpellData = EzEvade.Data.SpellData;
@@ -77,7 +79,11 @@ namespace EzEvade
             Menu = mainMenu;
 
             SpellMenu = Menu.AddSubMenu("Spells", "Spells");
+            Loading.OnLoadingComplete += Loading_OnLoadingComplete;
+        }
 
+        private void Loading_OnLoadingComplete(EventArgs args)
+        {
             LoadSpellDictionary();
             InitChannelSpells();
         }
@@ -90,13 +96,13 @@ namespace EzEvade
             var missile = (MissileClient) obj;
 
             SpellData spellData;
-
-            if (missile.SpellCaster != null && missile.SpellCaster.Team != MyHero.Team &&
-                missile.SData.Name != null && OnMissileSpells.TryGetValue(missile.SData.Name, out spellData)
-                && missile.StartPosition != null && missile.EndPosition != null)
+            if (missile.SpellCaster != null
+                && (missile.SpellCaster.Team != MyHero.Team || (Properties.GetData<bool>("DebugWithMySpells") && missile.SpellCaster.IsMe))
+                && missile.SData.Name != null 
+                && OnMissileSpells.TryGetValue(missile.SData.Name, out spellData))
             {
 
-                if (missile.StartPosition.Distance(MyHero.Position) < spellData.Range + 1000)
+                if (missile.StartPosition.Distance(MyHero.Position) < spellData.Range + Properties.GetData<int>("ExtraDetectionRange"))
                 {
                     var hero = missile.SpellCaster;
 
@@ -148,7 +154,7 @@ namespace EzEvade
                     }
                     else
                     {
-                        if (Config.Config.GetData<bool>("DodgeFOWSpells"))
+                        if (Properties.GetData<bool>("DodgeFOWSpells"))
                         {
                             CreateSpellData(hero, missile.StartPosition, missile.EndPosition, spellData, obj);
                         }
@@ -194,8 +200,8 @@ namespace EzEvade
                 }*/
 
                 SpellData spellData;
-
-                if (hero.Team != MyHero.Team && OnProcessSpells.TryGetValue(args.SData.Name, out spellData))
+                if ((hero.Team != MyHero.Team || (Properties.GetData<bool>("DebugWithMySpells") && hero.IsMe)) 
+                    && OnProcessSpells.TryGetValue(args.SData.Name, out spellData))
                 {
                     if (spellData.UsePackets == false)
                     {
@@ -304,7 +310,7 @@ namespace EzEvade
                 }
                 else if (spellType == SpellType.Arc)
                 {
-                    endTick = endTick + 1000*startPosition.Distance(endPosition)/spellData.ProjectileSpeed;
+                    endTick = endTick + 1000 * startPosition.Distance(endPosition) / spellData.ProjectileSpeed;
 
                     if (obj != null)
                         endTick -= spellData.SpellDelay;
@@ -391,7 +397,7 @@ namespace EzEvade
 
         private static void CheckSpellCollision()
         {
-            if (Config.Config.GetData<bool>("CheckSpellCollision") == false)
+            if (Properties.GetData<bool>("CheckSpellCollision") == false)
             {
                 return;
             }
@@ -417,7 +423,7 @@ namespace EzEvade
 
         public static bool CanHeroWalkIntoSpell(Spell spell)
         {
-            if (Config.Config.GetData<bool>("AdvancedSpellDetection"))
+            if (Properties.GetData<bool>("AdvancedSpellDetection"))
             {
                 Vector2 heroPos = MyHero.Position.To2D();
                 var extraDist = MyHero.Distance(GameData.HeroInfo.ServerPos2D);
@@ -481,7 +487,7 @@ namespace EzEvade
                 spell.SpellHitTime = spellHitTime;
                 spell.EvadeTime = evadeTime;
 
-                var extraDelay = Game.Ping + Config.Config.GetData<int>("ExtraPingBuffer");
+                var extraDelay = Game.Ping + Properties.GetData<int>("ExtraPingBuffer");
 
                 if (spell.SpellHitTime - extraDelay < 1500 && CanHeroWalkIntoSpell(spell))
                     //if(true)
@@ -495,17 +501,17 @@ namespace EzEvade
                     }
 
                     //var spellFlyTime = Evade.GetTickCount - spell.startTime;
-                    if (spellHitTime < Config.Config.GetData<int>("SpellDetectionTime"))
+                    if (spellHitTime < Properties.GetData<int>("SpellDetectionTime"))
                     {
                         continue;
                     }
 
-                    if (EvadeUtils.TickCount - spell.StartTime < Config.Config.GetData<int>("ReactionTime"))
+                    if (EvadeUtils.TickCount - spell.StartTime < Properties.GetData<int>("ReactionTime"))
                     {
                         continue;
                     }
 
-                    var dodgeInterval = Config.Config.GetData<int>("DodgeInterval");
+                    var dodgeInterval = Properties.GetData<int>("DodgeInterval");
                     if (AdEvade.LastPosInfo != null && dodgeInterval > 0)
                     {
                         var timeElapsed = EvadeUtils.TickCount - AdEvade.LastPosInfo.Timestamp;
@@ -520,11 +526,11 @@ namespace EzEvade
 
                     if (!Spells.ContainsKey(spell.SpellId))
                     {
-                        if (!(Config.Config.GetData<bool>("DodgeDangerous") && newSpell.GetSpellDangerLevel() < 3)
-                            && Config.Config.GetSpell(newSpell.Info.SpellName).Dodge)
+                        if (!(Properties.GetData<bool>("DodgeDangerous") && newSpell.GetSpellDangerLevel() < 3)
+                            && Properties.GetSpell(newSpell.Info.SpellName).Dodge)
                         {
                             if (newSpell.SpellType == SpellType.Circular
-                                && !Config.Config.GetData<bool>("DodgeCircularSpells"))
+                                && !Properties.GetData<bool>("DodgeCircularSpells"))
                             {
                                 //return spellID;
                                 continue;
@@ -536,7 +542,7 @@ namespace EzEvade
                         }
                     }
 
-                    if (Config.Config.GetData<bool>("CheckSpellCollision") && spell.PredictedEndPos != Vector2.Zero)
+                    if (Properties.GetData<bool>("CheckSpellCollision") && spell.PredictedEndPos != Vector2.Zero)
                     {
                         spellAdded = false;
                     }
@@ -551,6 +557,7 @@ namespace EzEvade
 
         private static int CreateSpell(Spell newSpell, bool processSpell = true)
         {
+            //Debug.DrawTopLeft(newSpell);
             int spellId = _spellIdCount++;
             newSpell.SpellId = spellId;
 
@@ -582,7 +589,7 @@ namespace EzEvade
         {
             List<int> spellList = new List<int>();
 
-            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in Spells)
             {
                 Spell spell = entry.Value;
                 spellList.Add(spell.SpellId);
@@ -608,7 +615,7 @@ namespace EzEvade
             float lowest = float.MaxValue;
             lowestSpell = null;
 
-            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in Spells)
             {
                 Spell spell = entry.Value;
 
@@ -628,7 +635,7 @@ namespace EzEvade
             int maxDanger = 0;
             Spell maxDangerSpell = null;
 
-            foreach (Spell spell in SpellDetector.Spells.Values)
+            foreach (Spell spell in Spells.Values)
             {
                 if (!hasProjectile || (spell.Info.ProjectileSpeed > 0 && spell.Info.ProjectileSpeed != float.MaxValue))
                 {
@@ -664,22 +671,22 @@ namespace EzEvade
             ChanneledSpells["ZacE"] = "Zac";
             ChanneledSpells["Pantheon_Heartseeker"] = "Pantheon";
 
-            ChanneledSpells["OdinRecall"] = "AllChampions";
-            ChanneledSpells["Recall"] = "AllChampions";
+            ChanneledSpells["OdinRecall"] = Constants.AllChampions;
+            ChanneledSpells["Recall"] = Constants.AllChampions;
 
         }
 
-        public static void LoadDummySpell(SpellData spell)
-        {
-            string menuName = spell.CharName + " (" + spell.SpellKey + ") Settings";
+        //public static void LoadDummySpell(SpellData spell)
+        //{
+        //    string menuName = spell.CharName + " (" + spell.SpellKey + ") Settings";
 
-            var enableSpell = !spell.DefaultOff;
+        //    var enableSpell = !spell.DefaultOff;
 
-            var spellConfig = new SpellConfigControl(SpellMenu, menuName, spell, enableSpell);
-            spellConfig.AddToMenu();
+        //    var spellConfig = new SpellConfigControl(SpellMenu, menuName, spell, enableSpell);
+        //    spellConfig.AddToMenu();
 
-            Config.Config.Spells.Add(spell.Name, spell.GetSpellConfig(spellConfig));
-        }
+        //    Properties.Spells.Add(spell.Name, spell.GetSpellConfig(spellConfig));
+        //}
 
         //Credits to Kurisu
         public static object NewInstance(Type type)
@@ -705,14 +712,14 @@ namespace EzEvade
                 ChampionPlugins[spell.CharName].LoadSpecialSpell(spell);
             }
 
-            ChampionPlugins["AllChampions"].LoadSpecialSpell(spell);
+            ChampionPlugins[Constants.AllChampions].LoadSpecialSpell(spell);
         }
 
         private void LoadSpecialSpellPlugins()
         {
-            ChampionPlugins.Add("AllChampions", new Data.SpecialSpells.AllChampions());
-
-            foreach (var hero in EntityManager.Heroes.Enemies)
+            ChampionPlugins.Add(Constants.AllChampions, new Data.SpecialSpells.AllChampions());
+            Debug.DrawTopLeft("Loading Plugins...");
+            foreach (var hero in EntityManager.Heroes.AllHeroes)
             {
                 var championPlugin = Assembly
                     .GetExecutingAssembly()
@@ -720,13 +727,13 @@ namespace EzEvade
                     )
                     .FirstOrDefault(t => t.IsClass && t.Namespace == "EzEvade.Data.SpecialSpells"
                                          && t.Name == hero.ChampionName);
-
                 if (championPlugin != null)
                 {
                     if (!ChampionPlugins.ContainsKey(hero.ChampionName))
                     {
-                        ChampionPlugins.Add(hero.ChampionName,
-                            (IChampionPlugin) NewInstance(championPlugin));
+                        var plugin = (IChampionPlugin) NewInstance(championPlugin);
+                        ChampionPlugins.Add(hero.ChampionName, plugin);
+                        Debug.DrawTopLeft("Loaded Champion Plugin: " + plugin.GetChampionName());
                     }
                 }
             }
@@ -735,8 +742,7 @@ namespace EzEvade
         private void LoadSpellDictionary()
         {
             LoadSpecialSpellPlugins();
-
-            foreach (var hero in ObjectManager.Get<AIHeroClient>())
+            foreach (var hero in EntityManager.Heroes.AllHeroes)
             {
                 if (hero.IsMe)
                 {
@@ -749,24 +755,25 @@ namespace EzEvade
                         }
                     }
                 }
-
-                if (hero.Team != MyHero.Team)
+                if (hero.Team != MyHero.Team || (Properties.GetData<bool>("DebugWithMySpells") && hero.IsMe))
                 {
+                    Debug.DrawTopLeft("Hero Found: " +  hero.ChampionName);
                     foreach (var spell in SpellDatabase.Spells.Where(
-                        s => (s.CharName == hero.ChampionName) || (s.CharName == "AllChampions")))
+                        s => (s.CharName == hero.ChampionName) || (s.CharName == Constants.AllChampions)))
                     {
-                        //Console.WriteLine(spell.spellName); 
+                        Debug.DrawTopLeft(" Hero Spell Found: " + spell.SpellName); 
 
                         if (!(spell.SpellType == SpellType.Circular
                               || spell.SpellType == SpellType.Line
                               || spell.SpellType == SpellType.Arc))
                             continue;
 
-                        if (spell.CharName == "AllChampions")
+                        if (spell.CharName == Constants.AllChampions)
                         {
                             SpellSlot slot = hero.GetSpellSlotFromName(spell.SpellName);
                             if (slot == SpellSlot.Unknown)
                             {
+                                Debug.DrawTopLeft("* Slot not Found!");
                                 continue;
                             }
                         }
@@ -796,14 +803,14 @@ namespace EzEvade
                             }
 
                             LoadSpecialSpell(spell);
-                            if (!Config.Config.Spells.Any(x => x.Key == spell.SpellName))
+                            if (!Properties.Spells.Any(x => x.Key == spell.SpellName))
                             {
                                 string menuName = spell.CharName + " (" + spell.SpellKey + ") Settings";
                                 var enableSpell = !spell.DefaultOff;
                                 var spellConfig = new SpellConfigControl(SpellMenu, menuName, spell, enableSpell);
                                 spellConfig.AddToMenu();
 
-                                Config.Config.SetSpell(spell.SpellName, spell.GetSpellConfig(spellConfig));
+                                Properties.SetSpell(spell.SpellName, spell.GetSpellConfig(spellConfig));
                             }
                         }
 

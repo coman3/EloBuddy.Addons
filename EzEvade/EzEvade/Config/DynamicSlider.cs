@@ -37,11 +37,11 @@ namespace EzEvade.Config
             switch (_type)
             {
                 case ConfigDataType.Data:
-                    Config.SetData(_configKey, defaultValue);
+                    Properties.SetData(_configKey, defaultValue);
                     break;
             }
             Slider.OnValueChange += Slider_OnValueChange;
-            //Config.OnConfigValueChanged += Config_OnConfigValueChanged;
+            //Properties.OnConfigValueChanged += Config_OnConfigValueChanged;
         }
 
 
@@ -58,12 +58,12 @@ namespace EzEvade.Config
             switch (_type)
             {
                 case ConfigDataType.Data:
-                    Config.SetData(_configKey, sender.CurrentValue, false);
+                    Properties.SetData(_configKey, sender.CurrentValue, false);
                     break;
                 case ConfigDataType.Spells:
                     if (_isBasedOnSpell)
                     {
-                        var spell = Config.GetSpell(_configKey);
+                        var spell = Properties.GetSpell(_configKey);
                         switch (_spellProperty)
                         {
                             case SpellConfigProperty.Radius:
@@ -78,13 +78,13 @@ namespace EzEvade.Config
                             default:
                                 return;
                         }
-                        Config.SetSpell(_configKey, spell);
+                        Properties.SetSpell(_configKey, spell);
                     }
                     break;
                 case ConfigDataType.EvadeSpell:
                     if (_isBasedOnSpell)
                     {
-                        var spell = Config.EvadeSpells[_configKey];
+                        var spell = Properties.EvadeSpells[_configKey];
                         switch (_spellProperty)
                         {
                             case SpellConfigProperty.DangerLevel:
@@ -96,7 +96,7 @@ namespace EzEvade.Config
                             default:
                                 return;
                         }
-                        Config.SetEvadeSpell(_configKey, spell);
+                        Properties.SetEvadeSpell(_configKey, spell);
                     }
                     break;
             }

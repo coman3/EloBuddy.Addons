@@ -25,25 +25,25 @@ namespace ezEvade.Draw
         public RenderCircle(Vector2 renderPosition, float renderTime,
             int radius = 65, int width = 5)
         {
-            this.StartTime = EvadeUtils.TickCount;
-            this.EndTime = this.StartTime + renderTime;
-            this.RenderPosition = renderPosition;
+            StartTime = EvadeUtils.TickCount;
+            EndTime = StartTime + renderTime;
+            RenderPosition = renderPosition;
 
-            this.Radius = radius;
-            this.Width = width;
+            Radius = radius;
+            Width = width;
         }
 
         public RenderCircle(Vector2 renderPosition, float renderTime,
             Color color, int radius = 65, int width = 5)
         {
-            this.StartTime = EvadeUtils.TickCount;
-            this.EndTime = this.StartTime + renderTime;
-            this.RenderPosition = renderPosition;
+            StartTime = EvadeUtils.TickCount;
+            EndTime = StartTime + renderTime;
+            RenderPosition = renderPosition;
 
             this.color = color;
 
-            this.Radius = radius;
-            this.Width = width;
+            Radius = radius;
+            Width = width;
         }
 
         override public void Draw()

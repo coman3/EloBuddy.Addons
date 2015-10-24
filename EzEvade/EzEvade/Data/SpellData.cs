@@ -1,4 +1,5 @@
-﻿using EloBuddy;
+﻿using System.Text;
+using EloBuddy;
 
 namespace EzEvade.Data
 {
@@ -73,6 +74,15 @@ namespace EzEvade.Data
             Radius = radius;
             Dangerlevel = dangerlevel;
             SpellType = spellType;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Name: " + SpellName + " : " + CharName + " : " + MissileName);
+            sb.AppendLine("Danger Level: " + Dangerlevel);
+            sb.AppendLine("Raduis: " + Radius + "   Range: " + Range + "Is Fixed Ranged: " + FixedRange);
+            return sb.ToString();
         }
     }
 }

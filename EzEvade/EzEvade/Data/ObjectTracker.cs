@@ -20,25 +20,25 @@ namespace EzEvade.Data
 
         public ObjectTrackerInfo(GameObject obj)
         {
-            this.Obj = obj;
-            this.Name = obj.Name;
-            this.Timestamp = EvadeUtils.TickCount;
+            Obj = obj;
+            Name = obj.Name;
+            Timestamp = EvadeUtils.TickCount;
         }
 
         public ObjectTrackerInfo(GameObject obj, string name)
         {
-            this.Obj = obj;
-            this.Name = name;
-            this.Timestamp = EvadeUtils.TickCount;
+            Obj = obj;
+            Name = name;
+            Timestamp = EvadeUtils.TickCount;
         }
 
         public ObjectTrackerInfo(string name, Vector3 position)
         {
-            this.Name = name;
-            this.UsePosition = true;
-            this.Position = position;
+            Name = name;
+            UsePosition = true;
+            Position = position;
 
-            this.Timestamp = EvadeUtils.TickCount;
+            Timestamp = EvadeUtils.TickCount;
         }
     }
 
@@ -49,7 +49,7 @@ namespace EzEvade.Data
 
         static ObjectTracker()
         {
-            Obj_AI_Minion.OnCreate += HiuCreate_ObjectTracker;
+            GameObject.OnCreate += HiuCreate_ObjectTracker;
             //Obj_AI_Minion.OnCreate += HiuDelete_ObjectTracker;
         }
 
@@ -66,29 +66,29 @@ namespace EzEvade.Data
         private static void HiuCreate_ObjectTracker(GameObject obj, EventArgs args)
         {
             if (obj.IsEnemy && obj.Type == GameObjectType.obj_AI_Minion
-                && !ObjectTracker.ObjTracker.ContainsKey(obj.NetworkId))
+                && !ObjTracker.ContainsKey(obj.NetworkId))
             {
                 var minion = obj as Obj_AI_Minion;
 
                 if (minion.BaseSkinName.Contains("testcube"))
                 {
-                    ObjectTracker.ObjTracker.Add(obj.NetworkId, new ObjectTrackerInfo(obj, "hiu"));
-                    DelayAction.Add(250, () => ObjectTracker.ObjTracker.Remove(obj.NetworkId));
+                    ObjTracker.Add(obj.NetworkId, new ObjectTrackerInfo(obj, "hiu"));
+                    DelayAction.Add(250, () => ObjTracker.Remove(obj.NetworkId));
                 }
             }
         }
 
         private static void HiuDelete_ObjectTracker(GameObject obj, EventArgs args)
         {
-            if (ObjectTracker.ObjTracker.ContainsKey(obj.NetworkId))
+            if (ObjTracker.ContainsKey(obj.NetworkId))
             {
-                ObjectTracker.ObjTracker.Remove(obj.NetworkId);
+                ObjTracker.Remove(obj.NetworkId);
             }
         }
 
         public static Vector2 GetLastHiuOrientation()
         {
-            var objList = ObjectTracker.ObjTracker.Values.Where(o => o.Name == "hiu");
+            var objList = ObjTracker.Values.Where(o => o.Name == "hiu");
             var sortedObjList = objList.OrderByDescending(o => o.Timestamp);
 
             if (sortedObjList.Count() >= 2)

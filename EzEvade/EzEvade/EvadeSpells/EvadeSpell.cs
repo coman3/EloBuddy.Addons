@@ -8,6 +8,7 @@ using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EzEvade.Config;
 using EzEvade.Data;
+using EzEvade.Draw;
 using EzEvade.Helpers;
 using EzEvade.Utils;
 
@@ -147,10 +148,10 @@ namespace EzEvade.EvadeSpells
         {
             var sortedEvadeSpells = EvadeSpells.OrderBy(s => s.Dangerlevel);
 
-            var extraDelayBuffer = Config.Config.GetData<int>("ExtraPingBuffer");
-            float spellActivationTime = Config.Config.GetData<int>("SpellActivationTime") + Game.Ping + extraDelayBuffer;
+            var extraDelayBuffer = Properties.GetData<int>("ExtraPingBuffer");
+            float spellActivationTime = Properties.GetData<int>("SpellActivationTime") + Game.Ping + extraDelayBuffer;
 
-            if (Config.Config.GetData<bool>("CalculateWindupDelay"))
+            if (Properties.GetData<bool>("CalculateWindupDelay"))
             {
                 var extraWindupDelay = AdEvade.LastWindupTime - EvadeUtils.TickCount;
                 if (extraWindupDelay > 0)
@@ -163,7 +164,7 @@ namespace EzEvade.EvadeSpells
             {
                 var processSpell = true;
 
-                if (Config.Config.EvadeSpells[evadeSpell.Name].Use
+                if (Properties.EvadeSpells[evadeSpell.Name].Use
                     || GetSpellDangerLevel(evadeSpell) > spell.GetSpellDangerLevel()
                     || (!evadeSpell.IsItem && !(MyHero.Spellbook.CanUseSpell(evadeSpell.SpellKey) == SpellState.Ready))
                     || (evadeSpell.IsItem && !(Items.CanUseItem((int)evadeSpell.ItemId)))
@@ -181,7 +182,7 @@ namespace EzEvade.EvadeSpells
 
                 if (checkSpell)
                 {
-                    var mode = Config.Config.GetSpell(evadeSpell.Name).EvadeSpellMode;
+                    var mode = Properties.GetSpell(evadeSpell.Name).EvadeSpellMode;
 
                     switch (mode)
                     {
@@ -215,7 +216,7 @@ namespace EzEvade.EvadeSpells
                 }
 
                 if (evadeSpell.EvadeType != EvadeType.Dash && spellHitTime > evadeSpell.SpellDelay + 100 + Game.Ping +
-                    Config.Config.GetData<int>("ExtraPingBuffer"))
+                    Properties.GetData<int>("ExtraPingBuffer"))
                 {
                     processSpell = false;
 
@@ -359,7 +360,7 @@ namespace EzEvade.EvadeSpells
             if (AdEvade.LastPosInfo == null)
                 return false;
 
-            if (Config.Config.Keys["DodgeSkillShots"].CurrentValue)
+            if (Properties.Keys["DodgeSkillShots"].CurrentValue)
             {
                 if (AdEvade.LastPosInfo.UndodgeableSpells.Contains(spell.SpellId)
                 && GameData.HeroInfo.ServerPos2D.InSkillShot(spell, GameData.HeroInfo.BoundingRadius))
@@ -389,8 +390,7 @@ namespace EzEvade.EvadeSpells
 
         public static int GetSpellDangerLevel(EvadeSpellData spell)
         {
-            //TODO
-            return Config.Config.GetSpell(spell.Name).DangerLevel;
+            return Properties.GetSpell(spell.SpellName).DangerLevel;
         }
 
         private SpellSlot GetSummonerSlot(string spellName)
@@ -411,7 +411,7 @@ namespace EzEvade.EvadeSpells
         {
 
             foreach (var spell in EvadeSpellDatabase.Spells.Where(
-                s => (s.CharName == MyHero.ChampionName || s.CharName == "AllChampions")))
+                s => (s.CharName == MyHero.ChampionName || s.CharName == Constants.AllChampions)))
             {
 
                 if (spell.IsSummonerSpell)

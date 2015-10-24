@@ -4,6 +4,7 @@ using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EzEvade.Draw;
 using EzEvade.EvadeSpells;
 
 namespace EzEvade.Config
@@ -24,7 +25,7 @@ namespace EzEvade.Config
             Value = value;
         }
     }
-    public static class Config
+    public static class Properties
     {
         public delegate void ConfigValueChangedHandler(ConfigValueChangedArgs args);
         public static event ConfigValueChangedHandler OnConfigValueChanged;
@@ -55,6 +56,8 @@ namespace EzEvade.Config
             {
                 if(Data[key] is T)
                     return (T) Data[key];
+                else 
+                    Debug.DrawTopLeft("Tryed To Access key with wrong type: " + key);
             }
             return default(T);
         }

@@ -27,8 +27,8 @@ namespace EzEvade.Helpers
 
         public EvadeCommand()
         {
-            this.Timestamp = EvadeUtils.TickCount;
-            this.IsProcessed = false;
+            Timestamp = EvadeUtils.TickCount;
+            IsProcessed = false;
         }
 
         public static void MoveTo(Vector2 movePos)

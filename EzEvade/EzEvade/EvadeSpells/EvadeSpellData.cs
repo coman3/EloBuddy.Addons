@@ -70,11 +70,11 @@ namespace EzEvade.EvadeSpells
             int dangerlevel
             )
         {
-            this.CharName = charName;
-            this.Name = name;
-            this.SpellKey = spellKey;
-            this.EvadeType = evadeType;
-            this.Dangerlevel = dangerlevel;
+            CharName = charName;
+            Name = name;
+            SpellKey = spellKey;
+            EvadeType = evadeType;
+            Dangerlevel = dangerlevel;
         }
     }
 }
