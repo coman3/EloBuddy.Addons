@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
-using EzEvade.Data;
 using EzEvade.Helpers;
 using EzEvade.Utils;
 using SharpDX;
-using SpellData = EzEvade.Data.SpellData;
 
-namespace EzEvade
+namespace EzEvade.Data
 {
     public class Spell
     {
@@ -33,19 +30,16 @@ namespace EzEvade
         public Vector2 PredictedEndPos = Vector2.Zero;
 
         public float Radius = 0;
-        public int Dangerlevel = 1;
+        public SpellDangerLevel Dangerlevel = SpellDangerLevel.Low;
 
         public float EvadeTime = float.MinValue;
         public float SpellHitTime = float.MinValue;
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Name: " + Info.SpellName + " : " + Info.CharName + " : " + Info.MissileName);
-            sb.AppendLine("Danger Level: " + Dangerlevel);
-            sb.AppendLine("Raduis: " + Info.Radius + "   Range: " + Info.Range + "   Is Fixed Range: " + Info.FixedRange);
-            sb.AppendLine("----- Location Info -----");
-            sb.AppendLine("StartTime: " + StartTime + "  EndTime: " + EndTime);
-            sb.AppendLine("Start Position: " + StartPos + "  End Position: " + EndPos + "  Direction: " + Direction);
+            sb.Append("Name: " + Info.SpellName + " : " + Info.CharName + " : " + Info.MissileName);
+            sb.Append(" Danger Level: " + Dangerlevel);
+            sb.Append(" Raduis: " + Info.Radius + "   Range: " + Info.Range + "   Is Fixed Range: " + Info.FixedRange);
             return sb.ToString();
         }
     }
@@ -68,32 +62,22 @@ namespace EzEvade
                 return arcRadius;
             }
 
-            return (float)(radius + extraRadius);
+            return radius + extraRadius;
         }
 
-        public static int GetSpellDangerLevel(this Spell spell)
+        public static SpellDangerLevel GetSpellDangerLevel(this Spell spell)
         {
-
             return Config.Properties.GetSpell(spell.Info.SpellName).DangerLevel;
         }
 
         public static string GetSpellDangerString(this Spell spell)
         {
-            switch (spell.GetSpellDangerLevel())
-            {
-                case 1:
-                    return "Low";
-                case 3:
-                    return "High";
-                case 4:
-                    return "Extreme";
-                default:
-                    return "Normal";
-            }
+            return Enum.GetName(typeof(SpellDangerLevel), spell.GetSpellDangerLevel());
         }
 
         public static bool HasProjectile(this Spell spell)
         {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             return spell.Info.ProjectileSpeed > 0 && spell.Info.ProjectileSpeed != float.MaxValue;
         }
 
@@ -109,12 +93,10 @@ namespace EzEvade
 
                     return pos.ProjectOn(spellPos, spellEndPos).SegmentPoint;
                 }
-                else
-                {
-                    return pos.ProjectOn(spell.StartPos, spell.EndPos).SegmentPoint;
-                }
+                return pos.ProjectOn(spell.StartPos, spell.EndPos).SegmentPoint;
             }
-            else if (spell.SpellType == SpellType.Circular)
+
+            if (spell.SpellType == SpellType.Circular)
             {
                 return spell.EndPos;
             }

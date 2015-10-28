@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ezEvade.Draw;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EzEvade.Config;
+using EzEvade.Draw;
 using EzEvade.Utils;
 using SharpDX;
 using Color = System.Drawing.Color;
@@ -130,7 +130,7 @@ namespace EzEvade.Helpers
             float moveTime = 1000 * distance / MyHero.MoveSpeed;
             //Console.WriteLine("Extra Delay: " + moveTime);
 
-            if (!Properties.GetData<bool>("AutoSetPingOn"))
+            if (!Config.Properties.GetData<bool>("AutoSetPingOn"))
             {
                 return;
             }
@@ -155,7 +155,7 @@ namespace EzEvade.Helpers
 
         private void Hero_OnNewPath(Obj_AI_Base hero, GameObjectNewPathEventArgs args)
         {
-            if (!Properties.GetData<bool>("AutoSetPingOn"))
+            if (!Config.Properties.GetData<bool>("AutoSetPingOn"))
             {
                 return;
             }
@@ -231,17 +231,17 @@ namespace EzEvade.Helpers
 
                                 if (_maxExtraDelayTime == 0)
                                 {
-                                    _maxExtraDelayTime = Properties.GetData<int>("ExtraPingBuffer");
+                                    _maxExtraDelayTime = Config.Properties.GetData<int>("ExtraPingBuffer");
                                 }
 
                                 if (_numExtraDelayTime % 100 == 0)
                                 {
                                     _pingList.Sort();
 
-                                    var percentile = Properties.GetData<int>("AutoSetPercentile");
+                                    var percentile = Config.Properties.GetData<int>("AutoSetPercentile");
                                     int percentIndex = (int)Math.Floor(_pingList.Count() * (percentile / 100f)) - 1;
                                     _maxExtraDelayTime = Math.Max(_pingList.ElementAt(percentIndex) - Game.Ping,0);
-                                    Properties.SetData("ExtraPingBuffer", (int) _maxExtraDelayTime);
+                                    Config.Properties.SetData("ExtraPingBuffer", (int) _maxExtraDelayTime);
 
                                     _pingList.Clear();
 

@@ -22,7 +22,7 @@ namespace EzEvade.Data
     {
         public string CharName;
         public SpellSlot SpellKey = SpellSlot.Q;
-        public int Dangerlevel = 1;
+        public SpellDangerLevel Dangerlevel = SpellDangerLevel.Low;
         public string SpellName;
         public string Name;
         public float Range;
@@ -63,7 +63,7 @@ namespace EzEvade.Data
             string name,
             int range,
             int radius,
-            int dangerlevel,
+            SpellDangerLevel dangerlevel,
             SpellType spellType
             )
         {

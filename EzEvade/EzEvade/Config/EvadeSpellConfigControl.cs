@@ -17,8 +17,8 @@ namespace EzEvade.Config
         {
 
             UseSpellCheckBox = new DynamicCheckBox(ConfigDataType.EvadeSpell, spell.Name, "Use Spell", true, true, SpellConfigProperty.UseEvadeSpell);
-            DangerLevelSlider = new StringSlider(ConfigDataType.EvadeSpell, spell.Name, "Danger Level", spell.Dangerlevel - 1, SpellConfigProperty.DangerLevel, SpellConfigControl.DangerLevels);
-            SpellModeSlider = new StringSlider(ConfigDataType.EvadeSpell, spell.Name, "Spell Mode", EvadeSpell.GetDefaultSpellMode(spell), SpellConfigProperty.SpellMode, SpellModes);
+            DangerLevelSlider = new StringSlider(ConfigDataType.EvadeSpell, spell.Name, "Danger Level", (int) spell.Dangerlevel, SpellConfigProperty.DangerLevel, SpellConfigControl.DangerLevels);
+            SpellModeSlider = new StringSlider(ConfigDataType.EvadeSpell, spell.Name, "Spell Mode", (int)EvadeSpell.GetDefaultSpellMode(spell), SpellConfigProperty.SpellMode, SpellModes);
             menu.AddGroupLabel(menuName);
             menu.Add(spell.Name + "UseEvadeSpell", UseSpellCheckBox.CheckBox);
             menu.Add(spell.Name + "EvadeSpellDangerLevel", DangerLevelSlider.Slider.Slider);

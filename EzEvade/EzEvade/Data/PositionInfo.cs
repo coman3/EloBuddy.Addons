@@ -103,8 +103,8 @@ namespace EzEvade.Data
 
                 var spellDangerLevel = spell.Dangerlevel;
 
-                posDangerLevel = Math.Max(posDangerLevel, spellDangerLevel);
-                posDangerCount += spellDangerLevel;
+                posDangerLevel = Math.Max(posDangerLevel, (int) spellDangerLevel);
+                posDangerCount += (int)spellDangerLevel;
             }
 
             return new PositionInfo(

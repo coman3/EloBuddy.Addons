@@ -76,7 +76,7 @@ namespace EzEvade.Config
                 case ConfigDataType.EvadeSpell:
                     if (_isBasedOnSpell)
                     {
-                        var spell = Properties.EvadeSpells[_configKey];
+                        var spell = Properties.GetEvadeSpell(_configKey);
                         switch (_spellProperty)
                         {
                             case SpellConfigProperty.UseEvadeSpell:

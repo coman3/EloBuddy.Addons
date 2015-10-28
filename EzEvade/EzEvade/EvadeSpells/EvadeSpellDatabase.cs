@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EloBuddy;
+using EzEvade.Data;
 
 namespace EzEvade.EvadeSpells
 {
@@ -15,7 +16,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Ahri",
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "AhriTumble",
                 SpellName = "AhriTumble",
                 Range = 500,
@@ -34,7 +35,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Caitlyn",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "CaitlynEntrapment",
                 SpellName = "CaitlynEntrapment",
                 Range = 490,
@@ -55,7 +56,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Corki",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "CarpetBomb",
                 SpellName = "CarpetBomb",
                 Range = 790,
@@ -74,7 +75,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Ekko",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "PhaseDive",
                 SpellName = "EkkoE",
                 Range = 350,
@@ -90,7 +91,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Ekko",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "PhaseDive2",
                 SpellName = "EkkoEAttack",
                 Range = 490,
@@ -107,7 +108,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Ekko",
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "Chronobreak",
                 SpellName = "EkkoR",
                 Range = 20000,
@@ -126,7 +127,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Ezreal",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "ArcaneShift",
                 SpellName = "EzrealArcaneShift",
                 Range = 450,
@@ -144,7 +145,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Gragas",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "BodySlam",
                 SpellName = "GragasBodySlam",
                 Range = 600,
@@ -163,7 +164,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Gnar",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "GnarE",
                 SpellName = "GnarE",
                 Range = 475,
@@ -179,7 +180,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Gnar",
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "GnarE",
                 SpellName = "gnarbige",
                 Range = 475,
@@ -199,7 +200,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Graves",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "QuickDraw",
                 SpellName = "GravesMove",
                 Range = 425,
@@ -218,7 +219,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Kassadin",
-                Dangerlevel = 1,
+                Dangerlevel = SpellDangerLevel.Low,
                 Name = "RiftWalk",
                 Range = 450,
                 SpellDelay = 250,
@@ -235,7 +236,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Kayle",
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "Intervention",
                 SpellName = "JudicatorIntervention",
                 SpellDelay = 250,
@@ -253,7 +254,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Leblanc",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "Distortion",
                 SpellName = "LeblancSlide",
                 Range = 600,
@@ -268,7 +269,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Leblanc",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "DistortionR",
                 SpellName = "LeblancSlideM",
                 CheckSpellName = true,
@@ -288,7 +289,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "LeeSin",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "LeeSinW",
                 SpellName = "BlindMonkWOne",
                 Range = 700,
@@ -308,7 +309,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Lucian",
-                Dangerlevel = 1,
+                Dangerlevel = SpellDangerLevel.Low,
                 Name = "RelentlessPursuit",
                 SpellName = "LucianE",
                 Range = 425,
@@ -327,7 +328,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Morgana",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "BlackShield",
                 SpellName = "BlackShield",
                 SpellDelay = 50,
@@ -345,7 +346,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Nocturne",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "ShroudofDarkness",
                 SpellName = "NocturneShroudofDarkness",
                 SpellDelay = 50,
@@ -362,7 +363,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Fiora",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "FioraW",
                 SpellName = "FioraW",
                 Range = 750,
@@ -380,7 +381,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Fizz",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "FizzPiercingStrike",
                 SpellName = "FizzPiercingStrike",
                 Range = 550,
@@ -397,7 +398,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Fizz",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "FizzJump",
                 SpellName = "FizzJump",
                 Range = 400,
@@ -417,7 +418,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Riven",
-                Dangerlevel = 1,
+                Dangerlevel = SpellDangerLevel.Low,
                 Name = "BrokenWings",
                 SpellName = "RivenTriCleave",
                 Range = 260,
@@ -433,7 +434,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Riven",
-                Dangerlevel = 1,
+                Dangerlevel = SpellDangerLevel.Low,
                 Name = "Valor",
                 SpellName = "RivenFeint",
                 Range = 325,
@@ -453,7 +454,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Sivir",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "SivirE",
                 SpellName = "SivirE",
                 SpellDelay = 50,
@@ -470,7 +471,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Shaco",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "Deceive",
                 SpellName = "Deceive",
                 Range = 400,
@@ -484,7 +485,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 charName = "Shaco",
-                dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 name = "JackInTheBox",
                 spellName = "JackInTheBox",
                 range = 425,
@@ -502,7 +503,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Tristana",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "RocketJump",
                 SpellName = "RocketJump",
                 Range = 900,
@@ -521,7 +522,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Tryndamare",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "SpinningSlash",
                 SpellName = "Slash",
                 Range = 660,
@@ -540,7 +541,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Vayne",
-                Dangerlevel = 1,
+                Dangerlevel = SpellDangerLevel.Low,
                 Name = "Tumble",
                 SpellName = "VayneTumble",
                 Range = 300,
@@ -560,7 +561,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Yasuo",
-                Dangerlevel = 2,
+                Dangerlevel = SpellDangerLevel.Normal,
                 Name = "SweepingBlade",
                 SpellName = "YasuoDashWrapper",
                 Range = 475,
@@ -577,7 +578,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Yasuo",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "WindWall",
                 SpellName = "YasuoWMovingWall",
                 Range = 400,
@@ -595,7 +596,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "MasterYi",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "AlphaStrike",
                 SpellName = "AlphaStrike",
                 Range = 600,
@@ -615,7 +616,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Katarina",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "KatarinaE",
                 SpellName = "KatarinaE",
                 Range = 700,
@@ -635,7 +636,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = "Talon",
-                Dangerlevel = 3,
+                Dangerlevel = SpellDangerLevel.High,
                 Name = "Cutthroat",
                 SpellName = "TalonCutthroat",
                 Range = 700,
@@ -649,13 +650,31 @@ namespace EzEvade.EvadeSpells
 
             #endregion
 
+            #region Kindred
+            Spells.Add(
+            new EvadeSpellData
+            {
+                CharName = "Kindred",
+                Dangerlevel = SpellDangerLevel.Normal,
+                Name = "KindredQ",
+                SpellName = "KindredQ",
+                Range = 500,
+                FixedRange = true,
+                Speed = 900,
+                SpellDelay = 50,
+                SpellKey = SpellSlot.Q,
+                EvadeType = EvadeType.Dash,
+                CastType = CastType.Position,
+            });
+            #endregion
+
             #region Properties.Constants.AllChampions
 
             Spells.Add(
             new EvadeSpellData
             {
                 CharName = Config.Constants.AllChampions,
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "Flash",
                 SpellName = "summonerflash",
                 Range = 400,
@@ -671,7 +690,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = Config.Constants.AllChampions,
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "Hourglass",
                 SpellName = "ZhonyasHourglass",
                 SpellDelay = 50,
@@ -686,7 +705,7 @@ namespace EzEvade.EvadeSpells
             new EvadeSpellData
             {
                 CharName = Config.Constants.AllChampions,
-                Dangerlevel = 4,
+                Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "Witchcap",
                 SpellName = "Witchcap",
                 SpellDelay = 50,

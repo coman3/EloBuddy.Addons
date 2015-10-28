@@ -1,4 +1,7 @@
-﻿using EloBuddy;
+﻿using System.Runtime.Remoting.Messaging;
+using System.Text;
+using EloBuddy;
+using EzEvade.Data;
 
 namespace EzEvade.EvadeSpells
 {
@@ -37,7 +40,7 @@ namespace EzEvade.EvadeSpells
     {
         public string CharName;
         public SpellSlot SpellKey = SpellSlot.Q;
-        public int Dangerlevel = 1;
+        public SpellDangerLevel Dangerlevel = SpellDangerLevel.Low;
         public string SpellName;
         public string Name;
         public bool CheckSpellName = false;
@@ -67,7 +70,7 @@ namespace EzEvade.EvadeSpells
             string name,
             SpellSlot spellKey,
             EvadeType evadeType,
-            int dangerlevel
+            SpellDangerLevel dangerlevel
             )
         {
             CharName = charName;
@@ -75,6 +78,16 @@ namespace EzEvade.EvadeSpells
             SpellKey = spellKey;
             EvadeType = evadeType;
             Dangerlevel = dangerlevel;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("Name " + SpellName);
+            sb.Append(" DangerLevel: " + Dangerlevel);
+            sb.Append(" EvadeType: " + EvadeType);
+            sb.Append("Range: " + Range);
+            return sb.ToString();
         }
     }
 }

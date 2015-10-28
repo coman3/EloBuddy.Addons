@@ -5,6 +5,7 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu.Values;
 using EzEvade.Data;
 using SharpDX;
+using Spell = EzEvade.Data.Spell;
 
 namespace EzEvade.Helpers
 {
@@ -21,7 +22,7 @@ namespace EzEvade.Helpers
 
                 if (pos.InSkillShot(spell, GameData.HeroInfo.BoundingRadius + extraBuffer))
                 {
-                    dangerlevel += spell.Dangerlevel;
+                    dangerlevel += (int) spell.Dangerlevel;
                 }
             }
             return dangerlevel;
@@ -182,7 +183,7 @@ namespace EzEvade.Helpers
             {
                 Spell spell = entry.Value;
 
-                if (checkOnlyDangerous && spell.Dangerlevel < 3)
+                if (checkOnlyDangerous && (int) spell.Dangerlevel < (int)SpellDangerLevel.High)
                 {
                     continue;
                 }

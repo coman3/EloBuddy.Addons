@@ -25,7 +25,7 @@ namespace EzEvade.Config
             DodgeCheckBox = new DynamicCheckBox(ConfigDataType.Spells, spell.SpellName, "Dodge", enableSpell, true, SpellConfigProperty.Dodge);
             DrawCheckBox = new DynamicCheckBox(ConfigDataType.Spells, spell.SpellName, "Draw", enableSpell, true, SpellConfigProperty.Draw);
             SpellRadiusSlider = new DynamicSlider(ConfigDataType.Spells, spell.SpellName, "Radius", (int)spell.Radius, (int)spell.Radius - 100, (int)spell.Radius + 100, true, SpellConfigProperty.Radius);
-            DangerLevelSlider = new StringSlider(ConfigDataType.Spells, spell.SpellName, "Danger Level", spell.Dangerlevel - 1,SpellConfigProperty.DangerLevel, DangerLevels);
+            DangerLevelSlider = new StringSlider(ConfigDataType.Spells, spell.SpellName, "Danger Level", (int) spell.Dangerlevel,SpellConfigProperty.DangerLevel, DangerLevels);
         }
 
         public void AddToMenu()

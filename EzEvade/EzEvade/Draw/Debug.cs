@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using ezEvade.Draw;
 using EloBuddy;
 using Menu = EloBuddy.SDK.Menu.Menu;
 
@@ -49,6 +48,15 @@ namespace EzEvade.Draw
 
         private static Form debugForm;
         private static float lastTickTime;
+
+        public static bool DebugBool(this bool value, string key = "")
+        {
+            if(key == "")
+                DrawTopLeft(value);
+            else
+                DrawTopLeft(key + " : " + value);
+            return value;
+        }
         public static void ShowValueForm()
         {
             if (debugForm == null || debugForm.IsDisposed)
@@ -75,6 +83,10 @@ namespace EzEvade.Draw
                         foreach (var o in Config.Properties.Keys)
                         {
                             list.Items.Add("Keys: " + o.Key + " : " + o.Value.CurrentValue);
+                        }
+                        foreach (var evadeSpell in Config.Properties.EvadeSpells)
+                        {
+                            list.Items.Add("EvadeSpell: " + evadeSpell.Key + " : " + evadeSpell.Value);
                         }
                         lastTickTime = Game.Time;
                     }

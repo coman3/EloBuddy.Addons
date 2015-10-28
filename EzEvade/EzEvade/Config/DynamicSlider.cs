@@ -1,5 +1,6 @@
 ﻿using System;
 using EloBuddy.SDK.Menu.Values;
+using EzEvade.Data;
 
 namespace EzEvade.Config
 {
@@ -70,10 +71,10 @@ namespace EzEvade.Config
                                 spell.Radius = sender.CurrentValue;
                                 break;
                             case SpellConfigProperty.DangerLevel:
-                                spell.DangerLevel = Convert.ToInt16(sender.CurrentValue);
+                                spell.DangerLevel = (SpellDangerLevel) sender.CurrentValue;
                                 break;
                             case SpellConfigProperty.SpellMode:
-                                spell.EvadeSpellMode = sender.CurrentValue;
+                                spell.EvadeSpellMode = (SpellModes) sender.CurrentValue;
                                 break;
                             default:
                                 return;
@@ -84,14 +85,14 @@ namespace EzEvade.Config
                 case ConfigDataType.EvadeSpell:
                     if (_isBasedOnSpell)
                     {
-                        var spell = Properties.EvadeSpells[_configKey];
+                        var spell = Properties.GetEvadeSpell(_configKey);
                         switch (_spellProperty)
                         {
                             case SpellConfigProperty.DangerLevel:
-                                spell.DangerLevel = Convert.ToInt16(sender.CurrentValue);
+                                spell.DangerLevel = (SpellDangerLevel) sender.CurrentValue;
                                 break;
                             case SpellConfigProperty.SpellMode:
-                                spell.SpellMode = sender.CurrentValue;
+                                spell.SpellMode = (SpellModes) sender.CurrentValue;
                                 break;
                             default:
                                 return;

@@ -11,6 +11,7 @@ using EzEvade.Data;
 using EzEvade.Draw;
 using EzEvade.Helpers;
 using EzEvade.Utils;
+using Spell = EzEvade.Data.Spell;
 
 namespace EzEvade.EvadeSpells
 {
@@ -83,14 +84,14 @@ namespace EzEvade.EvadeSpells
             return evadeSpellConfig.GetMenu();
         }
 
-        public static int GetDefaultSpellMode(EvadeSpellData spell)
+        public static SpellModes GetDefaultSpellMode(EvadeSpellData spell)
         {
-            if (spell.Dangerlevel > 3)
+            if ((int)spell.Dangerlevel > (int)SpellDangerLevel.High)
             {
-                return 0;
+                return SpellModes.Undodgeable;
             }
 
-            return 1;
+            return SpellModes.ActivationTime;
         }
 
         public static bool PreferEvadeSpell()
@@ -148,10 +149,10 @@ namespace EzEvade.EvadeSpells
         {
             var sortedEvadeSpells = EvadeSpells.OrderBy(s => s.Dangerlevel);
 
-            var extraDelayBuffer = Properties.GetData<int>("ExtraPingBuffer");
-            float spellActivationTime = Properties.GetData<int>("SpellActivationTime") + Game.Ping + extraDelayBuffer;
+            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
+            float spellActivationTime = Config.Properties.GetData<int>("SpellActivationTime") + Game.Ping + extraDelayBuffer;
 
-            if (Properties.GetData<bool>("CalculateWindupDelay"))
+            if (Config.Properties.GetData<bool>("CalculateWindupDelay"))
             {
                 var extraWindupDelay = AdEvade.LastWindupTime - EvadeUtils.TickCount;
                 if (extraWindupDelay > 0)
@@ -163,32 +164,31 @@ namespace EzEvade.EvadeSpells
             foreach (var evadeSpell in sortedEvadeSpells)
             {
                 var processSpell = true;
-
-                if (Properties.EvadeSpells[evadeSpell.Name].Use
-                    || GetSpellDangerLevel(evadeSpell) > spell.GetSpellDangerLevel()
-                    || (!evadeSpell.IsItem && !(MyHero.Spellbook.CanUseSpell(evadeSpell.SpellKey) == SpellState.Ready))
-                    || (evadeSpell.IsItem && !(Items.CanUseItem((int)evadeSpell.ItemId)))
-                    || (evadeSpell.CheckSpellName && MyHero.Spellbook.GetSpell(evadeSpell.SpellKey).Name != evadeSpell.SpellName))
-           
+                if (!Config.Properties.GetEvadeSpell(evadeSpell.Name).Use ||
+                    ((int) GetSpellDangerLevel(evadeSpell) > (int) spell.GetSpellDangerLevel()) ||
+                    (!evadeSpell.IsItem && MyHero.Spellbook.CanUseSpell(evadeSpell.SpellKey) != SpellState.Ready)||
+                    (evadeSpell.IsItem && !(Items.CanUseItem((int) evadeSpell.ItemId))) ||
+                    (evadeSpell.CheckSpellName &&
+                     MyHero.Spellbook.GetSpell(evadeSpell.SpellKey).Name != evadeSpell.SpellName))
                 {
                     continue; //can't use spell right now               
                 }
 
 
-                float evadeTime, spellHitTime = 0;
+                float evadeTime, spellHitTime;
                 spell.CanHeroEvade(MyHero, out evadeTime, out spellHitTime);
 
                 float finalEvadeTime = (spellHitTime - evadeTime);
 
                 if (checkSpell)
                 {
-                    var mode = Properties.GetSpell(evadeSpell.Name).EvadeSpellMode;
+                    var mode = Config.Properties.GetEvadeSpell(evadeSpell.Name).SpellMode;
 
                     switch (mode)
                     {
-                        case 0:
+                        case SpellModes.Undodgeable:
                             continue;
-                        case 1:
+                        case SpellModes.ActivationTime:
                             if (spellActivationTime < finalEvadeTime)
                             {
                                 continue;
@@ -207,7 +207,7 @@ namespace EzEvade.EvadeSpells
                             var movePos = path[path.Length - 1].To2D();
                             var posInfo = EvadeHelper.CanHeroWalkToPos(movePos, GameData.HeroInfo.MoveSpeed, 0, 0);
 
-                            if (GetSpellDangerLevel(evadeSpell) > posInfo.PosDangerLevel)
+                            if ((int) GetSpellDangerLevel(evadeSpell) > (int) posInfo.PosDangerLevel)
                             {
                                 continue;
                             }
@@ -216,7 +216,7 @@ namespace EzEvade.EvadeSpells
                 }
 
                 if (evadeSpell.EvadeType != EvadeType.Dash && spellHitTime > evadeSpell.SpellDelay + 100 + Game.Ping +
-                    Properties.GetData<int>("ExtraPingBuffer"))
+                    Config.Properties.GetData<int>("ExtraPingBuffer"))
                 {
                     processSpell = false;
 
@@ -226,19 +226,15 @@ namespace EzEvade.EvadeSpells
                     }
                 }
 
-                if (evadeSpell.IsSpecial == true)
+                if (evadeSpell.IsSpecial)
                 {
                     if (evadeSpell.UseSpellFunc != null)
-                    {
                         if (evadeSpell.UseSpellFunc(evadeSpell, processSpell))
-                        {
                             return true;
-                        }
-                    }
-
                     continue;
                 }
-                else if (evadeSpell.EvadeType == EvadeType.Blink)
+
+                if (evadeSpell.EvadeType == EvadeType.Blink)
                 {
                     if (evadeSpell.CastType == CastType.Position)
                     {
@@ -295,7 +291,7 @@ namespace EzEvade.EvadeSpells
                 }
                 else if (evadeSpell.EvadeType == EvadeType.WindWall)
                 {
-                    if (spell.HasProjectile() || evadeSpell.SpellName == "FioraW") //temp fix, don't have fiora :'(
+                    if (spell.HasProjectile() || evadeSpell.SpellName == "FioraW") //TODO: temp fix, don't have fiora :'(
                     {
                         var dir = (spell.StartPos - GameData.HeroInfo.ServerPos2D).Normalized();
                         var pos = GameData.HeroInfo.ServerPos2D + dir * 100;
@@ -360,7 +356,7 @@ namespace EzEvade.EvadeSpells
             if (AdEvade.LastPosInfo == null)
                 return false;
 
-            if (Properties.Keys["DodgeSkillShots"].CurrentValue)
+            if (Config.Properties.Keys["DodgeSkillShots"].CurrentValue)
             {
                 if (AdEvade.LastPosInfo.UndodgeableSpells.Contains(spell.SpellId)
                 && GameData.HeroInfo.ServerPos2D.InSkillShot(spell, GameData.HeroInfo.BoundingRadius))
@@ -388,9 +384,9 @@ namespace EzEvade.EvadeSpells
             return false;
         }
 
-        public static int GetSpellDangerLevel(EvadeSpellData spell)
+        public static SpellDangerLevel GetSpellDangerLevel(EvadeSpellData spell)
         {
-            return Properties.GetSpell(spell.SpellName).DangerLevel;
+            return Config.Properties.GetEvadeSpell(spell.Name).DangerLevel;
         }
 
         private SpellSlot GetSummonerSlot(string spellName)

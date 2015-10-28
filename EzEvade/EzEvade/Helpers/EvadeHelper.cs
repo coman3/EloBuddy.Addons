@@ -8,6 +8,7 @@ using EzEvade.Data;
 using EzEvade.EvadeSpells;
 using EzEvade.Utils;
 using SharpDX;
+using Spell = EzEvade.Data.Spell;
 
 namespace EzEvade.Helpers
 {
@@ -496,7 +497,7 @@ namespace EzEvade.Helpers
             }*/
 
             var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
-            var extraEvadeDistance = 100;// Evade.menu.SubMenu("MiscSettings").SubMenu("ExtraBuffers").Item("ExtraEvadeDistance");
+            //var extraEvadeDistance = 100;// Evade.menu.SubMenu("MiscSettings").SubMenu("ExtraBuffers").Item("ExtraEvadeDistance");
             var extraDist = Config.Properties.GetData<int>("ExtraCPADistance");
 
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2DPing;
@@ -505,13 +506,13 @@ namespace EzEvade.Helpers
             List<PositionInfo> posTable = new List<PositionInfo>();
             List<int> spellList = SpellDetector.GetSpellList();
 
-            int minDistance = 50; //Math.Min(spell.range, minDistance)
-            int maxDistance = int.MaxValue;
+            //int minDistance = 50; //Math.Min(spell.range, minDistance)
+            //int maxDistance = int.MaxValue;
 
-            if (spell.FixedRange)
-            {
-                minDistance = maxDistance = (int)spell.Range;
-            }
+            //if (spell.FixedRange)
+            //{
+            //    minDistance = maxDistance = (int)spell.Range;
+            //}
 
             List<Obj_AI_Base> collisionCandidates = new List<Obj_AI_Base>();
 
@@ -819,7 +820,8 @@ namespace EzEvade.Helpers
             foreach (Spell spell in SpellDetector.Spells.Values)
             {
                 var intersectDist = GetIntersectDistance(spell, heroPoint, movePos);
-                sumIntersectDist += intersectDist * spell.Dangerlevel;
+                sumIntersectDist += intersectDist * ((int)spell.Dangerlevel + 1);
+                //TODO: Check
             }
 
             return sumIntersectDist;
@@ -834,7 +836,7 @@ namespace EzEvade.Helpers
             Vector2 walkDir = (end - start);
             Vector3 walkDir3D = new Vector3(walkDir.X, walkDir.Y, 0);
 
-            Ray heroPath = new Ray(start3D, walkDir3D);
+            var heroPath = new Ray(start3D, walkDir3D);
 
             if (spell.SpellType == SpellType.Line)
             {
@@ -895,8 +897,8 @@ namespace EzEvade.Helpers
                     || PredictSpellCollision(spell, pos, speed, delay, heroPos, extraDist, useServerPosition)
                     || (spell.Info.SpellType != SpellType.Line && pos.IsNearEnemy(minComfortDistance)))
                 {
-                    posDangerLevel = Math.Max(posDangerLevel, spell.Dangerlevel);
-                    posDangerCount += spell.Dangerlevel;
+                    posDangerLevel = Math.Max(posDangerLevel, (int)spell.Dangerlevel);
+                    posDangerCount += (int)spell.Dangerlevel;
                     undodgeableSpells.Add(spell.SpellId);
                 }
                 else

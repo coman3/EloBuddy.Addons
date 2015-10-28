@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Color = System.Drawing.Color;
-
-using EloBuddy;
+﻿using EloBuddy;
 using EloBuddy.SDK;
-using EzEvade;
 using EzEvade.Utils;
 using SharpDX;
+using Color = System.Drawing.Color;
 
-namespace ezEvade.Draw
+namespace EzEvade.Draw
 {
     class RenderLine : RenderObject
     {

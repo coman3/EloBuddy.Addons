@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Drawing;
 using EloBuddy;
+using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EzEvade.Draw;
+using EzEvade.Properties;
 using SharpDX;
+using SharpDX.Direct3D9;
 using Color = System.Drawing.Color;
+using Rectangle = SharpDX.Rectangle;
+using Sprite = EloBuddy.SDK.Rendering.Sprite;
+
 namespace EzEvade.Config
 {
     public class ColorConfig
@@ -12,7 +20,6 @@ namespace EzEvade.Config
         public Slider BlueSlider { get; set; }
         public Slider GreenSlider { get; set; }
 
-        private static bool _hasSavedValues = false;
         public string Id { get; private set; }
         private static Menu Menu;
         public ColorConfig(Menu menu, string id, Color color)

@@ -82,6 +82,7 @@ namespace EzEvade.Helpers
                 || CommonChecks()
                 )
             {
+                //TODO: ADD CHECKS FFOR BELOW
                 //has spellshield - sivir, noc, morgana
                 //vlad pool
                 //tryndamere r?
