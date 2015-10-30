@@ -68,49 +68,49 @@
     <Compile Include="Config\EvadeSpellConfigControl.cs" />
     <Compile Include="Config\SpellConfigControl.cs" />
     <Compile Include="Config\StringSlider.cs" />
-    <Compile Include="Data\ChampionPlugin.cs" />
+    <Compile Include="Data\Spells\ChampionPlugin.cs" />
     <Compile Include="Data\GameData.cs" />
     <Compile Include="Data\ObjectTracker.cs" />
     <Compile Include="Data\PositionInfo.cs" />
-    <Compile Include="Data\SpecialSpells\AllChampions.cs" />
-    <Compile Include="Data\SpecialSpells\Ashe.cs" />
-    <Compile Include="Data\SpecialSpells\Ekko.cs" />
-    <Compile Include="Data\SpecialSpells\Fizz.cs" />
-    <Compile Include="Data\SpecialSpells\JarvanIV.cs" />
-    <Compile Include="Data\SpecialSpells\Jayce.cs" />
-    <Compile Include="Data\SpecialSpells\Lucian.cs" />
-    <Compile Include="Data\SpecialSpells\Lulu.cs" />
-    <Compile Include="Data\SpecialSpells\Lux.cs" />
-    <Compile Include="Data\SpecialSpells\Malzahar.cs" />
-    <Compile Include="Data\SpecialSpells\Orianna.cs" />
-    <Compile Include="Data\SpecialSpells\Sion.cs" />
-    <Compile Include="Data\SpecialSpells\Syndra.cs" />
-    <Compile Include="Data\SpecialSpells\Viktor.cs" />
-    <Compile Include="Data\SpecialSpells\Xerath.cs" />
-    <Compile Include="Data\SpecialSpells\Yasuo.cs" />
-    <Compile Include="Data\SpecialSpells\Zed.cs" />
-    <Compile Include="Data\SpecialSpells\Ziggs.cs" />
-    <Compile Include="Data\SpellDangerLevel.cs" />
-    <Compile Include="Data\SpellData.cs" />
-    <Compile Include="Data\SpellDatabase.cs" />
-    <Compile Include="Data\SpellModes.cs" />
-    <Compile Include="Data\SpellWindupDatabase.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\AllChampions.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Ashe.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Ekko.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Fizz.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\JarvanIV.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Jayce.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Lucian.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Lulu.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Lux.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Malzahar.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Orianna.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Sion.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Syndra.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Viktor.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Xerath.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Yasuo.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Zed.cs" />
+    <Compile Include="Data\Spells\SpecialSpells\Ziggs.cs" />
+    <Compile Include="Data\Spells\SpellDangerLevel.cs" />
+    <Compile Include="Data\Spells\SpellData.cs" />
+    <Compile Include="Data\Spells\SpellDatabase.cs" />
+    <Compile Include="Data\Spells\SpellModes.cs" />
+    <Compile Include="Data\Spells\SpellWindupDatabase.cs" />
     <Compile Include="Draw\Debug.cs" />
     <Compile Include="Draw\RenderCircle.cs" />
     <Compile Include="Draw\RenderLine.cs" />
     <Compile Include="Draw\RenderObject.cs" />
     <Compile Include="Draw\RenderText.cs" />
     <Compile Include="Draw\SpellDrawer.cs" />
-    <Compile Include="EvadeSpells\EvadeSpell.cs" />
-    <Compile Include="EvadeSpells\EvadeSpellData.cs" />
-    <Compile Include="EvadeSpells\EvadeSpellDatabase.cs" />
-    <Compile Include="EvadeSpells\SpecialEvadeSpell.cs" />
+    <Compile Include="Data\EvadeSpells\EvadeSpell.cs" />
+    <Compile Include="Data\EvadeSpells\EvadeSpellData.cs" />
+    <Compile Include="Data\EvadeSpells\EvadeSpellDatabase.cs" />
+    <Compile Include="Data\EvadeSpells\SpecialEvadeSpell.cs" />
     <Compile Include="Helpers\AutoSetPing.cs" />
     <Compile Include="Helpers\EvadeCommand.cs" />
     <Compile Include="Helpers\EvadeHelper.cs" />
     <Compile Include="Helpers\Position.cs" />
     <Compile Include="Helpers\Situation.cs" />
-    <Compile Include="Data\Items.cs" />
+    <Compile Include="Data\EvadeSpells\Items.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -119,7 +119,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Render.cs" />
-    <Compile Include="Data\Spell.cs" />
+    <Compile Include="Data\Spells\Spell.cs" />
     <Compile Include="SpellDetector.cs" />
     <Compile Include="Testing\SpellTester.cs" />
     <Compile Include="Utils\DelayAction.cs" />
@@ -137,6 +137,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

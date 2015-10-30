@@ -1,4 +1,5 @@
 ﻿using System;
+using AdEvade.Draw;
 using EloBuddy.SDK.Menu.Values;
 
 namespace AdEvade.Config
@@ -31,6 +32,8 @@ namespace AdEvade.Config
             SpellConfigProperty property)
         {
             CheckBox = new CheckBox(displayName, defaultValue);
+            _spellProperty = property;
+            _isBasedOnSpell = isBasedOnSpell;
             switch (_type)
             {
                 case ConfigDataType.Data:
@@ -52,6 +55,7 @@ namespace AdEvade.Config
 
         private void CheckBox_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
+            Debug.DrawTopLeft(_type + ": " +  _spellProperty + ": " + _configKey + ": " + "Value Changed To " + sender.CurrentValue);
             switch (_type)
             {
                 case ConfigDataType.Data:

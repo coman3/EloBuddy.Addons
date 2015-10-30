@@ -1,5 +1,7 @@
 ﻿using System;
 using AdEvade.Data;
+using AdEvade.Data.Spells;
+using AdEvade.Draw;
 using EloBuddy.SDK.Menu.Values;
 
 namespace AdEvade.Config
@@ -34,6 +36,8 @@ namespace AdEvade.Config
         public void DynamicSliderInit(string displayName, int defaultValue,
             int minValue, int maxValue, bool isBasedOnSpell, SpellConfigProperty property)
         {
+            _spellProperty = property;
+            _isBasedOnSpell = isBasedOnSpell;
             Slider = new Slider(displayName, defaultValue, minValue, maxValue);
             switch (_type)
             {
@@ -56,6 +60,7 @@ namespace AdEvade.Config
 
         private void Slider_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
         {
+            Debug.DrawTopLeft(_type + ": " + _spellProperty + ": " + _configKey + ": " + "Value Changed To " + sender.CurrentValue);
             switch (_type)
             {
                 case ConfigDataType.Data:

@@ -1,4 +1,5 @@
 ﻿using AdEvade.Data;
+using AdEvade.Data.Spells;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 

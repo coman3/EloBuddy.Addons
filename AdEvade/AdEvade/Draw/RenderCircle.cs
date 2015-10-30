@@ -5,7 +5,7 @@ using Color = System.Drawing.Color;
 
 namespace AdEvade.Draw
 {
-    class RenderCircle : RenderObject
+    internal class RenderCircle : RenderObject
     {
         public Vector2 RenderPosition = new Vector2(0, 0);
 
@@ -37,7 +37,7 @@ namespace AdEvade.Draw
             Width = width;
         }
 
-        override public void Draw()
+        public override void Draw()
         {
             if (RenderPosition.IsOnScreen())
             {

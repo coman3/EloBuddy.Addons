@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using AdEvade.Config;
 using AdEvade.Data;
+using AdEvade.Data.Spells;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Spell = AdEvade.Data.Spell;
+using Spell = AdEvade.Data.Spells.Spell;
 
 namespace AdEvade.Draw
 {
@@ -168,9 +169,9 @@ namespace AdEvade.Draw
                 return;
             }
 
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.DrawSpells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.DrawSpells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 var dangerStr = spell.GetSpellDangerString();
                 //var spellDrawingConfig = ObjectCache.menuCache.cache[dangerStr + "Color"].GetValue<Circle>();

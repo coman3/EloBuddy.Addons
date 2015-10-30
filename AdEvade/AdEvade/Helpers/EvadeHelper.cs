@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdEvade.Data;
-using AdEvade.EvadeSpells;
+using AdEvade.Data.EvadeSpells;
+using AdEvade.Data.Spells;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
-using Spell = AdEvade.Data.Spell;
+using Spell = AdEvade.Data.Spells.Spell;
 
 namespace AdEvade.Helpers
 {
@@ -16,12 +17,12 @@ namespace AdEvade.Helpers
     {
         private static AIHeroClient MyHero { get { return ObjectManager.Player; } }
 
-        public static bool PlayerInSkillShot(Data.Spell spell)
+        public static bool PlayerInSkillShot(Spell spell)
         {
             return GameData.HeroInfo.ServerPos2D.InSkillShot(spell, GameData.HeroInfo.BoundingRadius);
         }
 
-        public static PositionInfo InitPositionInfo(Vector2 pos, float extraDelayBuffer, float extraEvadeDistance, Vector2 lastMovePos, Data.Spell lowestEvadeTimeSpell) //clean this shit up
+        public static PositionInfo InitPositionInfo(Vector2 pos, float extraDelayBuffer, float extraEvadeDistance, Vector2 lastMovePos, Spell lowestEvadeTimeSpell) //clean this shit up
         {
             if (!GameData.HeroInfo.IsMoving &&
                  GameData.HeroInfo.ServerPos2D.Distance(pos) <= 75)
@@ -81,7 +82,7 @@ namespace AdEvade.Helpers
 
             List<Vector2> fastestPositions = GetFastestPositions();
 
-            Data.Spell lowestEvadeTimeSpell;
+            Spell lowestEvadeTimeSpell;
             var lowestEvadeTime = SpellDetector.GetLowestEvadeTime(out lowestEvadeTimeSpell);
 
             foreach (var pos in fastestPositions) //add the fastest positions into list of candidates
@@ -169,7 +170,7 @@ namespace AdEvade.Helpers
 
             List<PositionInfo> posTable = new List<PositionInfo>();
 
-            Data.Spell lowestEvadeTimeSpell;
+            Spell lowestEvadeTimeSpell;
             var lowestEvadeTime = SpellDetector.GetLowestEvadeTime(out lowestEvadeTimeSpell);
 
             List<Vector2> fastestPositions = GetFastestPositions();
@@ -667,9 +668,9 @@ namespace AdEvade.Helpers
 
         public static bool CheckWindupTime(float windupTime)
         {
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 var hitTime = spell.GetSpellHitTime(GameData.HeroInfo.ServerPos2D);
                 if (hitTime < windupTime)
@@ -685,9 +686,9 @@ namespace AdEvade.Helpers
         {
             float value = 0;// pos.Distance(movePos);
 
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
                 var spellPos = spell.GetCurrentSpellPosition(true, Game.Ping);
                 var extraDist = 100 + spell.Radius;
 
@@ -742,9 +743,9 @@ namespace AdEvade.Helpers
 
         public static void CalculateEvadeTime()
         {
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
                 float evadeTime, spellHitTime;
                 spell.CanHeroEvade(MyHero, out evadeTime, out spellHitTime);
 
@@ -753,7 +754,7 @@ namespace AdEvade.Helpers
             }
         }
 
-        public static Vector2 GetFastestPosition(Data.Spell spell)
+        public static Vector2 GetFastestPosition(Spell spell)
         {
             var heroPos = GameData.HeroInfo.ServerPos2D;
 
@@ -774,9 +775,9 @@ namespace AdEvade.Helpers
         {
             List<Vector2> positions = new List<Vector2>();
 
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
                 var pos = GetFastestPosition(spell);
 
 
@@ -790,7 +791,7 @@ namespace AdEvade.Helpers
             return positions;
         }
 
-        public static float CompareFastestPosition(Data.Spell spell, Vector2 start, Vector2 movePos)
+        public static float CompareFastestPosition(Spell spell, Vector2 start, Vector2 movePos)
         {
             var fastestPos = GetFastestPosition(spell);
             var moveDir = (movePos - start).Normalized();
@@ -804,7 +805,7 @@ namespace AdEvade.Helpers
             float minDist = float.MaxValue;
             var heroPoint = GameData.HeroInfo.ServerPos2D;
 
-            foreach (Data.Spell spell in SpellDetector.Spells.Values)
+            foreach (Spell spell in SpellDetector.Spells.Values)
             {
                 minDist = Math.Min(minDist, GetClosestDistanceApproach(spell, movePos, GameData.HeroInfo.MoveSpeed, Game.Ping, GameData.HeroInfo.ServerPos2DPing, 0));
             }
@@ -817,7 +818,7 @@ namespace AdEvade.Helpers
             var heroPoint = GameData.HeroInfo.ServerPos2D;
             float sumIntersectDist = 0;
 
-            foreach (Data.Spell spell in SpellDetector.Spells.Values)
+            foreach (Spell spell in SpellDetector.Spells.Values)
             {
                 var intersectDist = GetIntersectDistance(spell, heroPoint, movePos);
                 sumIntersectDist += intersectDist * ((int)spell.Dangerlevel + 1);
@@ -827,7 +828,7 @@ namespace AdEvade.Helpers
             return sumIntersectDist;
         }
 
-        public static float GetIntersectDistance(Data.Spell spell, Vector2 start, Vector2 end)
+        public static float GetIntersectDistance(Spell spell, Vector2 start, Vector2 end)
         {
             if (spell == null)
                 return float.MaxValue;
@@ -885,9 +886,9 @@ namespace AdEvade.Helpers
                 heroPos = MyHero.Position.To2D();
             }
 
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 closestDistance = Math.Min(closestDistance, GetClosestDistanceApproach(spell, pos, speed, delay, heroPos, extraDist));
                 //GetIntersectTime(spell, GameData.HeroInfo.serverPos2D, pos);
@@ -917,7 +918,7 @@ namespace AdEvade.Helpers
                 undodgeableSpells);
         }
 
-        public static float GetClosestDistanceApproach(Data.Spell spell, Vector2 pos, float speed, float delay, Vector2 heroPos, float extraDist)
+        public static float GetClosestDistanceApproach(Spell spell, Vector2 pos, float speed, float delay, Vector2 heroPos, float extraDist)
         {
             var walkDir = (pos - heroPos).Normalized();
 
@@ -1056,7 +1057,7 @@ namespace AdEvade.Helpers
             return 1;
         }
 
-        public static bool PredictSpellCollision(Data.Spell spell, Vector2 pos, float speed, float delay, Vector2 heroPos, float extraDist, bool useServerPosition = true)
+        public static bool PredictSpellCollision(Spell spell, Vector2 pos, float speed, float delay, Vector2 heroPos, float extraDist, bool useServerPosition = true)
         {
             extraDist = extraDist + 10;
 
@@ -1173,9 +1174,9 @@ namespace AdEvade.Helpers
             var dir = (movePos - from).Normalized();
             //movePos = movePos.ExtendDir(dir, GameData.HeroInfo.boundingRadius);
 
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 if (!from.InSkillShot(spell, GameData.HeroInfo.BoundingRadius))
                 {

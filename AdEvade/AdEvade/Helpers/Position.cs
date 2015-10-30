@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdEvade.Data;
+using AdEvade.Data.Spells;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
-using Spell = AdEvade.Data.Spell;
+using Spell = AdEvade.Data.Spells.Spell;
 
 namespace AdEvade.Helpers
 {
@@ -16,9 +17,9 @@ namespace AdEvade.Helpers
         public static int CheckPosDangerLevel(this Vector2 pos, float extraBuffer)
         {
             var dangerlevel = 0;
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 if (pos.InSkillShot(spell, GameData.HeroInfo.BoundingRadius + extraBuffer))
                 {
@@ -28,7 +29,7 @@ namespace AdEvade.Helpers
             return dangerlevel;
         }
 
-        public static bool InSkillShot(this Vector2 position, Data.Spell spell, float radius, bool predictCollision = true)
+        public static bool InSkillShot(this Vector2 position, Spell spell, float radius, bool predictCollision = true)
         {
             if (spell.SpellType == SpellType.Line)
             {
@@ -133,9 +134,9 @@ namespace AdEvade.Helpers
 
         public static bool HasExtraAvoidDistance(this Vector2 pos, float extraBuffer)
         {
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 if (spell.SpellType == SpellType.Line)
                 {
@@ -179,9 +180,9 @@ namespace AdEvade.Helpers
 
         public static bool CheckDangerousPos(this Vector2 pos, float extraBuffer, bool checkOnlyDangerous = false)
         {
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 if (checkOnlyDangerous && (int) spell.Dangerlevel < (int)SpellDangerLevel.High)
                 {

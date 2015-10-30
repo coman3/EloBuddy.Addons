@@ -1,4 +1,4 @@
-﻿using AdEvade.EvadeSpells;
+﻿using AdEvade.Data.EvadeSpells;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;

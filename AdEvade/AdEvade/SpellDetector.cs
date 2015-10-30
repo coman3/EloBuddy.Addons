@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using AdEvade.Config;
 using AdEvade.Data;
+using AdEvade.Data.Spells;
+using AdEvade.Data.Spells.SpecialSpells;
 using AdEvade.Draw;
 using AdEvade.Testing;
 using AdEvade.Utils;
@@ -15,8 +17,8 @@ using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 
-using Spell = AdEvade.Data.Spell;
-using SpellData = AdEvade.Data.SpellData;
+using Spell = AdEvade.Data.Spells.Spell;
+using SpellData = AdEvade.Data.Spells.SpellData;
 
 namespace AdEvade
 {
@@ -27,30 +29,30 @@ namespace AdEvade
 
     public class SpellDetector
     {
-        public delegate void OnCreateSpellHandler(Data.Spell spell);
+        public delegate void OnCreateSpellHandler(Spell spell);
         public static event OnCreateSpellHandler OnCreateSpell;
 
         public delegate void OnProcessDetectedSpellsHandler();
         public static event OnProcessDetectedSpellsHandler OnProcessDetectedSpells;
 
         public delegate void OnProcessSpecialSpellHandler(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args,
-            Data.SpellData spellData, SpecialSpellEventArgs specialSpellArgs);
+            SpellData spellData, SpecialSpellEventArgs specialSpellArgs);
         public static event OnProcessSpecialSpellHandler OnProcessSpecialSpell;
 
         //public static event OnDeleteSpellHandler OnDeleteSpell;
 
-        public static Dictionary<int, Data.Spell> Spells = new Dictionary<int, Data.Spell>();
-        public static Dictionary<int, Data.Spell> DrawSpells = new Dictionary<int, Data.Spell>();
-        public static Dictionary<int, Data.Spell> DetectedSpells = new Dictionary<int, Data.Spell>();
+        public static Dictionary<int, Spell> Spells = new Dictionary<int, Spell>();
+        public static Dictionary<int, Spell> DrawSpells = new Dictionary<int, Spell>();
+        public static Dictionary<int, Spell> DetectedSpells = new Dictionary<int, Spell>();
 
         public static Dictionary<string, IChampionPlugin> ChampionPlugins = new Dictionary<string, IChampionPlugin>();
 
         public static Dictionary<string, string> ChanneledSpells = new Dictionary<string, string>();
 
-        public static Dictionary<string, Data.SpellData> OnProcessSpells = new Dictionary<string, Data.SpellData>();
-        public static Dictionary<string, Data.SpellData> OnMissileSpells = new Dictionary<string, Data.SpellData>();
+        public static Dictionary<string, SpellData> OnProcessSpells = new Dictionary<string, SpellData>();
+        public static Dictionary<string, SpellData> OnMissileSpells = new Dictionary<string, SpellData>();
 
-        public static Dictionary<string, Data.SpellData> WindupSpells = new Dictionary<string, Data.SpellData>();
+        public static Dictionary<string, SpellData> WindupSpells = new Dictionary<string, SpellData>();
 
         private static int _spellIdCount = 0;
 
@@ -88,7 +90,7 @@ namespace AdEvade
             MissileClient missile;
             if (obj.IsMissileClient(out missile)) return;
 
-            Data.SpellData spellData;
+            SpellData spellData;
             if (missile.IsValidEvadeSpell(out spellData))
             {
 
@@ -108,9 +110,9 @@ namespace AdEvade
                         return;
                     }
 
-                    foreach (KeyValuePair<int, Data.Spell> entry in Spells)
+                    foreach (KeyValuePair<int, Spell> entry in Spells)
                     {
-                        Data.Spell spell = entry.Value;
+                        Spell spell = entry.Value;
 
                         var dir = (missile.EndPosition.To2D() - missile.StartPosition.To2D()).Normalized();
 
@@ -155,7 +157,7 @@ namespace AdEvade
             Debug.DrawTopLeft(args.SData.Name);
             try
             {
-                Data.SpellData spellData;
+                SpellData spellData;
                 if (args.SData.ShouldEvade(hero, out spellData))
                 {
                     if (spellData.UsePackets == false)
@@ -180,7 +182,7 @@ namespace AdEvade
         }
 
         public static void CreateSpellData(Obj_AI_Base hero, Vector3 spellStartPos, Vector3 spellEndPos,
-            Data.SpellData spellData, GameObject obj = null, float extraEndTick = 0.0f, bool processSpell = true,
+            SpellData spellData, GameObject obj = null, float extraEndTick = 0.0f, bool processSpell = true,
             SpellType spellType = SpellType.None, bool checkEndExplosion = true, float spellRadius = 0)
         {
             if (checkEndExplosion && spellData.HasEndExplosion)
@@ -265,7 +267,7 @@ namespace AdEvade
                     return;
                 }
                 endTick += extraEndTick;
-                Data.Spell newSpell = new Data.Spell();
+                Spell newSpell = new Spell();
                 newSpell.StartTime = EvadeUtils.TickCount;
                 newSpell.EndTime = EvadeUtils.TickCount + endTick;
                 newSpell.StartPos = startPosition;
@@ -315,9 +317,9 @@ namespace AdEvade
 
         private void CheckSpellEndTime()
         {
-            foreach (KeyValuePair<int, Data.Spell> entry in DetectedSpells)
+            foreach (KeyValuePair<int, Spell> entry in DetectedSpells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 foreach (var hero in EntityManager.Heroes.Enemies)
                 {
@@ -343,9 +345,9 @@ namespace AdEvade
                 return;
             }
 
-            foreach (KeyValuePair<int, Data.Spell> entry in DetectedSpells)
+            foreach (KeyValuePair<int, Spell> entry in DetectedSpells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 var collisionObject = spell.CheckSpellCollision();
 
@@ -362,7 +364,7 @@ namespace AdEvade
             }
         }
 
-        public static bool CanHeroWalkIntoSpell(Data.Spell spell)
+        public static bool CanHeroWalkIntoSpell(Spell spell)
         {
             if (Config.Properties.GetData<bool>("AdvancedSpellDetection"))
             {
@@ -418,9 +420,9 @@ namespace AdEvade
         {
             bool spellAdded = false;
 
-            foreach (KeyValuePair<int, Data.Spell> entry in DetectedSpells)
+            foreach (KeyValuePair<int, Spell> entry in DetectedSpells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 float evadeTime, spellHitTime;
                 spell.CanHeroEvade(MyHero, out evadeTime, out spellHitTime);
@@ -433,7 +435,7 @@ namespace AdEvade
                 if (spell.SpellHitTime - extraDelay < 1500 && CanHeroWalkIntoSpell(spell))
                     //if(true)
                 {
-                    Data.Spell newSpell = spell;
+                    Spell newSpell = spell;
                     int spellId = spell.SpellId;
 
                     if (!DrawSpells.ContainsKey(spell.SpellId))
@@ -496,7 +498,7 @@ namespace AdEvade
             }
         }
 
-        public static int CreateTestSpell(SpellPoint spell, Data.SpellData data)
+        public static int CreateTestSpell(SpellPoint spell, SpellData data)
         {
             if (spell.StartPosition.Distance(MyHero.Position) <
                 data.Range + Config.Properties.GetData<int>("ExtraDetectionRange"))
@@ -556,7 +558,7 @@ namespace AdEvade
                 {
                     return 0;
                 }
-                Data.Spell newSpell = new Data.Spell();
+                Spell newSpell = new Spell();
                 newSpell.StartTime = EvadeUtils.TickCount;
                 newSpell.EndTime = EvadeUtils.TickCount + endTick;
                 newSpell.StartPos = startPosition;
@@ -575,7 +577,7 @@ namespace AdEvade
         }
 
         private static
-            int CreateSpell(Data.Spell newSpell, bool processSpell = true)
+            int CreateSpell(Spell newSpell, bool processSpell = true)
         {
             //Debug.DrawTopLeft(newSpell);
             int spellId = _spellIdCount++;
@@ -610,9 +612,9 @@ namespace AdEvade
         {
             List<int> spellList = new List<int>();
 
-            foreach (KeyValuePair<int, Data.Spell> entry in Spells)
+            foreach (KeyValuePair<int, Spell> entry in Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
                 spellList.Add(spell.SpellId);
             }
 
@@ -631,14 +633,14 @@ namespace AdEvade
             return highest;
         }
 
-        public static float GetLowestEvadeTime(out Data.Spell lowestSpell)
+        public static float GetLowestEvadeTime(out Spell lowestSpell)
         {
             float lowest = float.MaxValue;
             lowestSpell = null;
 
-            foreach (KeyValuePair<int, Data.Spell> entry in Spells)
+            foreach (KeyValuePair<int, Spell> entry in Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 if (spell.SpellHitTime != float.MinValue)
                 {
@@ -651,12 +653,12 @@ namespace AdEvade
             return lowest;
         }
 
-        public static Data.Spell GetMostDangerousSpell(bool hasProjectile = false)
+        public static Spell GetMostDangerousSpell(bool hasProjectile = false)
         {
             int maxDanger = 0;
-            Data.Spell maxDangerSpell = null;
+            Spell maxDangerSpell = null;
 
-            foreach (Data.Spell spell in Spells.Values)
+            foreach (Spell spell in Spells.Values)
             {
                 if (!hasProjectile || (spell.Info.ProjectileSpeed > 0 && spell.Info.ProjectileSpeed != float.MaxValue))
                 {
@@ -726,7 +728,7 @@ namespace AdEvade
             return method();
         }
 
-        private void LoadSpecialSpell(Data.SpellData spell)
+        private void LoadSpecialSpell(SpellData spell)
         {
             if (ChampionPlugins.ContainsKey(spell.CharName))
             {
@@ -738,7 +740,7 @@ namespace AdEvade
 
         private void LoadSpecialSpellPlugins()
         {
-            ChampionPlugins.Add(Constants.AllChampions, new Data.SpecialSpells.AllChampions());
+            ChampionPlugins.Add(Constants.AllChampions, new AllChampions());
             Debug.DrawTopLeft("Loading Plugins...");
             foreach (var hero in EntityManager.Heroes.AllHeroes)
             {

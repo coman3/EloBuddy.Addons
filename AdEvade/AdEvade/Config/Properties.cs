@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdEvade.Data;
+using AdEvade.Data.Spells;
 using AdEvade.Draw;
 using EloBuddy;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
-using AdEvade.EvadeSpells;
+using SpellData = AdEvade.Data.Spells.SpellData;
 
 namespace AdEvade.Config
 {
@@ -40,7 +41,7 @@ namespace AdEvade.Config
 
         public static readonly Dictionary<string, KeyBind> Keys = new Dictionary<string, KeyBind>();
 
-        public static SpellConfig GetSpellConfig(this Data.SpellData spell, SpellConfigControl control)
+        public static SpellConfig GetSpellConfig(this SpellData spell, SpellConfigControl control)
         {
             return new SpellConfig
             {
@@ -134,14 +135,19 @@ namespace AdEvade.Config
         }
     }
 
-    public struct EvadeSpellConfig
+    public class EvadeSpellConfig
     {
         public bool Use { get; set; }
         public SpellDangerLevel DangerLevel { get; set; }
         public SpellModes SpellMode { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Use: {0} DangerLevel: {1} SpellMode: {2}", Use, DangerLevel, SpellMode);
+        }
     }
 
-    public struct SpellConfig
+    public class SpellConfig
     {
         public bool Dodge { get; set; }
         public bool Draw { get; set; }

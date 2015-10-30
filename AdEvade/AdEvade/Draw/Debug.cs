@@ -66,7 +66,7 @@ namespace AdEvade.Draw
                 debugForm.Controls.Add(list);
                 list.Dock = DockStyle.Fill;
                 debugForm.Text = "Debug Values";
-                debugForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                debugForm.FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Game.OnUpdate += delegate(EventArgs args)
                 {
                     if (lastTickTime + 1 < Game.Time)
@@ -86,7 +86,7 @@ namespace AdEvade.Draw
                         }
                         foreach (var evadeSpell in Config.Properties.EvadeSpells)
                         {
-                            list.Items.Add("EvadeSpell: " + evadeSpell.Key + " : " + evadeSpell.Value);
+                            list.Items.Add("EvadeSpell: " + evadeSpell.Key + " : " + evadeSpell.Value.ToString());
                         }
                         lastTickTime = Game.Time;
                     }

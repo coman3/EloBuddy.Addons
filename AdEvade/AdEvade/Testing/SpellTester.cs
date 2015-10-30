@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AdEvade.Config;
 using AdEvade.Data;
+using AdEvade.Data.Spells;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
@@ -15,7 +16,7 @@ using SharpDX;
 using SharpDX.Direct3D9;
 using Color = System.Drawing.Color;
 using Line = EloBuddy.SDK.Rendering.Line;
-using SpellData = AdEvade.Data.SpellData;
+using SpellData = AdEvade.Data.Spells.SpellData;
 
 namespace AdEvade.Testing
 {
@@ -89,7 +90,7 @@ namespace AdEvade.Testing
 
         }
 
-        private Data.SpellData GetSpellData(string championName, SpellSlot slot)
+        private SpellData GetSpellData(string championName, SpellSlot slot)
         {
             return SpellDatabase.Spells.FirstOrDefault(x => x.CharName == championName && x.SpellKey == slot);
         }
@@ -152,7 +153,7 @@ namespace AdEvade.Testing
         }
         private void UpdateChampionNameList()
         {
-            foreach (var spell in Data.SpellDatabase.Spells)
+            foreach (var spell in SpellDatabase.Spells)
             {
                 // ReSharper disable once SimplifyLinqExpression
                 if (!ChampionNames.Any(x => x == spell.CharName))

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using AdEvade.Config;
 using AdEvade.Data;
+using AdEvade.Data.EvadeSpells;
 using AdEvade.Draw;
-using AdEvade.EvadeSpells;
 using AdEvade.Helpers;
 using AdEvade.Testing;
 using AdEvade.Utils;
@@ -17,11 +17,11 @@ using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 using CheckBox = EloBuddy.SDK.Menu.Values.CheckBox;
 using PositionInfo = AdEvade.Data.PositionInfo;
-using SpellData = AdEvade.Data.SpellData;
+using SpellData = AdEvade.Data.Spells.SpellData;
 using Debug = AdEvade.Draw.Debug;
 using MainMenu = EloBuddy.SDK.Menu.MainMenu;
 using Menu = EloBuddy.SDK.Menu.Menu;
-using Spell = AdEvade.Data.Spell;
+using Spell = AdEvade.Data.Spells.Spell;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 
@@ -237,6 +237,7 @@ namespace AdEvade
                 Game.OnEnd += Game_OnGameEnd;
                 SpellDetector.OnProcessDetectedSpells += SpellDetector_OnProcessDetectedSpells;
                 Orbwalker.OnPreAttack += Orbwalking_BeforeAttack;
+
                 Chat.Print("AdEvade Loaded");
 
 
@@ -307,9 +308,9 @@ namespace AdEvade
             {
                 if (IsDodging && SpellDetector.Spells.Count() > 0)
                 {
-                    foreach (KeyValuePair<String, Data.SpellData> entry in SpellDetector.WindupSpells)
+                    foreach (KeyValuePair<String, SpellData> entry in SpellDetector.WindupSpells)
                     {
-                        Data.SpellData spellData = entry.Value;
+                        SpellData spellData = entry.Value;
 
                         if (spellData.SpellKey == args.Slot) //check if it's a spell that we should block
                         {
@@ -659,9 +660,9 @@ namespace AdEvade
         private void CheckHeroInDanger()
         {
             bool playerInDanger = false;
-            foreach (KeyValuePair<int, Data.Spell> entry in SpellDetector.Spells)
+            foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
-                Data.Spell spell = entry.Value;
+                Spell spell = entry.Value;
 
                 if (LastPosInfo != null) //&& lastPosInfo.dodgeableSpells.Contains(spell.spellID))
                 {

@@ -5,6 +5,7 @@ using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
 using SharpDX;
+using Spell = AdEvade.Data.Spells.Spell;
 
 namespace AdEvade.Data
 {
