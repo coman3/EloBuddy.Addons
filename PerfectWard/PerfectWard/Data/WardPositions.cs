@@ -81,109 +81,104 @@ namespace PerfectWard.Data
             wardSpots.Add(new WardSpot(new Vector3(6526.12f, 8367.01f, -71.21f))); // Mid/Top River Bush
             wardSpots.Add(new WardSpot(new Vector3(8598.335f, 4729.91f, 51.93f))); // Red Buff/River Bush
             wardSpots.Add(new WardSpot(new Vector3(8417.12f, 6521.46f, -71.24f))); // Mid/Top River Bush
-        }
-
-        public static void InitializeSafeWardSpots(ref List<WardSpot> safeWardSpots)
-        {
-            safeWardSpots = new List<WardSpot>();
 
             // Dragon -> Tri Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(10072.0f, 3908.0f, -71.24f),
+            wardSpots.Add(new WardSpot(new Vector3(10072.0f, 3908.0f, -71.24f),
                 new Vector3(10297.93f, 3358.59f, 49.03f),
                 new Vector3(10273.9f, 3257.76f, 49.03f),
                 new Vector3(10072.0f, 3908.0f, -71.24f)));
             // Nashor -> Tri Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(4724.0f, 10856.0f, -71.24f),
+            wardSpots.Add(new WardSpot(new Vector3(4724.0f, 10856.0f, -71.24f),
                 new Vector3(4627.26f, 11311.69f, -71.24f),
                 new Vector3(4473.9f, 11457.76f, 51.4f),
                 new Vector3(4724.0f, 10856.0f, -71.24f)));
 
             // Blue Top -> Solo Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(2824.0f, 10356.0f, 54.33f),
+            wardSpots.Add(new WardSpot(new Vector3(2824.0f, 10356.0f, 54.33f),
                 new Vector3(3078.62f, 10868.39f, 54.33f),
                 new Vector3(3078.62f, 10868.39f, -67.95f),
                 new Vector3(2824.0f, 10356.0f, 54.33f)));
 
             // Blue Mid -> round Bush // Inconsistent Placement
-            safeWardSpots.Add(new WardSpot(new Vector3(5474.0f, 7906.0f, 51.67f),
+            wardSpots.Add(new WardSpot(new Vector3(5474.0f, 7906.0f, 51.67f),
                 new Vector3(5132.65f, 8373.2f, 51.67f),
                 new Vector3(5123.9f, 8457.76f, -21.23f),
                 new Vector3(5474.0f, 7906.0f, 51.67f)));
 
             // Blue Mid -> River Lane Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(5874.0f, 7656.0f, 51.65f),
+            wardSpots.Add(new WardSpot(new Vector3(5874.0f, 7656.0f, 51.65f),
                 new Vector3(6202.24f, 8132.12f, 51.65f),
                 new Vector3(6202.24f, 8132.12f, -67.39f),
                 new Vector3(5874.0f, 7656.0f, 51.65f)));
 
             // Blue Lizard -> Dragon Pass Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(8022.0f, 4258.0f, 53.72f),
+            wardSpots.Add(new WardSpot(new Vector3(8022.0f, 4258.0f, 53.72f),
                 new Vector3(8400.68f, 4657.41f, 53.72f),
                 new Vector3(8523.9f, 4707.76f, 51.24f),
                 new Vector3(8022.0f, 4258.0f, 53.72f)));
 
             // Purple Mid -> Round Bush // Inconsistent Placement
-            safeWardSpots.Add(new WardSpot(new Vector3(9372.0f, 7008.0f, 52.63f),
+            wardSpots.Add(new WardSpot(new Vector3(9372.0f, 7008.0f, 52.63f),
                 new Vector3(9703.5f, 6589.9f, 52.63f),
                 new Vector3(9823.9f, 6507.76f, 23.47f),
                 new Vector3(9372.0f, 7008.0f, 52.63f)));
 
             // Purple Mid -> River Round Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(9072.0f, 7158.0f, 53.04f),
+            wardSpots.Add(new WardSpot(new Vector3(9072.0f, 7158.0f, 53.04f),
                 new Vector3(8705.95f, 6819.1f, 53.04f),
                 new Vector3(8718.88f, 6764.86f, 95.75f),
                 new Vector3(9072.0f, 7158.0f, 53.04f)));
 
             // Purple Bottom -> Solo Bush
-            safeWardSpots.Add(new WardSpot(new Vector3(12422.0f, 4508.0f, 51.73f),
+            wardSpots.Add(new WardSpot(new Vector3(12422.0f, 4508.0f, 51.73f),
                 new Vector3(12353.94f, 4031.58f, 51.73f),
                 new Vector3(12023.9f, 3757.76f, -66.25f),
                 new Vector3(12422.0f, 4508.0f, 51.73f)));
 
             // Purple Lizard -> Nashor Pass Bush // Inconsistent Placement
-            safeWardSpots.Add(new WardSpot(new Vector3(6824.0f, 10656.0f, 56.0f),
+            wardSpots.Add(new WardSpot(new Vector3(6824.0f, 10656.0f, 56.0f),
                 new Vector3(6370.69f, 10359.92f, 56.0f),
                 new Vector3(6273.9f, 10307.76f, 53.67f),
                 new Vector3(6824.0f, 10656.0f, 56.0f)));
 
             // Blue Golem -> Blue Lizard
-            safeWardSpots.Add(new WardSpot(new Vector3(8272.0f, 2908.0f, 51.13f),
+            wardSpots.Add(new WardSpot(new Vector3(8272.0f, 2908.0f, 51.13f),
                 new Vector3(8163.7056f, 3436.0476f, 51.13f),
                 new Vector3(8163.71f, 3436.05f, 51.6628f),
                 new Vector3(8272.0f, 2908.0f, 51.13f)));
 
             // Red Golem -> Red Lizard
-            safeWardSpots.Add(new WardSpot(new Vector3(6574.0f, 12006.0f, 56.48f),
+            wardSpots.Add(new WardSpot(new Vector3(6574.0f, 12006.0f, 56.48f),
                 new Vector3(6678.08f, 11477.83f, 56.48f),
                 new Vector3(6678.08f, 11477.83f, 53.85f),
                 new Vector3(6574.0f, 12006.0f, 56.48f)));
 
             // Blue Top Side Brush
-            safeWardSpots.Add(new WardSpot(new Vector3(1774.0f, 10756.0f, 52.84f),
+            wardSpots.Add(new WardSpot(new Vector3(1774.0f, 10756.0f, 52.84f),
                 new Vector3(2302.36f, 10874.22f, 52.84f),
                 new Vector3(2773.9f, 11307.76f, -71.24f),
                 new Vector3(1774.0f, 10756.0f, 52.84f)));
 
             // Mid Lane Death Brush
-            safeWardSpots.Add(new WardSpot(new Vector3(5874.0f, 8306.0f, -70.12f),
+            wardSpots.Add(new WardSpot(new Vector3(5874.0f, 8306.0f, -70.12f),
                 new Vector3(5332.9f, 8275.21f, -70.12f),
                 new Vector3(5123.9f, 8457.76f, -21.23f),
                 new Vector3(5874.0f, 8306.0f, -70.12f)));
 
             // Mid Lane Death Brush Right Side
-            safeWardSpots.Add(new WardSpot(new Vector3(9022.0f, 6558.0f, 71.24f),
+            wardSpots.Add(new WardSpot(new Vector3(9022.0f, 6558.0f, 71.24f),
                 new Vector3(9540.43f, 6657.68f, 71.24f),
                 new Vector3(9773.9f, 6457.76f, 9.56f),
                 new Vector3(9022.0f, 6558.0f, 71.24f)));
 
             // Blue Inner Turret Jungle
-            safeWardSpots.Add(new WardSpot(new Vector3(6874.0f, 1708.0f, 50.52f),
+            wardSpots.Add(new WardSpot(new Vector3(6874.0f, 1708.0f, 50.52f),
                 new Vector3(6849.11f, 2252.01f, 50.52f),
                 new Vector3(6723.9f, 2507.76f, 52.17f),
                 new Vector3(6874.0f, 1708.0f, 50.52f)));
 
             // Purple Inner Turret Jungle
-            safeWardSpots.Add(new WardSpot(new Vector3(8122.0f, 13206.0f, 52.84f),
+            wardSpots.Add(new WardSpot(new Vector3(8122.0f, 13206.0f, 52.84f),
                 new Vector3(8128.53f, 12658.41f, 52.84f),
                 new Vector3(8323.9f, 12457.76f, 56.48f),
                 new Vector3(8122.0f, 13206.0f, 52.84f)));

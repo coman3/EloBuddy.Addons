@@ -13,8 +13,6 @@ namespace PerfectWard.Data
     public static class Wards
     {
         private static List<WardSpot> _wardSpots;
-        private static List<WardSpot> _safeWardSpots;
-
         public static AIHeroClient Player = ObjectManager.Player;
         public static List<InventorySlot> WardItems;
         public static List<WardSpot> WardSpots
@@ -27,18 +25,6 @@ namespace PerfectWard.Data
                 }
 
                 return _wardSpots;
-            }
-        }
-        public static List<WardSpot> SafeWardSpots
-        {
-            get
-            {
-                if (_safeWardSpots == null)
-                {
-                    WardPositions.InitializeSafeWardSpots(ref _safeWardSpots);
-                }
-
-                return _safeWardSpots;
             }
         }
 
@@ -61,10 +47,6 @@ namespace PerfectWard.Data
 
         public static InventorySlot GetPinkSlot()
         {
-            foreach (var item in WardItems)
-            {
-                Console.WriteLine(item.SpellSlot.ToString());
-            }
             var wardIds = new[] { ItemId.Vision_Ward, ItemId.Greater_Vision_Totem_Trinket };
             return WardItems.FirstOrDefault(i => i.CanUseItem() && wardIds.Contains(i.Id));
         }
@@ -91,7 +73,7 @@ namespace PerfectWard.Data
 
         public static bool TryFindNearestSafeWardSpot(Vector3 cursorPosition, out WardSpot outWardSpot)
         {
-            foreach (WardSpot wardSpot in SafeWardSpots)
+            foreach (WardSpot wardSpot in WardSpots.Where(x => x.IsSnapWard))
             {
                 if (wardSpot.MagneticPosition.IsInRange(cursorPosition, Config.Properties.GetData<int>("WardSnapRadius")))
                 {
@@ -105,31 +87,38 @@ namespace PerfectWard.Data
 
         public static void UpdateWardSpotObjects()
         {
-            if (WardSpots != null && SafeWardSpots != null)
+            if (WardSpots != null)
             {
                 foreach (WardSpot wardPos in WardSpots)
                 {
-                    wardPos.MagneticCircle.Color = wardPos.MagneticPosition.IsInRange(Game.CursorPos, Config.Properties.GetData<int>("WardSnapRadius"))
+                    if (wardPos.IsSnapWard)
+                    {
+                        var isInPoint = wardPos.MagneticPosition.IsInRange(Game.CursorPos,
+                            Config.Properties.GetData<int>("WardSnapRadius"));
+                        var isNearPlayer =
+                            wardPos.MagneticPosition.IsNearPlayer(
+                                Config.Properties.GetData<int>("WardSpotDrawDistance")*1000);
+
+                        wardPos.MagneticCircle.Color = isInPoint ? Color.OrangeRed : Color.DarkOrange;
+
+                        wardPos.WardCircle.Visable = isInPoint && isNearPlayer;
+                        wardPos.MagneticCircle.Visable = isNearPlayer;
+                        wardPos.ArrowLine.Visable = isInPoint && isNearPlayer;
+
+                        wardPos.ArrowLine.Start =
+                            new Vector3(wardPos.MagneticPosition.X, wardPos.MagneticPosition.Y, 0).WorldToScreen();
+                        wardPos.ArrowLine.End =
+                            new Vector3(wardPos.WardPosition.X, wardPos.WardPosition.Y, 0).WorldToScreen();
+                    }
+                    else
+                    {
+                        wardPos.MagneticCircle.Color = wardPos.MagneticPosition.IsInRange(Game.CursorPos, Config.Properties.GetData<int>("WardSnapRadius"))
                         ? Color.OrangeRed
                         : Color.Blue;
-                    wardPos.MagneticCircle.Visable =
-                        wardPos.MagneticPosition.IsNearPlayer(Config.Properties.GetData<int>("WardSpotDrawDistance")*
-                                                              1000);
-                }
-                foreach (WardSpot wardPos in SafeWardSpots)
-                {
-                    var isInPoint = wardPos.MagneticPosition.IsInRange(Game.CursorPos, Config.Properties.GetData<int>("WardSnapRadius"));
-                    var isNearPlayer = wardPos.MagneticPosition.IsNearPlayer(Config.Properties.GetData<int>("WardSpotDrawDistance") * 1000);
-
-                    wardPos.MagneticCircle.Color = isInPoint ? Color.OrangeRed : Color.DarkOrange;
-
-                    wardPos.WardCircle.Visable = isInPoint && isNearPlayer;
-                    wardPos.MagneticCircle.Visable = isNearPlayer;
-                    wardPos.ArrowLine.Visable = isInPoint && isNearPlayer;
-
-                    wardPos.ArrowLine.Start = new Vector3(wardPos.MagneticPosition.X, wardPos.MagneticPosition.Y, 0).WorldToScreen();
-                    wardPos.ArrowLine.End = new Vector3(wardPos.WardPosition.X, wardPos.WardPosition.Y, 0).WorldToScreen();
-
+                        wardPos.MagneticCircle.Visable =
+                            wardPos.MagneticPosition.IsNearPlayer(Config.Properties.GetData<int>("WardSpotDrawDistance") *
+                                                                  1000);
+                    }
                 }
             }
         }
@@ -138,20 +127,32 @@ namespace PerfectWard.Data
         {
             foreach (WardSpot wardPos in WardSpots)
             {
-                RenderObjects.Add(wardPos.MagneticCircle = new RenderCircle(wardPos.MagneticPosition.To2D(), Color.Blue, 30, 3));
-            }
-            foreach (WardSpot safeWardSpot in SafeWardSpots)
-            { 
-                
-                //Vector2 screenPos = Drawing.WorldToScreen(safeWardSpot.MagneticPosition);
-                RenderObjects.Add(safeWardSpot.MagneticCircle = new RenderCircle(safeWardSpot.MagneticPosition.To2D(), Color.DarkOrange, 30, 3));
-                RenderObjects.Add(safeWardSpot.WardCircle = new RenderCircle(safeWardSpot.WardPosition.To2D(), Color.Blue, 5, 3));
-                //new Circle(new ColorBGRA(255, 0, 255, 255), 5).Draw(safeWardSpot.WardPosition);
+                if (wardPos.IsSnapWard)
+                {
 
-                Vector2 screenMagneticPos = safeWardSpot.MagneticPosition.WorldToScreen();
-                Vector2 screenDirectionVector = safeWardSpot.WardPosition.WorldToScreen();
+                    //Vector2 screenPos = Drawing.WorldToScreen(safeWardSpot.MagneticPosition);
+                    RenderObjects.Add(
+                        wardPos.MagneticCircle =
+                            new RenderCircle(wardPos.MagneticPosition.To2D(), Color.DarkOrange, 30, 3));
+                    RenderObjects.Add(
+                        wardPos.WardCircle = new RenderCircle(wardPos.WardPosition.To2D(), Color.Blue, 5, 3));
+                    //new Circle(new ColorBGRA(255, 0, 255, 255), 5).Draw(safeWardSpot.WardPosition);
 
-                RenderObjects.Add(safeWardSpot.ArrowLine = new RenderLine(screenMagneticPos, screenDirectionVector, Color.Green, 1.5f) { Visable = false});
+                    Vector2 screenMagneticPos = wardPos.MagneticPosition.WorldToScreen();
+                    Vector2 screenDirectionVector = wardPos.WardPosition.WorldToScreen();
+
+                    RenderObjects.Add(
+                        wardPos.ArrowLine =
+                            new RenderLine(screenMagneticPos, screenDirectionVector, Color.Green, 1.5f)
+                            {
+                                Visable = false
+                            });
+                }
+                else
+                {
+                    RenderObjects.Add(
+                        wardPos.MagneticCircle = new RenderCircle(wardPos.MagneticPosition.To2D(), Color.Blue, 30, 3));
+                }
             }
         }
 
