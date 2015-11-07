@@ -746,10 +746,8 @@ namespace AdEvade
             {
                 var championPlugin = Assembly
                     .GetExecutingAssembly()
-                    .GetTypes(
-                    )
-                    .FirstOrDefault(t => t.IsClass && t.Namespace == "EzEvade.Data.SpecialSpells"
-                                         && t.Name == hero.ChampionName);
+                    .GetTypes()
+                    .FirstOrDefault(t => t.IsClass && t.Name == hero.ChampionName && t.GetInterfaces().Contains(typeof(IChampionPlugin)));
                 if (championPlugin != null)
                 {
                     if (!ChampionPlugins.ContainsKey(hero.ChampionName))

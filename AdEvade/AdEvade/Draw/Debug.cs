@@ -29,7 +29,7 @@ namespace AdEvade.Draw
                 for (int i = 0; i < textToWrite.Count; i++)
                 {
                     Drawing.DrawText(10f, 10f + (textToWrite[i].Count(x => x == '\n')*12f) + (12f*i),
-                        textToWrite[i].Contains('*') ? Color.Red : Color.Yellow, textToWrite[i]);
+                        textToWrite[i].StartsWith("*") ? Color.Red : Color.Yellow, textToWrite[i]);
                 }
             }
 
@@ -37,13 +37,15 @@ namespace AdEvade.Draw
 
         public static void PrintChat(object data)
         {
-            if(Config.Properties.GetData<bool>("DebugShow"))
-                Chat.Print(data);
+            if (!Config.Properties.GetData<bool>("DebugShow")) return;
+            Chat.Print(data);
+            Console.WriteLine(data);
         }
         public static void DrawTopLeft(object data)
         {
-            if (Config.Properties.GetData<bool>("DebugShow"))
-                   textToWrite.Add(data.ToString());
+            if (!Config.Properties.GetData<bool>("DebugShow")) return;
+            textToWrite.Add(data.ToString());
+            Console.WriteLine(data);
         }
 
         private static Form debugForm;
