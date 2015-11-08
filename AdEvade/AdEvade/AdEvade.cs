@@ -205,16 +205,6 @@ namespace AdEvade
                 Menu debugMenu = Menu.AddSubMenu("Debug", "DebugMenu");
 
                 debugMenu.AddGroupLabel("Debug");
-                debugMenu.Add("ShowDebugForm", new CheckBox("Show Debug / Config Data Form", false)).OnValueChange +=
-                    delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
-                    {
-                        if (!changeArgs.OldValue && changeArgs.NewValue)
-                        {
-                            Debug.ShowValueForm();
-                            sender.CurrentValue = false;
-                        }
-                    };
-                debugMenu.AddSeparator();
                 debugMenu.Add("DebugShow", new DynamicCheckBox(ConfigDataType.Data, "DebugShow", "Show Debug Info", false).CheckBox);
                 debugMenu.Add("DebugWithMySpells", new DynamicCheckBox(ConfigDataType.Data, "DebugWithMySpells", "Detect and draw my spells", false).CheckBox);
 
@@ -552,7 +542,7 @@ namespace AdEvade
             try
             {
                 CheckHeroInDanger();
-
+                CheckDodgeOnlyDangerous();
                 if (IsChanneling && ChannelPosition.Distance(GameData.HeroInfo.ServerPos2D) > 50
                     ) //TODO: !GameData.MyHero.IsChannelingImportantSpell()
                 {
@@ -583,7 +573,6 @@ namespace AdEvade
                 }
 
                 EvadeSpell.UseEvadeSpell(); //using spells
-                CheckDodgeOnlyDangerous();
                 RecalculatePath();
             }
             catch (Exception e)
@@ -801,7 +790,7 @@ namespace AdEvade
         {
             bool bDodgeOnlyDangerous = IsDodgeDangerousEnabled();
 
-            if (DodgeOnlyDangerous == false && bDodgeOnlyDangerous)
+            if (DodgeOnlyDangerous && bDodgeOnlyDangerous)
             {
                 SpellDetector.RemoveNonDangerousSpells();
                 DodgeOnlyDangerous = true;

@@ -93,7 +93,6 @@ namespace AdEvade
             SpellData spellData;
             if (missile.IsValidEvadeSpell(out spellData))
             {
-
                 if (missile.IsInRange(spellData))
                 {
                     var hero = missile.SpellCaster;
@@ -160,7 +159,7 @@ namespace AdEvade
                 SpellData spellData;
                 if (args.SData.ShouldEvade(hero, out spellData))
                 {
-                    if (spellData.UsePackets == false)
+                    if (!spellData.UsePackets)
                     {
                         var specialSpellArgs = new SpecialSpellEventArgs();
                         if (OnProcessSpecialSpell != null)
@@ -469,8 +468,7 @@ namespace AdEvade
 
                     if (!Spells.ContainsKey(spell.SpellId))
                     {
-                        if (!(Config.Properties.GetData<bool>("DodgeDangerous") && (int)newSpell.GetSpellDangerLevel() < (int)SpellDangerLevel.High)
-                            && Config.Properties.GetSpell(newSpell.Info.SpellName).Dodge)
+                        if (Config.Properties.GetSpell(newSpell.Info.SpellName).Dodge && !(AdEvade.IsDodgeDangerousEnabled() && (int)newSpell.Dangerlevel < (int)SpellDangerLevel.High))
                         {
                             if (newSpell.SpellType == SpellType.Circular
                                 && !Config.Properties.GetData<bool>("DodgeCircularSpells"))
@@ -500,8 +498,7 @@ namespace AdEvade
 
         public static int CreateTestSpell(SpellPoint spell, SpellData data)
         {
-            if (spell.StartPosition.Distance(MyHero.Position) <
-                data.Range + Config.Properties.GetData<int>("ExtraDetectionRange"))
+            if (spell.StartPosition.Distance(MyHero.Position) < data.Range + Config.Properties.GetData<int>("ExtraDetectionRange"))
             {
                 Vector2 startPosition = spell.StartPosition.To2D();
                 Vector2 endPosition = spell.EndPosition.To2D();
@@ -576,8 +573,7 @@ namespace AdEvade
             return 0;
         }
 
-        private static
-            int CreateSpell(Spell newSpell, bool processSpell = true)
+        private static int CreateSpell(Spell newSpell, bool processSpell = true)
         {
             //Debug.DrawTopLeft(newSpell);
             int spellId = _spellIdCount++;
@@ -591,7 +587,7 @@ namespace AdEvade
                 CheckSpellCollision();
                 AddDetectedSpells();
             }
-            if(OnCreateSpell != null)
+            if (OnCreateSpell != null)
                 OnCreateSpell.Invoke(newSpell);
             return spellId;
         }
