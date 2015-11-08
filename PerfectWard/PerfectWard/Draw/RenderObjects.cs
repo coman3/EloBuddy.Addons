@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
+using PerfectWard.Config;
 using SharpDX;
 
 namespace PerfectWard.Draw
@@ -33,6 +34,7 @@ namespace PerfectWard.Draw
 
         private static void Drawing_OnDraw(EventArgs args)
         {
+            if (!Properties.GetData<bool>("Enable")) return;
             Render();
         }
 
