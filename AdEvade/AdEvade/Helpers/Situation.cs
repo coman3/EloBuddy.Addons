@@ -1,4 +1,5 @@
-﻿using AdEvade.Data;
+﻿using AdEvade.Config;
+using AdEvade.Data;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -19,7 +20,7 @@ namespace AdEvade.Helpers
 
         public static bool IsNearEnemy(this Vector2 pos, float distance, bool alreadyNear = true)
         {
-            if (Config.Properties.GetData<bool>("PreventDodgingNearEnemy"))
+            if (ConfigValue.PreventDodgingNearEnemy.GetBool())
             {
                 var curDistToEnemies = GameData.HeroInfo.ServerPos2D.GetDistanceToChampions();
                 var posDistToEnemies = pos.GetDistanceToChampions();
@@ -45,7 +46,7 @@ namespace AdEvade.Helpers
                 
         public static bool IsUnderTurret(this Vector2 pos, bool checkEnemy = true)
         {
-            if (!Config.Properties.GetData<bool>("PreventDodgingUnderTower"))
+            if (!ConfigValue.PreventDodgingUnderTower.GetBool())
             {
                 return false;
             }
@@ -78,11 +79,9 @@ namespace AdEvade.Helpers
 
         public static bool ShouldDodge()
         {
-            if (Config.Properties.Keys["DodgeSkillShots"].CurrentValue == false
-                || CommonChecks()
-                )
+            if (!ConfigValue.DodgeSkillShots.GetBool() || CommonChecks())
             {
-                //TODO: ADD CHECKS FFOR BELOW
+                //TODO: ADD CHECKS FOR BELOW Into Champion Addons
                 //has spellshield - sivir, noc, morgana
                 //vlad pool
                 //tryndamere r?
@@ -106,15 +105,7 @@ namespace AdEvade.Helpers
 
         public static bool ShouldUseEvadeSpell()
         {
-            if (Config.Properties.Keys["ActivateEvadeSpells"].CurrentValue == false
-                || CommonChecks()
-                || AdEvade.LastWindupTime - EvadeUtils.TickCount > 0
-                )
-            {
-                return false;
-            }
-
-            return true;
+            return ConfigValue.ActivateEvadeSpells.GetBool() && !CommonChecks() && !(AdEvade.LastWindupTime - EvadeUtils.TickCount > 0);
         }
 
         public static bool CommonChecks()
@@ -133,9 +124,8 @@ namespace AdEvade.Helpers
 
         public static bool ChampionSpecificChecks()
         {
-            return (MyHero.ChampionName == "Sion" && MyHero.HasBuff("SionR"))
-                ;
-
+            return MyHero.ChampionName == "Sion" && MyHero.HasBuff("SionR");
+            //TODO
             //Untargetable
             //|| (myHero.CharName == "KogMaw" && myHero.HasBuff("kogmawicathiansurprise"))
             //|| (myHero.CharName == "Karthus" && myHero.HasBuff("KarthusDeathDefiedBuff"))
@@ -144,7 +134,6 @@ namespace AdEvade.Helpers
             //|| myHero.HasBuff("kalistarallyspelllock"); 
         }
 
-        //from Evade by Esk0r
         public static bool HasSpellShield(AIHeroClient unit)
         {
             if (ObjectManager.Player.HasBuffOfType(BuffType.SpellShield))

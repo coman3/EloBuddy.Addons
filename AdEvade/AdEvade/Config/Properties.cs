@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdEvade.Config.Controls;
 using AdEvade.Data;
 using AdEvade.Data.Spells;
 using AdEvade.Draw;
@@ -18,12 +19,20 @@ namespace AdEvade.Config
 
     public class ConfigValueChangedArgs : EventArgs
     {
-        public string Key { get; set; }
+        public ConfigValue Key { get; set; }
+        public string SpellKey { get; set; }
+        public readonly bool IsSpell;
         public object Value { get; set; }
 
-        public ConfigValueChangedArgs(string key, object value)
+        public ConfigValueChangedArgs(ConfigValue key, object value)
         {
             Key = key;
+            Value = value;
+        }
+        public ConfigValueChangedArgs(string key, object value)
+        {
+            SpellKey = key;
+            IsSpell = true;
             Value = value;
         }
     }
@@ -32,15 +41,10 @@ namespace AdEvade.Config
         public delegate void ConfigValueChangedHandler(ConfigValueChangedArgs args);
         public static event ConfigValueChangedHandler OnConfigValueChanged;
 
-
-        public static readonly Dictionary<string, object> Data = new Dictionary<string, object>();
-
+        internal static Dictionary<ConfigValue, object> Values = new Dictionary<ConfigValue, object>();
         public static readonly Dictionary<string, SpellConfig> Spells = new Dictionary<string, SpellConfig>();
 
         public static readonly Dictionary<string, EvadeSpellConfig> EvadeSpells = new Dictionary<string, EvadeSpellConfig>();
-
-        public static readonly Dictionary<string, KeyBind> Keys = new Dictionary<string, KeyBind>();
-
         public static SpellConfig GetSpellConfig(this SpellData spell, SpellConfigControl control)
         {
             return new SpellConfig
@@ -53,16 +57,20 @@ namespace AdEvade.Config
             };
         }
 
-        public static T GetData<T>(string key)
+        //public static T GetData<T>(string key)
+        //{
+        //    if (Data.Any(i => i.Key == key))
+        //    {
+        //        if(Data[key] is T)
+        //            return (T) Data[key];
+        //        else 
+        //            Debug.DrawTopLeft("Tryed To Access key with wrong type: " + key);
+        //    }
+        //    return default(T);
+        //}
+        public static void OnValueChanged(ConfigValue key, object value)
         {
-            if (Data.Any(i => i.Key == key))
-            {
-                if(Data[key] is T)
-                    return (T) Data[key];
-                else 
-                    Debug.DrawTopLeft("Tryed To Access key with wrong type: " + key);
-            }
-            return default(T);
+            if(OnConfigValueChanged != null) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
         }
         public static SpellConfig GetSpell(string key)
         {
@@ -71,7 +79,7 @@ namespace AdEvade.Config
                 //Debug.DrawTopLeft("Found Spell at key: " + key + " = " + Spells[key]);
                 return Spells[key];
             }
-            if (GetData<bool>("EnableSpellTester"))
+            if (ConfigValue.EnableSpellTester.GetBool())
                 if (SpellDatabase.Spells.Any(x => x.SpellName == key))
                 {
                     var spellfromdb = SpellDatabase.Spells.First(x => x.SpellName == key);
@@ -90,16 +98,18 @@ namespace AdEvade.Config
             Debug.DrawTopLeft(" * Evade Spell: " + key + " Not Found, Returning: DO NOT USE");
             return new EvadeSpellConfig { DangerLevel = SpellDangerLevel.Low, SpellMode = SpellModes.Undodgeable, Use = false};
         }
-        public static void SetData(string key, object value, bool raiseEvent = true)
+
+        public static int GetInt(ConfigValue key)
         {
-            if (Data.Any(i => i.Key == key))
-            {
-                Data[key] = value;
-                return;
-            }
-            Data.Add(key, value);
-            if (raiseEvent && OnConfigValueChanged != null)
-                OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
+            return ConfigPluginControler.SelectedPreset.GetInt(key);
+        }
+        public static bool GetBool(ConfigValue key)
+        {
+            return ConfigPluginControler.SelectedPreset.GetBoolean(key);
+        }
+        public static void SetValue(ConfigValue key, object value, bool raiseEvent = true)
+        {
+            ConfigPluginControler.SelectedPreset.SetValue(key, value, raiseEvent);
         }
         public static void SetSpell(string id, SpellConfig value, bool raiseEvent = true)
         {
@@ -123,16 +133,7 @@ namespace AdEvade.Config
             if (raiseEvent && OnConfigValueChanged != null)
                 OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
         }
-
-        public static void SetKey(string key, KeyBind value, bool raiseEvent = true)
-        {
-            if (Keys.Any(i => i.Key == key))
-            {
-                Keys[key] = value;
-                return;
-            }
-            Keys.Add(key, value);
-        }
+        
     }
 
     public class EvadeSpellConfig

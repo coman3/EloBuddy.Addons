@@ -35,10 +35,11 @@ namespace AdEvade.Testing
         public SpellPoint SelectedPoint;
         public List<string> ChampionNames = new List<string>(); 
         private AIHeroClient MyHero = ObjectManager.Player;
-        private DynamicSlider spellIndexSlider;
+        private Slider _spellIndexSlider;
+        private Slider spellChampionIndexSlider;
         public SpellTester(Menu menu)
         {
-            if (Config.Properties.GetData<bool>("EnableSpellTester"))
+            if (ConfigValue.EnableSpellTester.GetBool())
             {
                 Init();
                 CreateMenu(menu.AddSubMenu("Spell Tester"));
@@ -48,20 +49,15 @@ namespace AdEvade.Testing
         private void CreateMenu(Menu menu)
         {
             menu.AddGroupLabel("Spell Tester");
-            menu.Add("SpellTester_CreateSelectedPoint",
-                new DynamicKeyBind("SpellTester_CreateSelectedPoint", "Create A Selected Point", false,
-                    KeyBind.BindTypes.PressToggle).KeyBind).OnValueChange += SpellTester_CreateSelectedPoint_OnValueChange; ;
-            menu.Add("SpellTester_CreateSpell",
-                new DynamicKeyBind("SpellTester_CreateSpell", "Create Spell At Selected Points", false,
-                    KeyBind.BindTypes.PressToggle).KeyBind).OnValueChange += SpellTester_CreateSpell_OnValueChange; ;
+            menu.Add("SpellTester_CreateSelectedPoint", new KeyBind("Create A Selected Point", false, KeyBind.BindTypes.PressToggle)).OnValueChange += SpellTester_CreateSelectedPoint_OnValueChange; ;
+            menu.Add("SpellTester_CreateSpell", new KeyBind("Create Spell At Selected Points", false, KeyBind.BindTypes.PressToggle)).OnValueChange += SpellTester_CreateSpell_OnValueChange; ;
             menu.AddSeparator();
             menu.Add("SpellTester_ClearSelectedPoints", new CheckBox("Clear Selected Points", false)).OnValueChange += SpellTester_ClearSelectedPoints_OnValueChange;
             menu.AddSeparator();
             menu.AddGroupLabel("Spell Selector");
-            spellIndexSlider = new DynamicSlider(ConfigDataType.Data, "SpellTester_SelectedSpellIndex", "Selected Spell", 0, 0, 0);
-            menu.Add("SpellTester_SelectedSpellIndex", spellIndexSlider.Slider).OnValueChange += SpellTester_SelectedSpellIndex_OnValueChange; ;
-            menu.Add("SpellTester_SelectedSpellChampionIndex",
-                new StringSlider(ConfigDataType.Data, "SpellTester_SelectedSpellChampionIndex", "Select Spells Champion",
+            _spellIndexSlider = new Slider("Selected Spell", 0, 0, 0);
+            menu.Add("SpellTester_SelectedSpellIndex", _spellIndexSlider).OnValueChange += SpellTester_SelectedSpellIndex_OnValueChange;
+            menu.Add("SpellTester_SelectedSpellChampionIndex", new StringSlider(ConfigDataType.Data, "SpellTester_SelectedSpellChampionIndex", "Select Spells Champion",
                     0, SpellConfigProperty.None, ChampionNames.ToArray()).Slider.Slider);
             menu.Add("SpellTester_SelectedSpellChampionSlot",
                 new StringSlider(ConfigDataType.Data, "SpellTester_SelectedSpellChampionSlot", "Select Spells Champion",
@@ -108,9 +104,9 @@ namespace AdEvade.Testing
             if (!args.OldValue && args.NewValue)
             {
                 SelectedPoints.Clear();
-                spellIndexSlider.Slider.MinValue = 0;
-                spellIndexSlider.Slider.CurrentValue = 0;
-                spellIndexSlider.Slider.MaxValue = 0;
+                _spellIndexSlider.Slider.MinValue = 0;
+                _spellIndexSlider.Slider.CurrentValue = 0;
+                _spellIndexSlider.Slider.MaxValue = 0;
                 sender.CurrentValue = false;
                 SelectedPoint = null;
             }
@@ -138,8 +134,8 @@ namespace AdEvade.Testing
                         Angle = Config.Properties.GetData<int>("SpellTester_SelectedSpellAngle")
                     };
                     SelectedPoints.Add(SelectedPoint);
-                    spellIndexSlider.Slider.MaxValue = SelectedPoints.Count;
-                    spellIndexSlider.Slider.MinValue = 1;
+                    _spellIndexSlider.Slider.MaxValue = SelectedPoints.Count;
+                    _spellIndexSlider.Slider.MinValue = 1;
                 }
                 sender.CurrentValue = false;              
             }
@@ -167,8 +163,8 @@ namespace AdEvade.Testing
             var drawPoints = SelectedPoints.Select(selectedPoint => selectedPoint.StartPosition).ToArray();
             if (SelectedPoints.Count > 0)
             {
-                drawPoints = SelectedPoints.Where(p => SelectedPoints.IndexOf(p) != spellIndexSlider.Slider.CurrentValue - 1).Select(selectedPoint => selectedPoint.StartPosition).ToArray();
-                Circle.Draw(new ColorBGRA(255, 0, 255, 255), 10, 10f, SelectedPoints[spellIndexSlider.Slider.CurrentValue - 1].StartPosition);
+                drawPoints = SelectedPoints.Where(p => SelectedPoints.IndexOf(p) != _spellIndexSlider.Slider.CurrentValue - 1).Select(selectedPoint => selectedPoint.StartPosition).ToArray();
+                Circle.Draw(new ColorBGRA(255, 0, 255, 255), 10, 10f, SelectedPoints[_spellIndexSlider.Slider.CurrentValue - 1].StartPosition);
             }
             Circle.Draw(new ColorBGRA(0, 0, 255, 255), 10, 10f, drawPoints);
         }

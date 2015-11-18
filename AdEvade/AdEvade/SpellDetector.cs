@@ -4,17 +4,16 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using AdEvade.Config;
+using AdEvade.Config.Controls;
 using AdEvade.Data;
 using AdEvade.Data.Spells;
 using AdEvade.Data.Spells.SpecialSpells;
 using AdEvade.Draw;
-using AdEvade.Testing;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
-using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 
 using Spell = AdEvade.Data.Spells.Spell;
@@ -97,7 +96,7 @@ namespace AdEvade
                 {
                     var hero = missile.SpellCaster;
 
-                    if (!hero.IsVisible && Config.Properties.GetData<bool>("DodgeFOWSpells"))
+                    if (!hero.IsVisible &&ConfigValue.DodgeFowSpells.GetBool())
                     {
                         CreateSpellData(hero, missile.StartPosition, missile.EndPosition, spellData, obj);
                         return;
@@ -196,7 +195,7 @@ namespace AdEvade
 
                 return;
             }
-            if (spellStartPos.Distance(MyHero.Position) < spellData.Range + Config.Properties.GetData<int>("ExtraDetectionRange"))
+            if (spellStartPos.Distance(MyHero.Position) < spellData.Range + ConfigValue.ExtraDetectionRange.GetInt())
             {
                 Vector2 startPosition = spellStartPos.To2D();
                 Vector2 endPosition = spellEndPos.To2D();
@@ -339,7 +338,7 @@ namespace AdEvade
 
         private static void CheckSpellCollision()
         {
-            if (Config.Properties.GetData<bool>("CheckSpellCollision") == false)
+            if (!ConfigValue.CheckSpellCollision.GetBool())
             {
                 return;
             }
@@ -365,7 +364,7 @@ namespace AdEvade
 
         public static bool CanHeroWalkIntoSpell(Spell spell)
         {
-            if (Config.Properties.GetData<bool>("AdvancedSpellDetection"))
+            if (ConfigValue.AdvancedSpellDetection.GetBool())
             {
                 Vector2 heroPos = MyHero.Position.To2D();
                 var extraDist = MyHero.Distance(GameData.HeroInfo.ServerPos2D);
@@ -429,7 +428,7 @@ namespace AdEvade
                 spell.SpellHitTime = spellHitTime;
                 spell.EvadeTime = evadeTime;
 
-                var extraDelay = Game.Ping + Config.Properties.GetData<int>("ExtraPingBuffer");
+                var extraDelay = Game.Ping + Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
 
                 if (spell.SpellHitTime - extraDelay < 1500 && CanHeroWalkIntoSpell(spell))
                     //if(true)
@@ -443,17 +442,17 @@ namespace AdEvade
                     }
 
                     //var spellFlyTime = Evade.GetTickCount - spell.startTime;
-                    if (spellHitTime < Config.Properties.GetData<int>("SpellDetectionTime"))
+                    if (spellHitTime < ConfigValue.SpellDetectionTime.GetInt())
                     {
                         continue;
                     }
 
-                    if (EvadeUtils.TickCount - spell.StartTime < Config.Properties.GetData<int>("ReactionTime"))
+                    if (EvadeUtils.TickCount - spell.StartTime < ConfigValue.ReactionTime.GetInt())
                     {
                         continue;
                     }
 
-                    var dodgeInterval = Config.Properties.GetData<int>("DodgeInterval");
+                    var dodgeInterval = ConfigValue.DodgeInterval.GetInt();
                     if (AdEvade.LastPosInfo != null && dodgeInterval > 0)
                     {
                         var timeElapsed = EvadeUtils.TickCount - AdEvade.LastPosInfo.Timestamp;
@@ -471,7 +470,7 @@ namespace AdEvade
                         if (Config.Properties.GetSpell(newSpell.Info.SpellName).Dodge && !(AdEvade.IsDodgeDangerousEnabled() && (int)newSpell.Dangerlevel < (int)SpellDangerLevel.High))
                         {
                             if (newSpell.SpellType == SpellType.Circular
-                                && !Config.Properties.GetData<bool>("DodgeCircularSpells"))
+                                && !ConfigValue.DodgeCircularSpells.GetBool())
                             {
                                 //return spellID;
                                 continue;
@@ -483,7 +482,7 @@ namespace AdEvade
                         }
                     }
 
-                    if (Config.Properties.GetData<bool>("CheckSpellCollision") && spell.PredictedEndPos != Vector2.Zero)
+                    if (ConfigValue.CheckSpellCollision.GetBool() && spell.PredictedEndPos != Vector2.Zero)
                     {
                         spellAdded = false;
                     }
@@ -496,82 +495,82 @@ namespace AdEvade
             }
         }
 
-        public static int CreateTestSpell(SpellPoint spell, SpellData data)
-        {
-            if (spell.StartPosition.Distance(MyHero.Position) < data.Range + Config.Properties.GetData<int>("ExtraDetectionRange"))
-            {
-                Vector2 startPosition = spell.StartPosition.To2D();
-                Vector2 endPosition = spell.EndPosition.To2D();
-                Vector2 direction = (endPosition - startPosition).Normalized();
-                float endTick = 0;
+        //public static int CreateTestSpell(SpellPoint spell, SpellData data)
+        //{
+        //    if (spell.StartPosition.Distance(MyHero.Position) < data.Range + ConfigValue.ExtraDetectionRange.GetInt())
+        //    {
+        //        Vector2 startPosition = spell.StartPosition.To2D();
+        //        Vector2 endPosition = spell.EndPosition.To2D();
+        //        Vector2 direction = (endPosition - startPosition).Normalized();
+        //        float endTick = 0;
 
-                if (data.FixedRange) //for diana q
-                {
-                    if (endPosition.Distance(startPosition) > data.Range)
-                    {
-                        endPosition = startPosition + direction*data.Range;
-                    }
-                }
-                if (data.SpellType == SpellType.Line)
-                {
-                    endTick = data.SpellDelay + (data.Range/data.ProjectileSpeed)*1000;
-                    endPosition = startPosition + direction*data.Range;
+        //        if (data.FixedRange) //for diana q
+        //        {
+        //            if (endPosition.Distance(startPosition) > data.Range)
+        //            {
+        //                endPosition = startPosition + direction*data.Range;
+        //            }
+        //        }
+        //        if (data.SpellType == SpellType.Line)
+        //        {
+        //            endTick = data.SpellDelay + (data.Range/data.ProjectileSpeed)*1000;
+        //            endPosition = startPosition + direction*data.Range;
 
-                    if (data.UseEndPosition)
-                    {
-                        var range = endPosition.Distance(startPosition);
-                        endTick = data.SpellDelay + (range/data.ProjectileSpeed)*1000;
-                    }
-                }
-                else if (data.SpellType == SpellType.Circular)
-                {
-                    endTick = data.SpellDelay;
+        //            if (data.UseEndPosition)
+        //            {
+        //                var range = endPosition.Distance(startPosition);
+        //                endTick = data.SpellDelay + (range/data.ProjectileSpeed)*1000;
+        //            }
+        //        }
+        //        else if (data.SpellType == SpellType.Circular)
+        //        {
+        //            endTick = data.SpellDelay;
 
-                    if (data.ProjectileSpeed == 0)
-                    {
-                        endPosition = startPosition;
-                    }
-                    else if (data.ProjectileSpeed > 0)
-                    {
-                        if (data.SpellType == SpellType.Line &&
-                            data.HasEndExplosion &&
-                            data.UseEndPosition == false)
-                        {
-                            endPosition = startPosition + direction*data.Range;
-                        }
+        //            if (data.ProjectileSpeed == 0)
+        //            {
+        //                endPosition = startPosition;
+        //            }
+        //            else if (data.ProjectileSpeed > 0)
+        //            {
+        //                if (data.SpellType == SpellType.Line &&
+        //                    data.HasEndExplosion &&
+        //                    data.UseEndPosition == false)
+        //                {
+        //                    endPosition = startPosition + direction*data.Range;
+        //                }
 
-                        endTick = endTick + 1000*startPosition.Distance(endPosition)/data.ProjectileSpeed;
-                    }
-                }
-                else if (data.SpellType == SpellType.Arc)
-                {
-                    endTick = endTick + 1000*startPosition.Distance(endPosition)/data.ProjectileSpeed;
-                }
-                else if (data.SpellType == SpellType.Cone)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return 0;
-                }
-                Spell newSpell = new Spell();
-                newSpell.StartTime = EvadeUtils.TickCount;
-                newSpell.EndTime = EvadeUtils.TickCount + endTick;
-                newSpell.StartPos = startPosition;
-                newSpell.EndPos = endPosition;
-                newSpell.Height = spell.EndPosition.Z + data.ExtraDrawHeight;
-                newSpell.Direction = direction;
-                newSpell.HeroId = 0;
-                newSpell.Info = data;
-                newSpell.SpellType = data.SpellType;
-                newSpell.Radius = data.Radius > 0 ? data.Radius : newSpell.GetSpellRadius();
-                int spellId = CreateSpell(newSpell);
-                Core.DelayAction(() => DeleteSpell(spellId), (int) (endTick + data.ExtraEndTime));
-                return spellId;
-            }
-            return 0;
-        }
+        //                endTick = endTick + 1000*startPosition.Distance(endPosition)/data.ProjectileSpeed;
+        //            }
+        //        }
+        //        else if (data.SpellType == SpellType.Arc)
+        //        {
+        //            endTick = endTick + 1000*startPosition.Distance(endPosition)/data.ProjectileSpeed;
+        //        }
+        //        else if (data.SpellType == SpellType.Cone)
+        //        {
+        //            return 0;
+        //        }
+        //        else
+        //        {
+        //            return 0;
+        //        }
+        //        Spell newSpell = new Spell();
+        //        newSpell.StartTime = EvadeUtils.TickCount;
+        //        newSpell.EndTime = EvadeUtils.TickCount + endTick;
+        //        newSpell.StartPos = startPosition;
+        //        newSpell.EndPos = endPosition;
+        //        newSpell.Height = spell.EndPosition.Z + data.ExtraDrawHeight;
+        //        newSpell.Direction = direction;
+        //        newSpell.HeroId = 0;
+        //        newSpell.Info = data;
+        //        newSpell.SpellType = data.SpellType;
+        //        newSpell.Radius = data.Radius > 0 ? data.Radius : newSpell.GetSpellRadius();
+        //        int spellId = CreateSpell(newSpell);
+        //        Core.DelayAction(() => DeleteSpell(spellId), (int) (endTick + data.ExtraEndTime));
+        //        return spellId;
+        //    }
+        //    return 0;
+        //}
 
         private static int CreateSpell(Spell newSpell, bool processSpell = true)
         {
@@ -772,7 +771,7 @@ namespace AdEvade
                         }
                     }
                 }
-                if (hero.Team != MyHero.Team || (Config.Properties.GetData<bool>("DebugWithMySpells") && hero.IsMe))
+                if (hero.Team != MyHero.Team)
                 {
                     Debug.DrawTopLeft("Hero Found: " +  hero.ChampionName);
                     foreach (var spell in SpellDatabase.Spells.Where(

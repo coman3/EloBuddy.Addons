@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdEvade.Config;
 using AdEvade.Data;
 using AdEvade.Data.Spells;
 using EloBuddy;
@@ -153,9 +154,9 @@ namespace AdEvade.Helpers
         {
             float posValue = pos.Distance(Game.CursorPos.To2D());
 
-            if (Config.Properties.GetData<bool>("PreventDodgingNearEnemy"))
+            if (Config.Properties.GetBool(ConfigValue.PreventDodgingNearEnemy))
             {
-                var minComfortDistance = Config.Properties.GetData<int>("MinComfortZone");
+                var minComfortDistance = ConfigValue.MinimumComfortZone.GetInt();
                 var distanceToChampions = pos.GetDistanceToChampions();
 
                 if (minComfortDistance > distanceToChampions)
@@ -164,7 +165,7 @@ namespace AdEvade.Helpers
                 }
             }
 
-            if (Config.Properties.GetData<bool>("PreventDodgingUnderTower"))
+            if (Config.Properties.GetBool(ConfigValue.PreventDodgingUnderTower))
             {
                 var turretRange = 875 + GameData.HeroInfo.BoundingRadius;
                 var distanceToTurrets = pos.GetDistanceToTurrets();

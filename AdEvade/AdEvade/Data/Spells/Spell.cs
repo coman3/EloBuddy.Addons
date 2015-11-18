@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AdEvade.Config;
 using AdEvade.Helpers;
 using AdEvade.Utils;
 using EloBuddy;
@@ -48,7 +49,7 @@ namespace AdEvade.Data.Spells
         public static float GetSpellRadius(this Spell spell)
         {
             var radius = Config.Properties.GetSpell(spell.Info.SpellName).Radius;
-            var extraRadius = Config.Properties.GetData<int>("ExtraSpellRadius");
+            var extraRadius = ConfigValue.ExtraSpellRadius.GetInt() ;
             if (spell.Info.HasEndExplosion && spell.SpellType == SpellType.Circular)
             {
                 return spell.Info.SecondaryRadius + extraRadius;

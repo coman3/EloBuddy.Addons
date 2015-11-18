@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using AdEvade.Config;
 using EloBuddy;
 using Menu = EloBuddy.SDK.Menu.Menu;
 
@@ -20,7 +21,7 @@ namespace AdEvade.Draw
         public static int DrawCount = 10;
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Config.Properties.GetData<bool>("DebugShow"))
+            if (ConfigValue.ShowDebugInfo.GetBool())
             {
                 if (textToWrite.Count > DrawCount)
                 {
@@ -37,19 +38,17 @@ namespace AdEvade.Draw
 
         public static void PrintChat(object data)
         {
-            if (!Config.Properties.GetData<bool>("DebugShow")) return;
+            if (!ConfigValue.ShowDebugInfo.GetBool()) return;
             Chat.Print(data);
             Console.WriteLine(data);
         }
         public static void DrawTopLeft(object data)
         {
-            if (!Config.Properties.GetData<bool>("DebugShow")) return;
+            Console.WriteLine(data);
+            if (!ConfigValue.ShowDebugInfo.GetBool()) return;
             textToWrite.Add(data.ToString());
             Console.WriteLine(data);
         }
-
-        private static Form debugForm;
-        private static float lastTickTime;
 
         public static bool DebugBool(this bool value, string key = "")
         {
@@ -58,44 +57,6 @@ namespace AdEvade.Draw
             else
                 DrawTopLeft(key + " : " + value);
             return value;
-        }
-        public static void ShowValueForm()
-        {
-            if (debugForm == null || debugForm.IsDisposed)
-            {
-                debugForm = new Form();
-                var list = new ListBox();
-                debugForm.Controls.Add(list);
-                list.Dock = DockStyle.Fill;
-                debugForm.Text = "Debug Values";
-                debugForm.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-                Game.OnUpdate += delegate(EventArgs args)
-                {
-                    if (lastTickTime + 1 < Game.Time)
-                    {
-                        list.Items.Clear();
-                        foreach (var o in Config.Properties.Data)
-                        {
-                            list.Items.Add("Data: " + o.Key + " : " + o.Value);
-                        }
-                        foreach (var o in Config.Properties.Spells)
-                        {
-                            list.Items.Add("Spells: " + o.Key + " : " + o.Value);
-                        }
-                        foreach (var o in Config.Properties.Keys)
-                        {
-                            list.Items.Add("Keys: " + o.Key + " : " + o.Value.CurrentValue);
-                        }
-                        foreach (var evadeSpell in Config.Properties.EvadeSpells)
-                        {
-                            list.Items.Add("EvadeSpell: " + evadeSpell.Key + " : " + evadeSpell.Value.ToString());
-                        }
-                        lastTickTime = Game.Time;
-                    }
-                    debugForm.Height = list.Items.Count*25 + 20;
-                };
-                debugForm.Show();
-            }
         }
     }
 }

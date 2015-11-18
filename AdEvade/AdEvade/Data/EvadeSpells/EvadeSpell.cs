@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdEvade.Config;
+using AdEvade.Config.Controls;
 using AdEvade.Data.Spells;
 using AdEvade.Helpers;
 using AdEvade.Utils;
@@ -147,10 +148,10 @@ namespace AdEvade.Data.EvadeSpells
         {
             var sortedEvadeSpells = EvadeSpells.OrderBy(s => s.Dangerlevel);
 
-            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
-            float spellActivationTime = Config.Properties.GetData<int>("SpellActivationTime") + Game.Ping + extraDelayBuffer;
+            var extraDelayBuffer = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
+            float spellActivationTime = ConfigValue.SpellActivationTime.GetInt() + Game.Ping + extraDelayBuffer;
 
-            if (Config.Properties.GetData<bool>("CalculateWindupDelay"))
+            if (ConfigValue.CalculateWindupDelay.GetBool())
             {
                 var extraWindupDelay = AdEvade.LastWindupTime - EvadeUtils.TickCount;
                 if (extraWindupDelay > 0)
@@ -214,7 +215,7 @@ namespace AdEvade.Data.EvadeSpells
                 }
 
                 if (evadeSpell.EvadeType != EvadeType.Dash && spellHitTime > evadeSpell.SpellDelay + 100 + Game.Ping +
-                    Config.Properties.GetData<int>("ExtraPingBuffer"))
+                    Config.Properties.GetInt(ConfigValue.ExtraPingBuffer))
                 {
                     processSpell = false;
 
@@ -354,7 +355,7 @@ namespace AdEvade.Data.EvadeSpells
             if (AdEvade.LastPosInfo == null)
                 return false;
 
-            if (Config.Properties.Keys["DodgeSkillShots"].CurrentValue)
+            if (ConfigValue.DodgeSkillShots.GetBool())
             {
                 if (AdEvade.LastPosInfo.UndodgeableSpells.Contains(spell.SpellId)
                 && GameData.HeroInfo.ServerPos2D.InSkillShot(spell, GameData.HeroInfo.BoundingRadius))

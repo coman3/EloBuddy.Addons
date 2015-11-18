@@ -21,22 +21,19 @@ namespace AdEvade.Utils
         public static bool ShouldEvade(this EloBuddy.SpellData eloData, Obj_AI_Base hero, out SpellData spellData)
         {
             spellData = null;
-            return (hero.Team != MyHero.Team || (Config.Properties.GetData<bool>("DebugWithMySpells") && hero.IsMe))
-                   && SpellDetector.OnProcessSpells.TryGetValue(eloData.Name, out spellData);
+            return (hero.Team != MyHero.Team) && SpellDetector.OnProcessSpells.TryGetValue(eloData.Name, out spellData);
         }
         public static bool ShouldEvade(this MissileClient missile, out SpellData spellData)
         {
             spellData = null;
-            return (missile.SpellCaster.Team != MyHero.Team || //Evade if the spell if from the other team.
-                    (Config.Properties.GetData<bool>("DebugWithMySpells") && missile.SpellCaster.IsMe) // Evade if the spell is from me, and it is enabled
-                    ) && SpellDetector.OnMissileSpells.TryGetValue(missile.SData.Name, out spellData);
+            return (missile.SpellCaster.Team != MyHero.Team) && SpellDetector.OnMissileSpells.TryGetValue(missile.SData.Name, out spellData);
 
         }
 
         public static bool IsInRange(this MissileClient missile, SpellData spellData)
         {
             return missile.StartPosition.Distance(MyHero.Position) <
-                spellData.Range + Config.Properties.GetData<int>("ExtraDetectionRange");
+                spellData.Range + ConfigValue.ExtraDetectionRange.GetInt();
         }
         public static bool IsValidEvadeSpell(this MissileClient missile, out SpellData spellData)
         {

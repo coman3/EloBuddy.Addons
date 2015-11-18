@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdEvade.Config;
+using AdEvade.Config.Controls;
 using AdEvade.Draw;
 using AdEvade.Utils;
 using EloBuddy;
@@ -54,8 +55,8 @@ namespace AdEvade.Helpers
             //Drawing.OnDraw += Game_OnDraw;
 
             Menu autoSetPingMenu = mainMenu.AddSubMenu("AutoSetPing", "AutoSetPingMenu");
-            autoSetPingMenu.Add("AutoSetPingOn", new DynamicCheckBox(ConfigDataType.Data, "AutoSetPingOn", "Auto Set Ping", true).CheckBox);
-            autoSetPingMenu.Add("AutoSetPercentile", new DynamicSlider(ConfigDataType.Data, "AutoSetPercentile", "Auto Set Percentile", 75, 0, 100).Slider);
+            autoSetPingMenu.Add(ConfigValue.AutoSetPing.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.AutoSetPing, "Auto Set Ping", true).CheckBox);
+            autoSetPingMenu.Add(ConfigValue.AutoSetPingPercentile.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.AutoSetPingPercentile, "Auto Set Percentile", 75, 0, 100).Slider);
 
 
             //autoSetPingMenu.AddItem(new MenuItem("TestSkillshotDelay", "TestSkillshotDelay").SetValue<bool>(false));
@@ -130,7 +131,7 @@ namespace AdEvade.Helpers
             float moveTime = 1000 * distance / MyHero.MoveSpeed;
             //Console.WriteLine("Extra Delay: " + moveTime);
 
-            if (!Config.Properties.GetData<bool>("AutoSetPingOn"))
+            if (!Config.Properties.GetBool(ConfigValue.AutoSetPing))
             {
                 return;
             }
@@ -155,7 +156,7 @@ namespace AdEvade.Helpers
 
         private void Hero_OnNewPath(Obj_AI_Base hero, GameObjectNewPathEventArgs args)
         {
-            if (!Config.Properties.GetData<bool>("AutoSetPingOn"))
+            if (!Config.Properties.GetBool(ConfigValue.AutoSetPing))
             {
                 return;
             }
@@ -231,17 +232,17 @@ namespace AdEvade.Helpers
 
                                 if (_maxExtraDelayTime == 0)
                                 {
-                                    _maxExtraDelayTime = Config.Properties.GetData<int>("ExtraPingBuffer");
+                                    _maxExtraDelayTime = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
                                 }
 
                                 if (_numExtraDelayTime % 100 == 0)
                                 {
                                     _pingList.Sort();
 
-                                    var percentile = Config.Properties.GetData<int>("AutoSetPercentile");
+                                    var percentile = ConfigValue.AutoSetPingPercentile.GetInt();
                                     int percentIndex = (int)Math.Floor(_pingList.Count() * (percentile / 100f)) - 1;
                                     _maxExtraDelayTime = Math.Max(_pingList.ElementAt(percentIndex) - Game.Ping,0);
-                                    Config.Properties.SetData("ExtraPingBuffer", (int) _maxExtraDelayTime);
+                                    _maxExtraDelayTime.SetTo(ConfigValue.ExtraPingBuffer);
 
                                     _pingList.Clear();
 

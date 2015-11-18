@@ -34,17 +34,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EloBuddy">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.dll</HintPath>
+      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\EloBuddy.dll</HintPath>
+    </Reference>
+    <Reference Include="EloBuddy.Sandbox">
+      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\EloBuddy.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="EloBuddy.SDK">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.SDK.dll</HintPath>
+      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\EloBuddy.SDK.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,15 +62,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdEvade.cs" />
-    <Compile Include="Config\ColorConfig.cs" />
+    <Compile Include="Config\Controls\ColorConfig.cs" />
+    <Compile Include="Config\ConfigPluginControler.cs" />
+    <Compile Include="Config\Enums.cs" />
+    <Compile Include="Config\Plugins\UltraSafe.cs" />
+    <Compile Include="Config\Plugins\JustDraw.cs" />
     <Compile Include="Config\Properties.cs" />
     <Compile Include="Config\Constants.cs" />
-    <Compile Include="Config\DynamicCheckBox.cs" />
-    <Compile Include="Config\DynamicKeyBind.cs" />
-    <Compile Include="Config\DynamicSlider.cs" />
-    <Compile Include="Config\EvadeSpellConfigControl.cs" />
-    <Compile Include="Config\SpellConfigControl.cs" />
-    <Compile Include="Config\StringSlider.cs" />
+    <Compile Include="Config\Controls\DynamicCheckBox.cs" />
+    <Compile Include="Config\Controls\DynamicKeyBind.cs" />
+    <Compile Include="Config\Controls\DynamicSlider.cs" />
+    <Compile Include="Config\Controls\EvadeSpellConfigControl.cs" />
+    <Compile Include="Config\Controls\SpellConfigControl.cs" />
+    <Compile Include="Config\Controls\StringSlider.cs" />
     <Compile Include="Data\Spells\ChampionPlugin.cs" />
     <Compile Include="Data\GameData.cs" />
     <Compile Include="Data\ObjectTracker.cs" />
@@ -120,8 +127,9 @@
     </Compile>
     <Compile Include="Render.cs" />
     <Compile Include="Data\Spells\Spell.cs" />
+    <Compile Include="Config\ConfigPreset.cs" />
+    <Compile Include="Config\Plugins\Default.cs" />
     <Compile Include="SpellDetector.cs" />
-    <Compile Include="Testing\SpellTester.cs" />
     <Compile Include="Utils\DelayAction.cs" />
     <Compile Include="Utils\EvadeUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
@@ -137,7 +145,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Testing\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

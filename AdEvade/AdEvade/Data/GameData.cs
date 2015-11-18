@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdEvade.Config;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -31,7 +32,7 @@ namespace AdEvade.Data
 
         public void UpdateInfo()
         {
-            var extraDelayBuffer = Config.Properties.GetData<int>("ExtraPingBuffer");
+            var extraDelayBuffer = ConfigValue.ExtraPingBuffer.GetInt();
 
             ServerPos2D = Hero.ServerPosition.To2D();
             ServerPos2DExtra = EvadeUtils.GetGamePosition(Hero, Game.Ping + extraDelayBuffer);

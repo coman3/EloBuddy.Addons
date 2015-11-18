@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdEvade.Config;
+using AdEvade.Config.Controls;
 using AdEvade.Data;
 using AdEvade.Data.Spells;
 using EloBuddy;
@@ -37,28 +38,28 @@ namespace AdEvade.Draw
             
 
             Menu drawMenu = Menu.IsSubMenu ? Menu.Parent.AddSubMenu("Draw", "Draw") : Menu.AddSubMenu("Draw", "Draw");
-            drawMenu.Add("DrawSkillShots", new DynamicCheckBox(ConfigDataType.Data, "DrawSkillShots", "Draw SkillShots", true).CheckBox);
-            drawMenu.Add("ShowStatus", new DynamicCheckBox(ConfigDataType.Data, "ShowStatus", "Show Evade Status", true).CheckBox);
-            drawMenu.Add("DrawSpellPos", new DynamicCheckBox(ConfigDataType.Data, "DrawSpellPos", "Draw Spell Position", false).CheckBox);
-            drawMenu.Add("DrawEvadePosition", new DynamicCheckBox(ConfigDataType.Data, "DrawEvadePosition", "Draw Evade Position", false).CheckBox);
+            drawMenu.Add(ConfigValue.DrawSkillShots.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DrawSkillShots, "Draw SkillShots", true).CheckBox);
+            drawMenu.Add(ConfigValue.DrawEvadeStatus.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DrawEvadeStatus, "Show Evade Status", true).CheckBox);
+            drawMenu.Add(ConfigValue.DrawSpellPosition.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DrawSpellPosition, "Draw Spell Position", false).CheckBox);
+            drawMenu.Add(ConfigValue.DrawEvadePosition.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DrawEvadePosition, "Draw Evade Position", false).CheckBox);
 
             Menu dangerMenu = drawMenu.Parent.AddSubMenu("Danger Drawings", "DangerLevelDrawings");
 
-            Menu lowDangerMenu = dangerMenu.Parent.AddSubMenu("    Low", "LowDrawing");
-            lowDangerMenu.Add("LowWidth", new DynamicSlider(ConfigDataType.Data, "LowWidth", "Line Width", 3, 1, 15).Slider);
+            Menu lowDangerMenu = dangerMenu.Parent.AddSubMenu(" Low", "LowDrawing");
+            lowDangerMenu.Add(ConfigValue.LowDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.LowDangerDrawWidth, "Line Width", 3, 1, 15).Slider);
             lowDangerMenu.AddGroupLabel("Color");
             LowDanger = new ColorConfig(lowDangerMenu, "LowDangerColorConfig", Color.LightGray);
-            Menu normalDangerMenu = dangerMenu.Parent.AddSubMenu("    Normal", "NormalDrawing");
-            normalDangerMenu.Add("NormalWidth", new DynamicSlider(ConfigDataType.Data, "NormalWidth", "Line Width", 3, 1, 15).Slider);
+            Menu normalDangerMenu = dangerMenu.Parent.AddSubMenu(" Normal", "NormalDrawing");
+            normalDangerMenu.Add(ConfigValue.NormalDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.NormalDangerDrawWidth, "Line Width", 3, 1, 15).Slider);
             normalDangerMenu.AddGroupLabel("Color");
             NormalDanger = new ColorConfig(normalDangerMenu, "NormalDangerColorConfig", Color.White);
-            Menu highDangerMenu = dangerMenu.Parent.AddSubMenu("    High", "HighDrawing");
-            highDangerMenu.Add("HighWidth", new DynamicSlider(ConfigDataType.Data, "HighWidth", "Line Width", 4, 1, 15).Slider);
+            Menu highDangerMenu = dangerMenu.Parent.AddSubMenu(" High", "HighDrawing");
+            highDangerMenu.Add(ConfigValue.HighDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.HighDangerDrawWidth, "Line Width", 4, 1, 15).Slider);
             highDangerMenu.AddGroupLabel("Color");
             HighDanger = new ColorConfig(highDangerMenu, "HighDangerColorConfig", Color.DarkOrange);
 
-            Menu extremeDangerMenu = dangerMenu.Parent.AddSubMenu("    Extreme", "ExtremeDrawing");
-            extremeDangerMenu.Add("ExtremeWidth", new DynamicSlider(ConfigDataType.Data, "ExtremeWidth", "Line Width", 4, 1, 15).Slider);
+            Menu extremeDangerMenu = dangerMenu.Parent.AddSubMenu(" Extreme", "ExtremeDrawing");
+            extremeDangerMenu.Add(ConfigValue.ExtremeDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtremeDangerDrawWidth, "Line Width", 4, 1, 15).Slider);
             extremeDangerMenu.AddGroupLabel("Color");
             ExtremeDanger = new ColorConfig(extremeDangerMenu, "ExtremeDangerColorConfig", Color.OrangeRed);
             /*
@@ -90,12 +91,12 @@ namespace AdEvade.Draw
 
         private void DrawEvadeStatus()
         {
-            if (Config.Properties.GetData<bool>("ShowStatus"))
+            if (ConfigValue.DrawEvadeStatus.GetBool())
             {
                 var heroPos = Drawing.WorldToScreen(ObjectManager.Player.Position);
                 var dimension = Drawing.GetTextEntent("Evade: ON", 12);
 
-                if (Config.Properties.Keys["DodgeSkillShots"].CurrentValue)
+                if (ConfigValue.DodgeSkillShots.GetBool())
                 {
                     if (AdEvade.IsDodging)
                     {
@@ -111,7 +112,7 @@ namespace AdEvade.Draw
                 }
                 else
                 {
-                    if (Config.Properties.Keys["ActivateEvadeSpells"].CurrentValue)
+                    if (ConfigValue.ActivateEvadeSpells.GetBool())
                     {
                         Drawing.DrawText(heroPos.X - dimension.Width / 2, heroPos.Y, Color.Purple, "Evade: Spell");
                     }
@@ -146,7 +147,7 @@ namespace AdEvade.Draw
         private void Drawing_OnDraw(EventArgs args)
         {
 
-            if (Config.Properties.GetData<bool>("DrawEvadePosition"))
+            if (ConfigValue.DrawEvadePosition.GetBool())
             {
                 //Render.Circle.DrawCircle(myHero.Position.ExtendDir(dir, 500), 65, Color.Red, 10);
 
@@ -164,7 +165,7 @@ namespace AdEvade.Draw
 
             DrawEvadeStatus();
 
-            if (Config.Properties.GetData<bool>("DrawSkillShots") == false)
+            if (!ConfigValue.DrawSkillShots.GetBool())
             {
                 return;
             }
@@ -173,10 +174,22 @@ namespace AdEvade.Draw
             {
                 Spell spell = entry.Value;
 
-                var dangerStr = spell.GetSpellDangerString();
-                //var spellDrawingConfig = ObjectCache.menuCache.cache[dangerStr + "Color"].GetValue<Circle>();
-                var spellDrawingWidth = Config.Properties.GetData<int>(dangerStr + "Width");
-
+                var width = 0;
+                switch (spell.Dangerlevel)
+                {
+                    case SpellDangerLevel.Low:
+                        width = ConfigValue.LowDangerDrawWidth.GetInt();
+                        break;
+                    case SpellDangerLevel.Normal:
+                        width = ConfigValue.NormalDangerDrawWidth.GetInt();
+                        break;
+                    case SpellDangerLevel.High:
+                        width = ConfigValue.HighDangerDrawWidth.GetInt();
+                        break;
+                    case SpellDangerLevel.Extreme:
+                        width = ConfigValue.ExtremeDangerDrawWidth.GetInt();
+                        break;
+                }
                 if (Config.Properties.GetSpell(spell.Info.SpellName).Draw)
                 {
                     if (spell.SpellType == SpellType.Line)
@@ -184,14 +197,14 @@ namespace AdEvade.Draw
                         Vector2 spellPos = spell.CurrentSpellPosition;
                         Vector2 spellEndPos = spell.GetSpellEndPosition();
 
-                        DrawLineRectangle(spellPos, spellEndPos, (int)spell.Radius, spellDrawingWidth, GetSpellColor(spell.Dangerlevel));
+                        DrawLineRectangle(spellPos, spellEndPos, (int) spell.Radius, width, GetSpellColor(spell.Dangerlevel));
 
                         /*foreach (var hero in ObjectManager.Get<AIHeroClient>())
                         {
                             Render.Circle.DrawCircle(new Vector3(hero.ServerPosition.X, hero.ServerPosition.Y, myHero.Position.Z), (int)spell.radius, Color.Red, 5);
                         }*/
 
-                        if (Config.Properties.GetData<bool>("DrawSpellPos"))// && spell.spellObject != null)
+                        if (ConfigValue.DrawSpellPosition.GetBool() && spell.SpellObject != null)
                         {
                             //spellPos = SpellDetector.GetCurrentSpellPosition(spell, true, ObjectCache.gamePing);
 
@@ -204,21 +217,20 @@ namespace AdEvade.Draw
                             /*if (spell.spellObject != null && spell.spellObject.IsValid && spell.spellObject.IsVisible &&
                                   spell.spellObject.Position.To2D().Distance(ObjectCache.myHeroCache.serverPos2D) < spell.info.range + 1000)*/
 
-                            Render.Circle.DrawCircle(new Vector3(spellPos.X, spellPos.Y, MyHero.Position.Z), (int)spell.Radius, GetSpellColor(spell.Dangerlevel), spellDrawingWidth);
+                            Render.Circle.DrawCircle(new Vector3(spellPos.X, spellPos.Y, MyHero.Position.Z), (int) spell.Radius, GetSpellColor(spell.Dangerlevel), width);
                         }
-
                     }
                     else if (spell.SpellType == SpellType.Circular)
                     {
-                        Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int)spell.Radius, GetSpellColor(spell.Dangerlevel), spellDrawingWidth);
+                        Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int) spell.Radius, GetSpellColor(spell.Dangerlevel), width);
 
                         if (spell.Info.SpellName == "VeigarEventHorizon")
                         {
-                            Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int)spell.Radius - 125, GetSpellColor(spell.Dangerlevel), spellDrawingWidth);
+                            Render.Circle.DrawCircle(new Vector3(spell.EndPos.X, spell.EndPos.Y, spell.Height), (int) spell.Radius - 125, GetSpellColor(spell.Dangerlevel), width);
                         }
                     }
                     else if (spell.SpellType == SpellType.Arc)
-                    {                      
+                    {
                         /*var spellRange = spell.startPos.Distance(spell.endPos);
                         var midPoint = spell.startPos + spell.direction * (spellRange / 2);
 
@@ -230,7 +242,6 @@ namespace AdEvade.Draw
                     }
                     else if (spell.SpellType == SpellType.Cone)
                     {
-
                     }
                 }
             }

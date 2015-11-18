@@ -490,7 +490,7 @@ namespace AdEvade.Data.EvadeSpells
                 spellName = "JackInTheBox",
                 range = 425,
                 spellDelay = 250,
-                spellKey = SpellSlot.W,
+                SpellKey = SpellSlot.W,
                 evadeType = EvadeType.WindWall,
                 castType = CastType.Position,
             });*/

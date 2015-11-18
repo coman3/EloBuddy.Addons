@@ -223,7 +223,7 @@ namespace AdEvade.Data.Spells
                 radius = 290,
                 range = 600,
                 spellDelay = 250,
-                spellKey = SpellSlot.R,
+                SpellKey = SpellSlot.R,
                 spellName = "InfernalGuardian",
                 spellType = SpellType.Circular,
 
@@ -836,7 +836,7 @@ namespace AdEvade.Data.Spells
                 radius = 250,
                 range = 1050,
                 spellDelay = 825,
-                spellKey = SpellSlot.W,
+                SpellKey = SpellSlot.W,
                 spellName = "EzrealEssenceFlux",
                 spellType = SpellType.Circular,
 
@@ -1034,7 +1034,7 @@ namespace AdEvade.Data.Spells
                 radius = 150,
                 fixedRange = true,
                 projectileSpeed = 900,
-                spellKey = SpellSlot.E,
+                SpellKey = SpellSlot.E,
                 spellType = SpellType.Circular,
             });
 
@@ -1050,7 +1050,7 @@ namespace AdEvade.Data.Spells
                 radius = 100,
                 fixedRange = true,
                 projectileSpeed = 800,
-                spellKey = SpellSlot.E,
+                SpellKey = SpellSlot.E,
                 spellType = SpellType.Circular,
             });*/
 
@@ -1916,7 +1916,7 @@ namespace AdEvade.Data.Spells
                 radius = 225,
                 range = 300,
                 spellDelay = 250,
-                spellKey = SpellSlot.R,
+                SpellKey = SpellSlot.R,
                 spellName = "MonkeyKingSpinToWin",
                 spellType = SpellType.Circular,
                 defaultOff = true,
@@ -2908,7 +2908,7 @@ namespace AdEvade.Data.Spells
                 projectileSpeed = 1500,
                 radius = 80,
                 range = 800,
-                spellKey = SpellSlot.E,
+                SpellKey = SpellSlot.E,
                 spellName = "ViktorDeathRay2",
                 spellType = SpellType.Line,
                 usePackets = true,
@@ -3086,7 +3086,7 @@ namespace AdEvade.Data.Spells
                 name = "ZedE",
                 radius = 290,
                 range = 290,
-                spellKey = SpellSlot.E,
+                SpellKey = SpellSlot.E,
                 spellName = "ZedE",
                 spellType = SpellType.Circular,
                 isSpecial = true,
@@ -3240,7 +3240,7 @@ namespace AdEvade.Data.Spells
                 radius = 525,
                 range = 700,
                 spellDelay = 500,
-                spellKey = SpellSlot.R,
+                SpellKey = SpellSlot.R,
                 spellName = "ZyraBrambleZone",
                 spellType = SpellType.Circular,
 
