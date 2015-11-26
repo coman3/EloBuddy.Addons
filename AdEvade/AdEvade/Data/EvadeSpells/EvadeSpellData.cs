@@ -28,24 +28,23 @@ namespace AdEvade.Data.EvadeSpells
     {
         Blink,
         Dash,
-        Invulnerability,
-        MovementSpeedBuff,
-        Shield,
         SpellShield,
+        Shield,
         WindWall,
+        MovementSpeedBuff
     }
 
     public class EvadeSpellData
     {
         public string CharName;
         public SpellSlot SpellKey = SpellSlot.Q;
-        public SpellDangerLevel Dangerlevel = SpellDangerLevel.Low;
         public string SpellName;
         public string Name;
         public bool CheckSpellName = false;
         public float SpellDelay = 250;
         public float Range;
         public float Speed = 0;
+        public SpellDangerLevel Dangerlevel = SpellDangerLevel.Normal;
         public bool FixedRange = false;
         public EvadeType EvadeType;
         public bool IsReversed = false;
@@ -62,21 +61,6 @@ namespace AdEvade.Data.EvadeSpells
         public EvadeSpellData()
         {
 
-        }
-
-        public EvadeSpellData(
-            string charName,
-            string name,
-            SpellSlot spellKey,
-            EvadeType evadeType,
-            SpellDangerLevel dangerlevel
-            )
-        {
-            CharName = charName;
-            Name = name;
-            SpellKey = spellKey;
-            EvadeType = evadeType;
-            Dangerlevel = dangerlevel;
         }
 
         public override string ToString()

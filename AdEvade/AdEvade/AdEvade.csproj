@@ -62,9 +62,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdEvade.cs" />
+    <Compile Include="Config\ConsoleDebug.cs" />
     <Compile Include="Config\Controls\ColorConfig.cs" />
     <Compile Include="Config\ConfigPluginControler.cs" />
     <Compile Include="Config\Enums.cs" />
+    <Compile Include="Config\Plugins\Custom.cs" />
+    <Compile Include="Config\Plugins\Streaming.cs" />
     <Compile Include="Config\Plugins\UltraSafe.cs" />
     <Compile Include="Config\Plugins\JustDraw.cs" />
     <Compile Include="Config\Properties.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Config\Controls\EvadeSpellConfigControl.cs" />
     <Compile Include="Config\Controls\SpellConfigControl.cs" />
     <Compile Include="Config\Controls\StringSlider.cs" />
+    <Compile Include="Config\SerializableDictionary.cs" />
     <Compile Include="Data\Spells\ChampionPlugin.cs" />
     <Compile Include="Data\GameData.cs" />
     <Compile Include="Data\ObjectTracker.cs" />

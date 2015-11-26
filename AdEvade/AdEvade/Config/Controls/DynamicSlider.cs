@@ -48,6 +48,7 @@ namespace AdEvade.Config.Controls
 
         private void Config_OnConfigValueChanged(ConfigValueChangedArgs args)
         {
+            if(!(args.Value is int)) return;
             if (args.Key == _configKey && !_isBasedOnSpell) Slider.CurrentValue = (int) args.Value;
         }
 

@@ -175,7 +175,7 @@ namespace AdEvade
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                ConsoleDebug.WriteLine(e);
             }
         }
 
@@ -639,7 +639,7 @@ namespace AdEvade
 
                 if (spell.SpellHitTime != float.MinValue)
                 {
-                    //Console.WriteLine("spellhittime: " + spell.spellHitTime);
+                    //ConsoleDebug.WriteLine("spellhittime: " + spell.spellHitTime);
                     lowest = Math.Min(lowest, (spell.SpellHitTime - spell.EvadeTime));
                     lowestSpell = spell;
                 }

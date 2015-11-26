@@ -41,7 +41,7 @@ namespace AdEvade.Config
         public delegate void ConfigValueChangedHandler(ConfigValueChangedArgs args);
         public static event ConfigValueChangedHandler OnConfigValueChanged;
 
-        internal static Dictionary<ConfigValue, object> Values = new Dictionary<ConfigValue, object>();
+        public static Dictionary<ConfigValue, object> Values = new Dictionary<ConfigValue, object>();
         public static readonly Dictionary<string, SpellConfig> Spells = new Dictionary<string, SpellConfig>();
 
         public static readonly Dictionary<string, EvadeSpellConfig> EvadeSpells = new Dictionary<string, EvadeSpellConfig>();
@@ -64,7 +64,7 @@ namespace AdEvade.Config
         //        if(Data[key] is T)
         //            return (T) Data[key];
         //        else 
-        //            Debug.DrawTopLeft("Tryed To Access key with wrong type: " + key);
+        //            Debug.DrawTopLeft("Tried To Access key with wrong type: " + key);
         //    }
         //    return default(T);
         //}
@@ -133,7 +133,14 @@ namespace AdEvade.Config
             if (raiseEvent && OnConfigValueChanged != null)
                 OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
         }
-        
+
+        public static void SetValues(Dictionary<ConfigValue, object> dictionary)
+        {
+            foreach (var o in dictionary)
+            {
+                Values[o.Key] = o.Value; //So we don't remove keys that didn't seem to be in the dictionary 
+            }
+        }
     }
 
     public class EvadeSpellConfig

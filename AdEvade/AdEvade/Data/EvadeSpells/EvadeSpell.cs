@@ -49,7 +49,7 @@ namespace AdEvade.Data.EvadeSpells
             if (EvadeUtils.TickCount - LastSpellEvadeCommand.Timestamp < 250 && MyHero.IsDashing()
                 && LastSpellEvadeCommand.EvadeSpellData.EvadeType == EvadeType.Dash)
             {
-                //Console.WriteLine("" + dashInfo.EndPos.Distance(lastSpellEvadeCommand.targetPosition));
+                //ConsoleDebug.WriteLine("" + dashInfo.EndPos.Distance(lastSpellEvadeCommand.targetPosition));
                 LastSpellEvadeCommand.TargetPosition = Prediction.Position.GetDashPos(Player.Instance);
             }
         }

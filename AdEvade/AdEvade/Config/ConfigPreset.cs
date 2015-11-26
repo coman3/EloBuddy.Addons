@@ -8,7 +8,7 @@ namespace AdEvade.Config
 
     public abstract class ConfigPreset
     {
-        private Dictionary<ConfigValue, object> Values;
+        public Dictionary<ConfigValue, object> Values;
         public ConfigPluginAttribute GetAttribute()
         {
             // Get instance of the attribute.
@@ -29,6 +29,7 @@ namespace AdEvade.Config
         }
         public virtual void InitiateConfig(ref Dictionary<ConfigValue, object> values)
         {
+            values.Clear();
             //Integers
             values.Add(ConfigValue.ExtraDetectionRange, 0);
             values.Add(ConfigValue.ExtraLineWidth, 0);
@@ -81,7 +82,7 @@ namespace AdEvade.Config
             Values = values;
         }
         public abstract void LoadConfig();
-
+        public virtual void UnLoadConfig() { }
         /// <summary>
         /// Gets an <see cref="int"/> from the config database.
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdEvade.Config;
 using EloBuddy;
 
 namespace AdEvade.Utils
@@ -31,7 +32,7 @@ namespace AdEvade.Utils
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        ConsoleDebug.WriteLine(e);
                     }
 
                     ActionList.RemoveAt(i);

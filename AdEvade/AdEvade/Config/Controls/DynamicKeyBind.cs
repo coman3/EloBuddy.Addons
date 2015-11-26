@@ -13,18 +13,12 @@ namespace AdEvade.Config.Controls
             KeyBind = new KeyBind(displayName, defaultValue, type, defaultKey1, defaultKey2);
             Properties.SetValue(_configKey, KeyBind.CurrentValue);
             KeyBind.OnValueChange += KeyBind_OnValueChange;
-            Properties.OnConfigValueChanged += Properties_OnConfigValueChanged;
         }
 
-        private void Properties_OnConfigValueChanged(ConfigValueChangedArgs args)
-        {
-            if (_configKey == args.Key)
-                KeyBind.CurrentValue = (bool) args.Value;
-        }
 
         private void KeyBind_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
-            Properties.SetValue(_configKey, KeyBind, false);
+            Properties.SetValue(_configKey, KeyBind.CurrentValue, false);
         }
     }
 }

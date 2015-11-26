@@ -34,7 +34,7 @@ namespace AdEvade.Draw
 
         private void Game_OnGameLoad()
         {
-            //Console.WriteLine("SpellDrawer loaded");
+            //ConsoleDebug.WriteLine("SpellDrawer loaded");
             
 
             Menu drawMenu = Menu.IsSubMenu ? Menu.Parent.AddSubMenu("Draw", "Draw") : Menu.AddSubMenu("Draw", "Draw");

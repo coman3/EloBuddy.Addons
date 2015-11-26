@@ -118,7 +118,7 @@ namespace AdEvade.Helpers
 
                     var distance = _lastSpellCastServerPos.Distance(missile.StartPosition.To2D());
                     float moveTime = 1000 * distance / MyHero.MoveSpeed;
-                    Console.WriteLine("Extra Delay: " + moveTime);
+                    ConsoleDebug.WriteLine("Extra Delay: " + moveTime);
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace AdEvade.Helpers
 
             var distance = MyHero.Position.To2D().Distance(MyHero.ServerPosition.To2D());
             float moveTime = 1000 * distance / MyHero.MoveSpeed;
-            //Console.WriteLine("Extra Delay: " + moveTime);
+            //ConsoleDebug.WriteLine("Extra Delay: " + moveTime);
 
             if (!Config.Properties.GetBool(ConfigValue.AutoSetPing))
             {
@@ -217,7 +217,7 @@ namespace AdEvade.Helpers
                                 _lastMoveToServerPos.Distance(intersection);
                             float moveTime = 1000 * distance / MyHero.MoveSpeed;
 
-                            //Console.WriteLine("waa: " + distance);
+                            //ConsoleDebug.WriteLine("waa: " + distance);
 
                             if (moveTime < 1000)
                             {
@@ -246,10 +246,10 @@ namespace AdEvade.Helpers
 
                                     _pingList.Clear();
 
-                                    Console.WriteLine("Max Extra Delay: " + _maxExtraDelayTime);
+                                    ConsoleDebug.WriteLine("Max Extra Delay: " + _maxExtraDelayTime);
                                 }
 
-                                Console.WriteLine("Extra Delay: " + Math.Max(moveTime - Game.Ping,0));
+                                ConsoleDebug.WriteLine("Extra Delay: " + Math.Max(moveTime - Game.Ping,0));
                             }
                         }
                     }

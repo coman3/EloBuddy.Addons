@@ -29,7 +29,7 @@ namespace AdEvade
 {
     public class AdEvade
     {
-        public const string LastUpdate = "2:04 PM Wednesday, 18 November 2015";
+        public const string LastUpdate = "9:19 AM Friday, 27 November 2015";
         public static SpellDetector SpellDetector;
         private static SpellDrawer _spellDrawer;
         //private static EvadeTester _evadeTester;
@@ -99,13 +99,13 @@ namespace AdEvade
 
         private void Game_OnGameLoad(EventArgs args)
         {
+            ConsoleDebug.WriteLineColor("Loading...", ConsoleColor.Blue, true);
             ConfigPluginControler.LoadConfigPresets();
-            //Console.Write("ezEvade loading....");
 
             try
             {
                 Menu = MainMenu.AddMenu("AdEvade", "AdEvade");
-                
+                ConsoleDebug.WriteLineColor("   Creating Menu...", ConsoleColor.Yellow, true);
                 Menu.AddGroupLabel("AdEvade (EzEvade Port)");
                 Menu.AddLabel("Please report any bugs or anything you think is a ");
                 Menu.AddLabel("problem / issue, on the GitHub Issues Section");
@@ -118,6 +118,7 @@ namespace AdEvade
                             Process.Start(@"https://github.com/coman3/EloBuddy.Addons/issues");
                         }
                     };
+                Menu.AddLabel("I am going to be on holidays for the next week, so if this addon has a major flaw, \nplease don't kill me... ill fix it as soon as i get back! :D");
                 Menu.AddSeparator();
                 Menu.AddLabel("All Credit for the actual evading (Movement and detection) in this assembly ");
                 Menu.AddLabel("goes to the creator of EzEvade.");
@@ -151,20 +152,15 @@ namespace AdEvade
                 mainMenu.AddSeparator();
                 mainMenu.AddGroupLabel("Evade Mode");
 
-                var sliderEvadeMode = mainMenu.Add("EvadeMode", new Slider("Smooth", 0, 0, 2));
-                var modeArray = new[] { "Smooth", "Fastest", "Very Smooth" };
+                var sliderEvadeMode = new StringSlider(ConfigDataType.Data, "EvadeMode", "Evade Mode", 2, SpellConfigProperty.None, Enum.GetNames(typeof(EvadeMode)));
+                sliderEvadeMode.Slider.Slider.OnValueChange += OnEvadeModeChange;
+                mainMenu.Add("EvadeMode", sliderEvadeMode.Slider.Slider);
 
-                sliderEvadeMode.DisplayName = modeArray[sliderEvadeMode.CurrentValue];
-                sliderEvadeMode.OnValueChange +=
-                    delegate (ValueBase<int> sender, ValueBase<int>.ValueChangeArgs changeArgs)
-                    {
-                        sender.DisplayName = modeArray[changeArgs.NewValue];
-                        OnEvadeModeChange(sender, changeArgs);
-                    };
-
+                ConsoleDebug.WriteLineColor("       Detecting Spells...", ConsoleColor.Yellow, true);
                 SpellDetector = new SpellDetector(Menu);
                 _evadeSpell = new EvadeSpell(Menu);
 
+                ConsoleDebug.WriteLineColor("       Adding Humanizer and Miscellaneous Menus...", ConsoleColor.Yellow, true);
                 Menu miscMenu = Menu.AddSubMenu("Misc Settings", "MiscSettings");
                 miscMenu.Add(ConfigValue.HighPrecision.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.HighPrecision, "Enhanced Dodge Precision", false).CheckBox);
                 miscMenu.Add(ConfigValue.RecalculatePath.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.RecalculatePath, "Recalculate Path", true).CheckBox);
@@ -217,7 +213,7 @@ namespace AdEvade
 
                 Debug.DrawTopLeft("Showing Debug info...");
 
-
+                ConsoleDebug.WriteLineColor("   Hooking Events...", ConsoleColor.Yellow, true);
                 Player.OnIssueOrder += Game_OnIssueOrder;
                 Spellbook.OnCastSpell += Game_OnCastSpell;
                 Game.OnUpdate += Game_OnGameUpdate;
@@ -228,7 +224,7 @@ namespace AdEvade
                 SpellDetector.OnProcessDetectedSpells += SpellDetector_OnProcessDetectedSpells;
                 Orbwalker.OnPreAttack += Orbwalking_BeforeAttack;
 
-                Chat.Print("AdEvade Loaded");
+                ConsoleDebug.WriteLineColor("   Setting Loaded Presets Values...", ConsoleColor.Yellow, true);
                 ConfigPluginControler.SelectedPreset.LoadConfig();
 
             }
@@ -236,6 +232,7 @@ namespace AdEvade
             {
                 Chat.Print(e);
             }
+            ConsoleDebug.WriteLineColor("Successfully Loaded!", ConsoleColor.Green, true);
         }
 
         private void OnEvadeModeChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs changeArgs)
@@ -247,7 +244,7 @@ namespace AdEvade
             {
                 ConfigValue.FastEvadeActivationTime.SetInt(0);
                 ConfigValue.RejectMinDistance.SetInt(0);
-               ConfigValue.ExtraCpaDistance.SetInt(0);
+                ConfigValue.ExtraCpaDistance.SetInt(0);
                 ConfigValue.ExtraPingBuffer.SetInt(40);
             }
             else if (mode == "Smooth")
@@ -513,7 +510,7 @@ namespace AdEvade
                 var distance = lastStopPosition.Distance(args.Start.To2D());
                 float moveTime = 1000 * distance / GameData.MyHero.MoveSpeed;
 
-                Console.WriteLine("Extra dist: " + distance + " Extra Delay: " + moveTime);
+                ConsoleDebug.WriteLine("Extra dist: " + distance + " Extra Delay: " + moveTime);
             }*/
 
             string name;
@@ -578,7 +575,7 @@ namespace AdEvade
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                ConsoleDebug.WriteLine(e);
             }
         }
 
@@ -638,7 +635,7 @@ namespace AdEvade
 
                     if (!EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
                     {
-                        //Console.WriteLine("Continue Movement");
+                        //ConsoleDebug.WriteLine("Continue Movement");
                         //GameData.MyHero.IssueOrder(GameObjectOrder.MoveTo, movePos.To3D());
                         EvadeCommand.MoveTo(movePos);
                         LastBlockedUserMoveTo.IsProcessed = true;
@@ -705,7 +702,7 @@ namespace AdEvade
                     {
                         Spell spell = entry.Value;
 
-                        Console.WriteLine("" + (int)(TickCount-spell.startTime));
+                        ConsoleDebug.WriteLine("" + (int)(TickCount-spell.startTime));
                     }*/
 
 
@@ -839,7 +836,7 @@ namespace AdEvade
                     }
                     NumCalculationTime += 1;
 
-                    //Console.WriteLine("CalculationTime: " + caculationTime);
+                    //ConsoleDebug.WriteLine("CalculationTime: " + caculationTime);
 
                     /*if (EvadeHelper.GetHighestDetectedSpellID() > EvadeHelper.GetHighestSpellID(posInfo))
                     {
@@ -868,7 +865,7 @@ namespace AdEvade
             }
 
 
-            //Console.WriteLine("SkillsDodged: " + lastPosInfo.dodgeableSpells.Count + " DangerLevel: " + lastPosInfo.undodgeableSpells.Count);            
+            //ConsoleDebug.WriteLine("SkillsDodged: " + lastPosInfo.dodgeableSpells.Count + " DangerLevel: " + lastPosInfo.undodgeableSpells.Count);            
         }
     }
 }

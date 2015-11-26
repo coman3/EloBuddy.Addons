@@ -6,9 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Windows.Forms.VisualStyles;
+using AdEvade.Data;
 using AdEvade.Draw;
 using AdEvade.Utils;
 using EloBuddy;
+using EloBuddy.Sandbox;
+using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
@@ -18,32 +21,63 @@ namespace AdEvade.Config
     {
         public static Dictionary<ConfigPluginAttribute, ConfigPreset> Configs { get; set; }
         public static Dictionary<ConfigPluginAttribute, Menu> Menus { get; set; }
-        private static int SelectedIndex { get; set; }
+
+        private static int SelectedIndex
+        {
+            get { return _configMenu.Get<Slider>("SelectedPluginIndex").CurrentValue; }
+            set { _configMenu.Get<Slider>("SelectedPluginIndex").CurrentValue = value; }
+        }
+
         public static ConfigPreset SelectedPreset { get; private set; }
         public static Menu SelectedPresetMenu { get; private set; }
         private static Menu _configMenu;
         private static bool _blockChangedEvent;
         private static float _lastChangedTime;
 
-        public static void MoveTo(int index, bool relative)
-        {
-            if (relative) index += SelectedIndex;
 
-            if (index > Configs.Count) index = 0;
-            SelectedIndex = index;
-            SelectedPreset = Configs.ElementAt(index).Value;
-            Console.WriteLine("Selected Config Plugin: " + SelectedPreset.GetAttribute().Name);
-            Properties.Values.Clear();
-            DisableAllInMenu();
-            var menu = Menus[SelectedPreset.GetAttribute()];
-            menu.DisplayName = "* " + menu.DisplayName;
-            SelectedPresetMenu = menu;
-            _blockChangedEvent = true;
-            menu.Get<CheckBox>("Enabled").CurrentValue = true;
-            _blockChangedEvent = false;
-            SelectedPreset.InitiateConfig(ref Properties.Values);
-            SelectedPreset.LoadConfig();
-            _lastChangedTime = Game.Time;
+
+        public static void MoveTo(int index, bool relative = false, bool dontSaveSelection = false)
+        {
+            try
+            {
+                if (relative) index += SelectedIndex;
+                if (index > Configs.Count) index = 0;
+
+                if (SelectedPreset != null)
+                {
+                    ConsoleDebug.WriteLine("Unloading Previous Preset...");
+                    SelectedPreset.UnLoadConfig();
+                }
+                if (!dontSaveSelection)
+                    SelectedIndex = index;
+                SelectedPreset = Configs.ElementAt(index).Value;
+                
+                ConsoleDebug.WriteLine("Selected Config Plugin: " + SelectedPreset.GetAttribute().Name);
+
+
+                ConsoleDebug.WriteLine("Changing Preset Menu Items...");
+                DisableAllInMenu();
+                var menu = Menus[SelectedPreset.GetAttribute()];
+                menu.DisplayName = "* " + menu.DisplayName;
+                SelectedPresetMenu = menu;
+
+                _blockChangedEvent = true;
+                menu.Get<CheckBox>("Enabled").CurrentValue = true;
+                _blockChangedEvent = false;
+
+                ConsoleDebug.WriteLine("Initiating Preset...");
+                SelectedPreset.InitiateConfig(ref Properties.Values);
+                ConsoleDebug.WriteLine("Loading Preset...");
+                SelectedPreset.LoadConfig();
+
+                _lastChangedTime = Game.Time;
+            }
+            catch (Exception ex)
+            {
+                ConsoleDebug.WriteLineColor("Problem Loading Preset!", ConsoleColor.Red, true);
+                ConsoleDebug.WriteLine(ex, true);
+            }
+            
         }
 
         private static void DisableAllInMenu()
@@ -66,29 +100,54 @@ namespace AdEvade.Config
             _configMenu = MainMenu.AddMenu("AdEvade Presets", "AdEvadePreset", "AdEvade Preset Manager");
             _configMenu.AddGroupLabel("Installed Presets");
             Configs = new Dictionary<ConfigPluginAttribute, ConfigPreset>();
-            Console.WriteLine("Loading Config Presets...");
+            ConsoleDebug.WriteLine("Loading Config Presets...");
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            var plugins = types.Where(IsConfigPlugin);
+            var plugins = types.Where(IsConfigPlugin).ToList();
+
             foreach (var plugin in plugins)
             {
-                var pluginItem = (ConfigPreset)NewInstance(plugin);
-                var attribute = pluginItem.GetAttribute();
-                Configs.Add(attribute, pluginItem);
-                Console.WriteLine("Loaded Config: Name: {0} (By: {1}) Version: {2}\n   Suported Champions: {3}",
-                        attribute.Name, attribute.Author, attribute.Version,
-                        string.Join(", ", attribute.RecomendedChampions));
-                _configMenu.AddLabel(GetFriendlyConfigTitle(attribute));
-                _configMenu.AddLabel("Recomended Champions: " + string.Join(", ", attribute.RecomendedChampions));
-                _configMenu.AddSeparator();
-            }
-            LoadMenus(_configMenu);
+                try
+                {
+                    var pluginItem = (ConfigPreset)NewInstance(plugin);
+                    if(pluginItem == null) continue;
 
-            MoveTo(Configs.Count - 1, false);
+                    var attribute = pluginItem.GetAttribute();
+                    Configs.Add(attribute, pluginItem);
+
+                    ConsoleDebug.WriteLine("Loaded Config: Name: {0} (By: {1}) Version: {2}\n   Supported Champions: {3}",
+                            attribute.Name, attribute.Author, attribute.Version,
+                            string.Join(", ", attribute.RecomendedChampions));
+                    _configMenu.AddLabel(GetFriendlyConfigTitle(attribute));
+                    _configMenu.AddLabel("Recommended Champions: " + string.Join(", ", attribute.RecomendedChampions));
+                    _configMenu.AddSeparator();
+                }
+                catch (Exception ex)
+                {
+                    ConsoleDebug.WriteLineColor("Problem Creating Preset!", ConsoleColor.Red, true);
+                    ConsoleDebug.WriteLine(ex, true);
+                }
+
+            }
+            _configMenu.Add("SelectedPluginIndex", new Slider("Selected Plugin Index", 0, 0, plugins.Count))
+                .IsVisible = false;
+            LoadMenus(_configMenu);
+            //Load default preset
+            LoadDefault();
+            //Load selected Preset. this stops any issues with key not found errors!
+            MoveTo(_configMenu.Get<Slider>("SelectedPluginIndex").CurrentValue);
+        }
+
+        private static void LoadDefault()
+        {
+            for (int i = 0; i < Configs.Count; i++)
+            {
+                if(Configs.ElementAt(i).Key.Name == "Default")
+                    MoveTo(i, false, true);
+            }
         }
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            Drawing.DrawText(0, 0, Color.White, _lastChangedTime.ToString());
             if (SelectedPreset != null)
             {
                 if(_lastChangedTime + Constants.DrawChangeLength > Game.Time)
@@ -133,9 +192,10 @@ namespace AdEvade.Config
         private static object NewInstance(Type type)
         {
             var target = type.GetConstructor(Type.EmptyTypes);
+            if (target == null || target.DeclaringType == null) return null;
+
             var dynamic = new DynamicMethod(string.Empty, type, new Type[0], target.DeclaringType);
             var il = dynamic.GetILGenerator();
-
             il.DeclareLocal(target.DeclaringType);
             il.Emit(OpCodes.Newobj, target);
             il.Emit(OpCodes.Stloc_0);

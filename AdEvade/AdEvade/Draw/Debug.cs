@@ -40,14 +40,14 @@ namespace AdEvade.Draw
         {
             if (!ConfigValue.ShowDebugInfo.GetBool()) return;
             Chat.Print(data);
-            Console.WriteLine(data);
+            ConsoleDebug.WriteLine(data);
         }
         public static void DrawTopLeft(object data)
         {
-            Console.WriteLine(data);
+            ConsoleDebug.WriteLine(data);
             if (!ConfigValue.ShowDebugInfo.GetBool()) return;
             textToWrite.Add(data.ToString());
-            Console.WriteLine(data);
+            ConsoleDebug.WriteLine(data);
         }
 
         public static bool DebugBool(this bool value, string key = "")

@@ -1207,6 +1207,57 @@ namespace AdEvade.Data.Spells
             });
             #endregion Irelia
 
+            #region Illaoi
+
+            Spells.Add(
+            new SpellData
+            {
+                CharName = "Illaoi",
+                Dangerlevel = SpellDangerLevel.Normal,
+                MissileName = "illaoiemis",
+                Name = "IllaoiQ",
+                ProjectileSpeed = float.MaxValue,
+                Radius = 100,
+                Range = 850,
+                SpellDelay = 750,
+                SpellKey = SpellSlot.Q,
+                SpellName = "IllaoiQ",
+                SpellType = SpellType.Line,
+            });
+
+            Spells.Add(
+            new SpellData
+            {
+                CharName = "Illaoi",
+                Dangerlevel = SpellDangerLevel.High,
+                MissileName = "IllaoiE",
+                Name = "IllaoiE",
+                ProjectileSpeed = 1900,
+                Radius = 75,
+                Range = 950,
+                SpellDelay = 500,
+                SpellKey = SpellSlot.E,
+                SpellName = "IllaoiE",
+                SpellType = SpellType.Line,
+            });
+
+            Spells.Add(
+            new SpellData
+            {
+                CharName = "Illaoi",
+                Dangerlevel = SpellDangerLevel.Extreme,
+                MissileName = "",
+                Name = "IllaoiR",
+                ProjectileSpeed = float.MaxValue,
+                Radius = 450,
+                Range = 0,
+                SpellDelay = 500,
+                SpellKey = SpellSlot.R,
+                SpellName = "IllaoiR",
+                SpellType = SpellType.Circular,
+            });
+            #endregion Illaoi
+
             #region Janna
 
             Spells.Add(

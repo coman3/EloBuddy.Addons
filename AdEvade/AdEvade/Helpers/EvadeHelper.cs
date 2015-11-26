@@ -234,7 +234,7 @@ namespace AdEvade.Helpers
                         .ThenBy(p => p.PosDangerCount);
 
                 fastEvadeMode = true;
-                //Console.WriteLine("fast evade: " + lowestEvadeTime);
+                //ConsoleDebug.WriteLine("fast evade: " + lowestEvadeTime);
             }
             else
             {
@@ -1138,7 +1138,7 @@ namespace AdEvade.Helpers
                 if (Evade.GetTickCount - EvadeSpell.lastSpellEvadeCommand.timestamp < evadeTime)
                 {
 
-                    Console.WriteLine("in" + CheckMoveToDirection(EvadeSpell.lastSpellEvadeCommand.targetPosition, movePos));
+                    ConsoleDebug.WriteLine("in" + CheckMoveToDirection(EvadeSpell.lastSpellEvadeCommand.targetPosition, movePos));
                     return CheckMoveToDirection(EvadeSpell.lastSpellEvadeCommand.targetPosition, movePos);
                 }
             }*/
