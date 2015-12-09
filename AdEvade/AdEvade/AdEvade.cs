@@ -29,7 +29,7 @@ namespace AdEvade
 {
     public class AdEvade
     {
-        public const string LastUpdate = "9:19 AM Friday, 27 November 2015";
+        public const string LastUpdate = "9:10 AM, 10th December 2015";
         public static SpellDetector SpellDetector;
         private static SpellDrawer _spellDrawer;
         //private static EvadeTester _evadeTester;
@@ -108,8 +108,8 @@ namespace AdEvade
                 ConsoleDebug.WriteLineColor("   Creating Menu...", ConsoleColor.Yellow, true);
                 Menu.AddGroupLabel("AdEvade (EzEvade Port)");
                 Menu.AddLabel("Please report any bugs or anything you think is a ");
-                Menu.AddLabel("problem / issue, on the GitHub Issues Section");
-                Menu.Add("OpenGithub", new CheckBox("Open Githubs Issues Section in browser", false)).OnValueChange +=
+                Menu.AddLabel("problem / issue, on the GitHub Issues Section, or with a reply to the AdEvade forum thread.");
+                Menu.Add("OpenGithub", new CheckBox("Open Github's Issues Section in browser", false)).OnValueChange +=
                     delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs changeArgs)
                     {
                         if (changeArgs.OldValue == false && changeArgs.NewValue)
@@ -118,8 +118,6 @@ namespace AdEvade
                             Process.Start(@"https://github.com/coman3/EloBuddy.Addons/issues");
                         }
                     };
-                Menu.AddLabel("I am going to be on holidays for the next week, so if this addon has a major flaw, \nplease don't kill me... ill fix it as soon as i get back! :D");
-                Menu.AddSeparator();
                 Menu.AddLabel("All Credit for the actual evading (Movement and detection) in this assembly ");
                 Menu.AddLabel("goes to the creator of EzEvade.");
                 Menu.AddSeparator(100);
