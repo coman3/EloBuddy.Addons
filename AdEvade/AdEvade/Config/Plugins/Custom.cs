@@ -89,26 +89,35 @@ namespace AdEvade.Config.Plugins
 
         public void SaveConfigData()
         {
-            FileStream file = File.OpenWrite(ConfigDataFile);
             try
             {
                 if (!Directory.Exists(ConfigDataFolder)) Directory.CreateDirectory(ConfigDataFolder);
                 if (!File.Exists(ConfigDataFile)) File.WriteAllText(ConfigDataFile, "");
-                XmlSerializer x = new XmlSerializer(typeof (SerializableDictionary<ConfigValue, object>));
-                ConsoleDebug.WriteLine("Saving Config Data...");
-                x.Serialize(file, new SerializableDictionary<ConfigValue, object>(Values));
-                file.Close();
-                ConsoleDebug.WriteLine("     Successful!");
+                FileStream file = File.OpenWrite(ConfigDataFile);
+                try
+                {
+                    XmlSerializer x = new XmlSerializer(typeof(SerializableDictionary<ConfigValue, object>));
+                    ConsoleDebug.WriteLine("Saving Config Data...");
+                    x.Serialize(file, new SerializableDictionary<ConfigValue, object>(Values));
+                    file.Close();
+                    ConsoleDebug.WriteLine("     Successful!");
+                }
+                catch (Exception ex)
+                {
+                    ConsoleDebug.WriteLine("     Error Saving Config Data File...");
+                    ConsoleDebug.WriteLine(ex);
+                }
+                finally
+                {
+                    file.Close();
+                }
             }
             catch (Exception ex)
             {
-                ConsoleDebug.WriteLine("     Error Saving Config Data File...");
+                ConsoleDebug.WriteLine("    Error Reading Config File...");
                 ConsoleDebug.WriteLine(ex);
             }
-            finally
-            {
-                file.Close();
-            }
+
         }
     }
 }
