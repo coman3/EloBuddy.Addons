@@ -94,7 +94,22 @@ namespace AdEvade
 
         private void Load()
         {
-            Loading.OnLoadingComplete += Game_OnGameLoad;
+            //Loading.OnLoadingComplete += Game_OnGameLoad;
+            Loading.OnLoadingComplete += Game_OnGameLoad_Disabled;
+        }
+
+        private void Game_OnGameLoad_Disabled(EventArgs args)
+        {
+            ConsoleDebug.WriteLineColor("Failed loading AdEvade...", ConsoleColor.Red);
+            ConsoleDebug.WriteLine("   Disabled due to needed core update (as of 5.24), please be patient!");
+            Chat.Print("<font color='#ff0000'>Failed loading AdEvade...</font>");
+            Chat.Print("   Disabled due to needed core update (as of 5.24), please be patient!");
+            Menu = MainMenu.AddMenu("AdEvade (Disabled)", "AdEvade", "AdEvade (Disabled)");
+            Menu.AddGroupLabel("Disabled due to needed core update!");
+            Menu.AddLabel("As the latest update has caused issues with getting buffs and sending movement commands\n" +
+                          " AdEvade can not be fixed.\n");
+            Menu.AddSeparator();
+            Menu.AddLabel("Please be patient for an update and in the mean time use EvadePlus");
         }
 
         private void Game_OnGameLoad(EventArgs args)
