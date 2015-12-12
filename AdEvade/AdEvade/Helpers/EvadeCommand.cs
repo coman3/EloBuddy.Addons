@@ -1,4 +1,5 @@
-﻿using AdEvade.Data.EvadeSpells;
+﻿using AdEvade.Config;
+using AdEvade.Data.EvadeSpells;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -48,7 +49,7 @@ namespace AdEvade.Helpers
 
             AdEvade.LastMoveToPosition = movePos;
             AdEvade.LastMoveToServerPos = MyHero.ServerPosition.To2D();
-
+            ConsoleDebug.WriteLine("MoveTo: " + movePos);
             Player.IssueOrder(GameObjectOrder.MoveTo, movePos.To3D(), false);
         }
 
@@ -62,7 +63,7 @@ namespace AdEvade.Helpers
                 Timestamp = EvadeUtils.TickCount,
                 IsProcessed = false
             };
-
+            ConsoleDebug.WriteLine("Attack: " + target.Name);
             Player.IssueOrder(GameObjectOrder.AttackUnit, target, false);
         }
 
@@ -76,7 +77,7 @@ namespace AdEvade.Helpers
                 Timestamp = EvadeUtils.TickCount,
                 IsProcessed = false
             };
-
+            ConsoleDebug.WriteLine("CastSpell: " + target.Name);
             MyHero.Spellbook.CastSpell(spellData.SpellKey, target, false);
         }
 
@@ -90,7 +91,7 @@ namespace AdEvade.Helpers
                 Timestamp = EvadeUtils.TickCount,
                 IsProcessed = false
             };
-
+            ConsoleDebug.WriteLine("CastSpell: " + movePos);
             MyHero.Spellbook.CastSpell(spellData.SpellKey, movePos.To3D(), false);
         }
 
@@ -103,7 +104,7 @@ namespace AdEvade.Helpers
                 Timestamp = EvadeUtils.TickCount,
                 IsProcessed = false
             };
-
+            ConsoleDebug.WriteLine("CastSpell");
             MyHero.Spellbook.CastSpell(spellData.SpellKey,false);
         }
     }

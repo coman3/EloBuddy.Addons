@@ -1,4 +1,5 @@
-﻿using AdEvade.Config;
+﻿using System;
+using AdEvade.Config;
 using AdEvade.Data;
 using AdEvade.Utils;
 using EloBuddy;
@@ -116,8 +117,8 @@ namespace AdEvade.Helpers
                 || MyHero.IsDead
                 || MyHero.IsInvulnerable
                 || !MyHero.IsTargetable
-                || HasSpellShield(MyHero)
-                || ChampionSpecificChecks()
+                //|| HasSpellShield(MyHero)
+                //|| ChampionSpecificChecks()
                 || Player.Instance.IsDashing()
                 || AdEvade.HasGameEnded;
         }
@@ -146,6 +147,7 @@ namespace AdEvade.Helpers
                 return true;
             }
 
+
             //TODO:
             ////Sivir E
             //if (unit.LastCastedSpellName() == "SivirE" && (EvadeUtils.TickCount - Evade.lastSpellCastTime) < 300)
@@ -164,7 +166,6 @@ namespace AdEvade.Helpers
             //{
             //    return true;
             //}
-
             return false;
         }
 
