@@ -78,8 +78,6 @@ namespace AdEvade
 
         private void Loading_OnLoadingComplete(EventArgs args)
         {
-            LoadSpellDictionary();
-            InitChannelSpells();
         }
 
 
@@ -152,7 +150,7 @@ namespace AdEvade
 
         private void Game_ProcessSpell(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args)
         {
-            Debug.DrawTopLeft(args.SData.Name);
+            ConsoleDebug.WriteLine(string.Format("'{0}' casted Spell: {1}", hero.Name, args.SData.Name));
             try
             {
                 SpellData spellData;
@@ -736,7 +734,7 @@ namespace AdEvade
         private void LoadSpecialSpellPlugins()
         {
             ChampionPlugins.Add(Constants.AllChampions, new AllChampions());
-            Debug.DrawTopLeft("Loading Plugins...");
+            ConsoleDebug.WriteLine("        Loading Special Spell Plugins...");
             foreach (var hero in EntityManager.Heroes.AllHeroes)
             {
                 var championPlugin = Assembly
@@ -749,13 +747,13 @@ namespace AdEvade
                     {
                         var plugin = (IChampionPlugin) NewInstance(championPlugin);
                         ChampionPlugins.Add(hero.ChampionName, plugin);
-                        Debug.DrawTopLeft("Loaded Champion Plugin: " + plugin.GetChampionName());
+                        ConsoleDebug.WriteLine("        Loaded Champion Plugin: " + plugin.GetChampionName());
                     }
                 }
             }
         }
 
-        private void LoadSpellDictionary()
+        public void LoadSpellDictionary()
         {
             LoadSpecialSpellPlugins();
             foreach (var hero in EntityManager.Heroes.AllHeroes)
@@ -773,11 +771,11 @@ namespace AdEvade
                 }
                 if (hero.Team != MyHero.Team)
                 {
-                    Debug.DrawTopLeft("Hero Found: " +  hero.ChampionName);
+                    ConsoleDebug.WriteLine("        Hero Found: " +  hero.ChampionName);
                     foreach (var spell in SpellDatabase.Spells.Where(
                         s => (s.CharName == hero.ChampionName) || (s.CharName == Constants.AllChampions)))
                     {
-                        Debug.DrawTopLeft(" Hero Spell Found: " + spell.SpellName); 
+                        ConsoleDebug.WriteLine("        Hero Spell Found: " + spell.SpellName); 
 
                         if (!(spell.SpellType == SpellType.Circular
                               || spell.SpellType == SpellType.Line
@@ -789,7 +787,7 @@ namespace AdEvade
                             SpellSlot slot = hero.GetSpellSlotFromName(spell.SpellName);
                             if (slot == SpellSlot.Unknown)
                             {
-                                Debug.DrawTopLeft("* Slot not Found!");
+                                ConsoleDebug.WriteLineColor("        Slot not Found!", ConsoleColor.Red);
                                 continue;
                             }
                         }

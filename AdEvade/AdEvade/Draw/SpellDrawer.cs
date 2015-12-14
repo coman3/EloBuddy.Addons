@@ -8,6 +8,7 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Rendering;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Spell = AdEvade.Data.Spells.Spell;
@@ -162,7 +163,7 @@ namespace AdEvade.Draw
                     Render.Circle.DrawCircle(new Vector3(pos.X, pos.Y, MyHero.Position.Z), 65, Color.Red, 10);
                 }
             }
-
+            DrawPlayerPath();
             DrawEvadeStatus();
 
             if (!ConfigValue.DrawSkillShots.GetBool())
@@ -245,6 +246,11 @@ namespace AdEvade.Draw
                     }
                 }
             }
+        }
+
+        private void DrawPlayerPath()
+        {
+            Line.DrawLine(Color.White, GameData.MyHero.Path);
         }
     }
 }

@@ -14,7 +14,7 @@ using Spell = AdEvade.Data.Spells.Spell;
 
 namespace AdEvade.Helpers
 {
-    class EvadeHelper
+    static class EvadeHelper
     {
         private static AIHeroClient MyHero { get { return ObjectManager.Player; } }
 
@@ -414,6 +414,15 @@ namespace AdEvade.Helpers
             return null;
         }
 
+        public static Vector3 GetSafeNavPos(this Vector3 pos, AIHeroClient heroFrom)
+        {
+            var flags = NavMesh.GetCollisionFlags(pos);
+            if (flags == CollisionFlags.Building || flags == CollisionFlags.Wall)
+            {
+                return heroFrom.Position.Extend(pos, pos.Distance(heroFrom) - 20).To3DWorld().GetSafeNavPos(heroFrom);
+            }
+            return pos;
+        }
         public static PositionInfo GetBestPositionDash(EvadeSpellData spell)
         {
             int posChecked = 0;

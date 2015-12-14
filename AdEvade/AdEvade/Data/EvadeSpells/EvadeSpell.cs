@@ -127,7 +127,7 @@ namespace AdEvade.Data.EvadeSpells
             {
                 return;
             }
-
+            //ConsoleDebug.WriteLineColor("Dodging Skill Shots by Evade Spell", ConsoleColor.Green);
             foreach (KeyValuePair<int, Spell> entry in SpellDetector.Spells)
             {
                 Spell spell = entry.Value;

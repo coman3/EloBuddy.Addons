@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdEvade.Config;
 using AdEvade.Helpers;
 using AdEvade.Utils;
 using EloBuddy;
@@ -91,7 +92,8 @@ namespace AdEvade.Data
 
         public static PositionInfo SetAllUndodgeable()
         {
-            List<int> dodgeableSpells = new List<int>();
+            ConsoleDebug.WriteLineColor("Setting all Undodgeable", ConsoleColor.Red);
+            List <int> dodgeableSpells = new List<int>();
             List<int> undodgeableSpells = new List<int>();
 
             var posDangerLevel = 0;

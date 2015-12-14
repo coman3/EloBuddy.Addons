@@ -219,17 +219,18 @@ namespace AdEvade
                 //debugMenu.Add("DebugWithMySpells", new DynamicCheckBox(ConfigDataType.Data, "DebugWithMySpells", "Detect and draw my spells", false).CheckBox); //TODO: Remove From Addon
 
                 debugMenu.AddSeparator();
-                debugMenu.Add(ConfigValue.EnableSpellTester.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableSpellTester, "Enable Spell Tester", false).CheckBox);
-                debugMenu.AddLabel("Press F5 after enabling / disabling the Spell Tester to load / unload it.");
+                //debugMenu.Add(ConfigValue.EnableSpellTester.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableSpellTester, "Enable Spell Tester", false).CheckBox);
+                //debugMenu.AddLabel("Press F5 after enabling / disabling the Spell Tester to load / unload it.");
                 _spellDrawer = new SpellDrawer(Menu);
-                //_spellTester = new SpellTester(Menu);
-
-                Debug.DrawTopLeft("Showing Debug info...");
 
                 ConsoleDebug.WriteLineColor("   Hooking Events...", ConsoleColor.Yellow, true);
                 Player.OnIssueOrder += Game_OnIssueOrder;
                 Spellbook.OnCastSpell += Game_OnCastSpell;
                 Game.OnUpdate += Game_OnGameUpdate;
+
+                ConsoleDebug.WriteLineColor("   Loading Spells...", ConsoleColor.Yellow, true);
+                SpellDetector.LoadSpellDictionary();
+                SpellDetector.InitChannelSpells();
 
                 AIHeroClient.OnProcessSpellCast += Game_OnProcessSpell;
 
@@ -383,22 +384,51 @@ namespace AdEvade
             if (!Situation.ShouldDodge())
                 return;
 
+            switch (args.Order)
+            {
+                case GameObjectOrder.HoldPosition:
+                    ConsoleDebug.WriteLineColor("HoldPosition: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.MoveTo:
+                    ConsoleDebug.WriteLineColor("MoveTo: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AttackUnit:
+                    ConsoleDebug.WriteLineColor("AttackUnit: " + args.Target.Name, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AutoAttackPet:
+                    ConsoleDebug.WriteLineColor("AutoAttackPet: " + args.Target.Name, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AutoAttack:
+                    ConsoleDebug.WriteLineColor("AutoAttack: " + args.Target.Name, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.MovePet:
+                    ConsoleDebug.WriteLineColor("MovePet: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AttackTo:
+                    ConsoleDebug.WriteLineColor("AttackTo: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.Stop:
+                    ConsoleDebug.WriteLineColor("Stop: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            ConsoleDebug.WriteLineColor(NavMesh.GetCollisionFlags(args.TargetPosition), ConsoleColor.DarkMagenta);
             if (args.Order == GameObjectOrder.MoveTo)
             {
                 //movement block code goes in here
                 if (IsDodging && SpellDetector.Spells.Count > 0)
                 {
+                    ConsoleDebug.WriteLineColor("Issue Order detected while spells exist", ConsoleColor.Yellow);
                     CheckHeroInDanger();
 
                     LastBlockedUserMoveTo = new EvadeCommand
                     {
-                        Order = EvadeOrderCommand.MoveTo,
-                        TargetPosition = args.TargetPosition.To2D(),
-                        Timestamp = EvadeUtils.TickCount,
-                        IsProcessed = false,
+                        Order = EvadeOrderCommand.MoveTo, TargetPosition = args.TargetPosition.To2D(), Timestamp = EvadeUtils.TickCount, IsProcessed = false,
                     };
 
                     args.Process = false; //Block the command
+                    ConsoleDebug.WriteLineColor("   Blocked Movement Command", ConsoleColor.Red);
                 }
                 else
                 {
@@ -406,6 +436,7 @@ namespace AdEvade
                     var extraDelay = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
                     if (EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
                     {
+                        ConsoleDebug.WriteLineColor("Move Path is colliding with spell", ConsoleColor.Yellow);
                         /*if (() Properties.Properties.Data["AllowCrossing"].Cast<CheckBox>().CurrentValue)
                         {
                             var extraDelayBuffer = () Properties.Properties.Data["ExtraPingBuffer"]
@@ -424,16 +455,12 @@ namespace AdEvade
 
                         LastBlockedUserMoveTo = new EvadeCommand
                         {
-                            Order = EvadeOrderCommand.MoveTo,
-                            TargetPosition = args.TargetPosition.To2D(),
-                            Timestamp = EvadeUtils.TickCount,
-                            IsProcessed = false,
+                            Order = EvadeOrderCommand.MoveTo, TargetPosition = args.TargetPosition.To2D(), Timestamp = EvadeUtils.TickCount, IsProcessed = false,
                         };
 
                         args.Process = false; //Block the command
-
-                        if (EvadeUtils.TickCount - LastMovementBlockTime < 500 &&
-                            LastMovementBlockPos.Distance(args.TargetPosition) < 100)
+                        ConsoleDebug.WriteLineColor("   Blocked Movement Command", ConsoleColor.Red);
+                        if (EvadeUtils.TickCount - LastMovementBlockTime < 500 && LastMovementBlockPos.Distance(args.TargetPosition) < 100)
                         {
                             return;
                         }
@@ -459,26 +486,28 @@ namespace AdEvade
                 if (IsDodging)
                 {
                     args.Process = false; //Block the command
+                    ConsoleDebug.WriteLineColor("   Blocked IssueOrder(" + args.Order + ") Command", ConsoleColor.Red);
                 }
                 else
                 {
                     if (args.Order == GameObjectOrder.AttackUnit)
                     {
                         var target = args.Target;
-                        if (target != null && target.GetType() == typeof(Obj_AI_Base) && ((Obj_AI_Base)target).IsValid())
+                        if (target != null && target.GetType() == typeof (Obj_AI_Base))
                         {
-                            var baseTarget = target as Obj_AI_Base;
-                            if (GameData.HeroInfo.ServerPos2D.Distance(baseTarget.ServerPosition.To2D()) >
-                                GameData.MyHero.AttackRange + GameData.HeroInfo.BoundingRadius + baseTarget.BoundingRadius)
-                            {
-                                var movePos = args.TargetPosition.To2D();
-                                var extraDelay = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
-                                if (EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
+                            var baseTarget = (Obj_AI_Base) target;
+                            if (baseTarget.IsValid())
+                                if (GameData.HeroInfo.ServerPos2D.Distance(baseTarget.ServerPosition.To2D()) > GameData.MyHero.AttackRange + GameData.HeroInfo.BoundingRadius + baseTarget.BoundingRadius)
                                 {
-                                    args.Process = false; //Block the command
-                                    return;
+                                    var movePos = args.TargetPosition.To2D();
+                                    var extraDelay = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
+                                    if (EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
+                                    {
+                                        args.Process = false; //Block the command
+                                        ConsoleDebug.WriteLineColor("   Blocked Attack Unit Command", ConsoleColor.Red);
+                                        return;
+                                    }
                                 }
-                            }
                         }
                     }
                 }
@@ -486,7 +515,7 @@ namespace AdEvade
 
             if (args.Process == true)
             {
-                LastIssueOrderGameTime = Game.Time * 1000;
+                LastIssueOrderGameTime = Game.Time*1000;
                 LastIssueOrderTime = EvadeUtils.TickCount;
                 LastIssueOrderArgs = args;
 
@@ -508,6 +537,7 @@ namespace AdEvade
             if (IsDodging)
             {
                 args.Process = false; //Block orbwalking
+                ConsoleDebug.WriteLineColor("Blocked Orbwalk Before Attack", ConsoleColor.Red);
             }
         }
 
@@ -531,18 +561,19 @@ namespace AdEvade
             {
                 IsChanneling = true;
                 ChannelPosition = GameData.MyHero.ServerPosition.To2D();
+                ConsoleDebug.WriteLineColor("Channeling...", ConsoleColor.Green);
             }
             if (ConfigValue.CalculateWindupDelay.GetBool())
             {
-                var castTime = (hero.Spellbook.CastTime - Game.Time) * 1000;
+                var castTime = (hero.Spellbook.CastTime - Game.Time)*1000;
 
-                if (castTime > 0 && !EloBuddy.SDK.Constants.AutoAttacks.IsAutoAttack(args.SData.Name)
-                    && Math.Abs(castTime - GameData.MyHero.AttackCastDelay * 1000) > 1)
+                if (castTime > 0 && !EloBuddy.SDK.Constants.AutoAttacks.IsAutoAttack(args.SData.Name) && Math.Abs(castTime - GameData.MyHero.AttackCastDelay*1000) > 1)
                 {
-                    LastWindupTime = EvadeUtils.TickCount + castTime - Game.Ping / 2;
+                    LastWindupTime = EvadeUtils.TickCount + castTime - Game.Ping/2;
                     if (IsDodging)
                     {
                         SpellDetector_OnProcessDetectedSpells(); //reprocess
+                        ConsoleDebug.WriteLineColor("Reprocessing Detected Spells...", ConsoleColor.Yellow);
                     }
                 }
             }
@@ -554,10 +585,10 @@ namespace AdEvade
             {
                 CheckHeroInDanger();
                 CheckDodgeOnlyDangerous();
-                if (IsChanneling && ChannelPosition.Distance(GameData.HeroInfo.ServerPos2D) > 50
-                    ) //TODO: !GameData.MyHero.IsChannelingImportantSpell()
+                if (IsChanneling && ChannelPosition.Distance(GameData.HeroInfo.ServerPos2D) > 50) //TODO: !GameData.MyHero.IsChannelingImportantSpell()
                 {
                     IsChanneling = false;
+                    ConsoleDebug.WriteLineColor("Stopped Channeling.", ConsoleColor.Yellow);
                 }
 
                 //if (() Properties.Properties.Data["ResetConfig"].Cast<CheckBox>().CurrentValue)
@@ -574,10 +605,10 @@ namespace AdEvade
 
                 var limitDelay = ConfigValue.TickLimiter.GetInt();
                 //Tick limiter                
-                if (EvadeUtils.TickCount - LastTickCount > limitDelay
-                    && EvadeUtils.TickCount > LastStopEvadeTime)
+                if (EvadeUtils.TickCount - LastTickCount > limitDelay && EvadeUtils.TickCount > LastStopEvadeTime)
                 {
-                    DodgeSkillShots(); //walking           
+                    DodgeSkillShots(); //walking         
+
 
                     ContinueLastBlockedCommand();
                     LastTickCount = EvadeUtils.TickCount;
@@ -605,8 +636,7 @@ namespace AdEvade
 
                         if (movePos.Distance(LastPosInfo.Position) < 5) //more strict checking
                         {
-                            var posInfo = EvadeHelper.CanHeroWalkToPos(movePos, GameData.HeroInfo.MoveSpeed, 0, 0,
-                                false);
+                            var posInfo = EvadeHelper.CanHeroWalkToPos(movePos, GameData.HeroInfo.MoveSpeed, 0, 0, false);
                             if (posInfo.PosDangerCount > LastPosInfo.PosDangerCount)
                             {
                                 LastPosInfo.RecalculatedPath = true;
@@ -639,17 +669,15 @@ namespace AdEvade
                 var movePos = LastBlockedUserMoveTo.TargetPosition;
                 var extraDelay = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
 
-                if (IsDodging == false && LastBlockedUserMoveTo.IsProcessed == false
-                    && EvadeUtils.TickCount - LastEvadeCommand.Timestamp > Game.Ping + extraDelay
-                    && EvadeUtils.TickCount - LastBlockedUserMoveTo.Timestamp < 1500)
+                if (IsDodging == false && LastBlockedUserMoveTo.IsProcessed == false && EvadeUtils.TickCount - LastEvadeCommand.Timestamp > Game.Ping + extraDelay && EvadeUtils.TickCount - LastBlockedUserMoveTo.Timestamp < 1500)
                 {
-                    movePos = movePos + (movePos - GameData.HeroInfo.ServerPos2D).Normalized()
-                              * EvadeUtils.Random.NextFloat(1, 65);
+                    movePos = movePos + (movePos - GameData.HeroInfo.ServerPos2D).Normalized()*EvadeUtils.Random.NextFloat(1, 65);
 
                     if (!EvadeHelper.CheckMovePath(movePos, Game.Ping + extraDelay))
                     {
                         //ConsoleDebug.WriteLine("Continue Movement");
                         //GameData.MyHero.IssueOrder(GameObjectOrder.MoveTo, movePos.To3D());
+                        ConsoleDebug.WriteLineColor("Continuing Last Blocked Command", ConsoleColor.Yellow);
                         EvadeCommand.MoveTo(movePos);
                         LastBlockedUserMoveTo.IsProcessed = true;
                     }
@@ -707,10 +735,9 @@ namespace AdEvade
 
             if (IsDodging)
             {
-
+                ConsoleDebug.WriteLineColor("Dodging Skill Shots by walking", ConsoleColor.Green);
                 if (LastPosInfo != null)
                 {
-
                     /*foreach (KeyValuePair<int, Spell> entry in SpellDetector.spells)
                     {
                         Spell spell = entry.Value;
@@ -721,9 +748,7 @@ namespace AdEvade
 
                     Vector2 lastBestPosition = LastPosInfo.Position;
 
-                    if (!ConfigValue.ClickOnlyOnce.GetBool() ||
-                        !(GameData.MyHero.Path.Length > 0 &&
-                          LastPosInfo.Position.Distance(GameData.MyHero.Path.Last().To2D()) < 5))
+                    if (!ConfigValue.ClickOnlyOnce.GetBool() || !(GameData.MyHero.Path.Length > 0 && LastPosInfo.Position.Distance(GameData.MyHero.Path.Last().To2D()) < 5))
                         //|| lastPosInfo.timestamp > lastEvadeOrderTime)
                     {
                         EvadeCommand.MoveTo(lastBestPosition);
@@ -772,9 +797,7 @@ namespace AdEvade
         {
             if (ConfigValue.FastMovementBlock.GetBool())
             {
-                if (IsDodging == false && LastIssueOrderArgs != null
-                    && LastIssueOrderArgs.Order == GameObjectOrder.MoveTo
-                    && Game.Time * 1000 - LastIssueOrderGameTime < 500)
+                if (IsDodging == false && LastIssueOrderArgs != null && LastIssueOrderArgs.Order == GameObjectOrder.MoveTo && Game.Time*1000 - LastIssueOrderGameTime < 500)
                 {
                     Game_OnIssueOrder(GameData.MyHero, LastIssueOrderArgs);
                     LastIssueOrderArgs = null;
@@ -827,8 +850,7 @@ namespace AdEvade
                 EvadeSpell.UseEvadeSpell();
                 return;
             }
-            if (GameData.HeroInfo.ServerPos2D.CheckDangerousPos(0)
-                || GameData.HeroInfo.ServerPos2DExtra.CheckDangerousPos(0))
+            if (GameData.HeroInfo.ServerPos2D.CheckDangerousPos(0) || GameData.HeroInfo.ServerPos2DExtra.CheckDangerousPos(0))
             {
                 if (EvadeSpell.PreferEvadeSpell())
                 {
@@ -845,7 +867,7 @@ namespace AdEvade
                     if (NumCalculationTime > 0)
                     {
                         SumCalculationTime += caculationTime;
-                        AvgCalculationTime = SumCalculationTime / NumCalculationTime;
+                        AvgCalculationTime = SumCalculationTime/NumCalculationTime;
                     }
                     NumCalculationTime += 1;
 
@@ -859,10 +881,9 @@ namespace AdEvade
                     {
                         LastPosInfo = posInfo.CompareLastMovePos();
 
-                        var travelTime = GameData.HeroInfo.ServerPos2DPing.Distance(LastPosInfo.Position) /
-                                         GameData.MyHero.MoveSpeed;
+                        var travelTime = GameData.HeroInfo.ServerPos2DPing.Distance(LastPosInfo.Position)/GameData.MyHero.MoveSpeed;
 
-                        LastPosInfo.EndTime = EvadeUtils.TickCount + travelTime * 1000 - 100;
+                        LastPosInfo.EndTime = EvadeUtils.TickCount + travelTime*1000 - 100;
                     }
 
                     CheckHeroInDanger();

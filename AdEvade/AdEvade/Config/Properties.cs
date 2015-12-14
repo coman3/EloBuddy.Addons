@@ -70,13 +70,13 @@ namespace AdEvade.Config
         //}
         public static void OnValueChanged(ConfigValue key, object value)
         {
-            if(OnConfigValueChanged != null) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
+            //if(OnConfigValueChanged != null) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
         }
         public static SpellConfig GetSpell(string key)
         {
             if (Spells.Any(i => i.Key == key))
             {
-                //Debug.DrawTopLeft("Found Spell at key: " + key + " = " + Spells[key]);
+                ConsoleDebug.WriteLineColor(string.Format("Spell Found: {0}", Spells[key]), ConsoleColor.Yellow);
                 return Spells[key];
             }
             if (ConfigValue.EnableSpellTester.GetBool())
@@ -85,7 +85,7 @@ namespace AdEvade.Config
                     var spellfromdb = SpellDatabase.Spells.First(x => x.SpellName == key);
                     return new SpellConfig { DangerLevel = spellfromdb.Dangerlevel, Radius = spellfromdb.Radius, Dodge = true, Draw = true, EvadeSpellMode = SpellModes.Always};
                 }
-            Debug.DrawTopLeft("*Spell: " + key + " Not Found, Returning: DO NOT DODGE");
+            ConsoleDebug.WriteLineColor("Spell: " + key + " Not Found, Returning: DO NOT DODGE", ConsoleColor.Red);
             return new SpellConfig { DangerLevel = SpellDangerLevel.Normal, Dodge = false, Draw = true, EvadeSpellMode = SpellModes.Undodgeable, Radius = 20 };
 
         }
@@ -95,7 +95,7 @@ namespace AdEvade.Config
             {
                 return EvadeSpells[key];
             }
-            Debug.DrawTopLeft(" * Evade Spell: " + key + " Not Found, Returning: DO NOT USE");
+            ConsoleDebug.WriteLineColor("Evade Spell: " + key + " Not Found, Returning: DO NOT USE", ConsoleColor.Red);
             return new EvadeSpellConfig { DangerLevel = SpellDangerLevel.Low, SpellMode = SpellModes.Undodgeable, Use = false};
         }
 
