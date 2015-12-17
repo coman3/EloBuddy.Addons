@@ -94,8 +94,8 @@ namespace AdEvade
 
         private void Load()
         {
-            Loading.OnLoadingComplete += Game_OnGameLoad;
-            //Loading.OnLoadingComplete += Game_OnGameLoad_Disabled;
+            //Loading.OnLoadingComplete += Game_OnGameLoad;
+            Loading.OnLoadingComplete += Game_OnGameLoad_Disabled;
         }
 
         private void Game_OnGameLoad_Disabled(EventArgs args)
