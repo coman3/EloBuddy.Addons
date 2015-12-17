@@ -163,7 +163,7 @@ namespace AdEvade.Draw
                     Render.Circle.DrawCircle(new Vector3(pos.X, pos.Y, MyHero.Position.Z), 65, Color.Red, 10);
                 }
             }
-            DrawPlayerPath();
+            //DrawPlayerPath();
             DrawEvadeStatus();
 
             if (!ConfigValue.DrawSkillShots.GetBool())
