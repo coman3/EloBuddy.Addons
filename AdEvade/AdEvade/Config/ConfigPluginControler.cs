@@ -101,43 +101,43 @@ namespace AdEvade.Config
             _configMenu = MainMenu.AddMenu("AdEvade Presets", "AdEvadePreset", "AdEvade Preset Manager");
             _configMenu.AddGroupLabel("Installed Presets");
             Configs = new Dictionary<ConfigPluginAttribute, ConfigPreset>();
-            //var cfg = new Default();
-            //Configs.Add(cfg.GetAttribute(), cfg);
-            ConsoleDebug.WriteLine("Loading Config Presets...");
-            var types = Assembly.GetExecutingAssembly().GetTypes();
-            var plugins = types.Where(IsConfigPlugin).ToList();
+            var cfg = new Default();
+            Configs.Add(cfg.GetAttribute(), cfg);
+            //ConsoleDebug.WriteLine("Loading Config Presets...");
+            //var types = Assembly.GetExecutingAssembly().GetTypes();
+            //var plugins = types.Where(IsConfigPlugin).ToList();
 
-            foreach (var plugin in plugins)
-            {
-                try
-                {
-                    var pluginItem = (ConfigPreset)NewInstance(plugin);
-                    if (pluginItem == null) continue;
+            //foreach (var plugin in plugins)
+            //{
+            //    try
+            //    {
+            //        var pluginItem = (ConfigPreset)NewInstance(plugin);
+            //        if (pluginItem == null) continue;
 
-                    var attribute = pluginItem.GetAttribute();
-                    Configs.Add(attribute, pluginItem);
+            //        var attribute = pluginItem.GetAttribute();
+            //        Configs.Add(attribute, pluginItem);
 
-                    ConsoleDebug.WriteLine("Loaded Config: Name: {0} (By: {1}) Version: {2}\n   Supported Champions: {3}",
-                            attribute.Name, attribute.Author, attribute.Version,
-                            string.Join(", ", attribute.RecomendedChampions));
-                    _configMenu.AddLabel(GetFriendlyConfigTitle(attribute));
-                    _configMenu.AddLabel("Recommended Champions: " + string.Join(", ", attribute.RecomendedChampions));
-                    _configMenu.AddSeparator();
-                }
-                catch (Exception ex)
-                {
-                    ConsoleDebug.WriteLineColor("Problem Creating Preset!", ConsoleColor.Red, true);
-                    ConsoleDebug.WriteLine(ex, true);
-                }
+            //        ConsoleDebug.WriteLine("Loaded Config: Name: {0} (By: {1}) Version: {2}\n   Supported Champions: {3}",
+            //                attribute.Name, attribute.Author, attribute.Version,
+            //                string.Join(", ", attribute.RecomendedChampions));
+            //        _configMenu.AddLabel(GetFriendlyConfigTitle(attribute));
+            //        _configMenu.AddLabel("Recommended Champions: " + string.Join(", ", attribute.RecomendedChampions));
+            //        _configMenu.AddSeparator();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        ConsoleDebug.WriteLineColor("Problem Creating Preset!", ConsoleColor.Red, true);
+            //        ConsoleDebug.WriteLine(ex, true);
+            //    }
 
-            }
-            _configMenu.Add("SelectedPluginIndex", new Slider("Selected Plugin Index", 0, 0, plugins.Count))
-                .IsVisible = false;
+            //}
+            //_configMenu.Add("SelectedPluginIndex", new Slider("Selected Plugin Index", 0, 0, plugins.Count))
+            //    .IsVisible = false;
             LoadMenus(_configMenu);
             //Load default preset
             LoadDefault();
             //Load selected Preset. this stops any issues with key not found errors!
-            MoveTo(_configMenu.Get<Slider>("SelectedPluginIndex").CurrentValue);
+            //MoveTo(_configMenu.Get<Slider>("SelectedPluginIndex").CurrentValue);
         }
 
         private static void LoadDefault()

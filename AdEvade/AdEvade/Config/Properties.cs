@@ -70,7 +70,7 @@ namespace AdEvade.Config
         //}
         public static void OnValueChanged(ConfigValue key, object value)
         {
-            if(OnConfigValueChanged != null) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
+            //if(OnConfigValueChanged != null) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
         }
         public static SpellConfig GetSpell(string key)
         {
