@@ -29,7 +29,7 @@ namespace AdEvade
 {
     public class AdEvade
     {
-        public const string LastUpdate = "9:10 AM, 10th December 2015";
+        public const string LastUpdate = "4:39 PM, 19th December 2015";
         public static SpellDetector SpellDetector;
         private static SpellDrawer _spellDrawer;
         //private static EvadeTester _evadeTester;
@@ -94,8 +94,8 @@ namespace AdEvade
 
         private void Load()
         {
-            //Loading.OnLoadingComplete += Game_OnGameLoad;
-            Loading.OnLoadingComplete += Game_OnGameLoad_Disabled;
+            Loading.OnLoadingComplete += Game_OnGameLoad;
+            //Loading.OnLoadingComplete += Game_OnGameLoad_Disabled;
         }
 
         private void Game_OnGameLoad_Disabled(EventArgs args)
@@ -215,7 +215,11 @@ namespace AdEvade
                 Menu debugMenu = Menu.AddSubMenu("Debug", "DebugMenu");
 
                 debugMenu.AddGroupLabel("Debug");
-                debugMenu.Add(ConfigValue.ShowDebugInfo.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ShowDebugInfo, "Show Debug Info", false).CheckBox);
+                debugMenu.Add(ConfigValue.ShowDebugInfo.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ShowDebugInfo, "Show Debug Info (Console)", false).CheckBox).OnValueChange +=
+                    (sender, changeArgs) =>
+                    {
+                        ConsoleDebug.Enabled = sender.CurrentValue;
+                    };
                 //debugMenu.Add("DebugWithMySpells", new DynamicCheckBox(ConfigDataType.Data, "DebugWithMySpells", "Detect and draw my spells", false).CheckBox); //TODO: Remove From Addon
 
                 debugMenu.AddSeparator();
@@ -383,37 +387,8 @@ namespace AdEvade
 
             if (!Situation.ShouldDodge())
                 return;
+            //DebugIssueOrders(args);
 
-            switch (args.Order)
-            {
-                case GameObjectOrder.HoldPosition:
-                    ConsoleDebug.WriteLineColor("HoldPosition: " + args.TargetPosition, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.MoveTo:
-                    ConsoleDebug.WriteLineColor("MoveTo: " + args.TargetPosition, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.AttackUnit:
-                    ConsoleDebug.WriteLineColor("AttackUnit: " + args.Target.Name, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.AutoAttackPet:
-                    ConsoleDebug.WriteLineColor("AutoAttackPet: " + args.Target.Name, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.AutoAttack:
-                    ConsoleDebug.WriteLineColor("AutoAttack: " + args.Target.Name, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.MovePet:
-                    ConsoleDebug.WriteLineColor("MovePet: " + args.TargetPosition, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.AttackTo:
-                    ConsoleDebug.WriteLineColor("AttackTo: " + args.TargetPosition, ConsoleColor.Blue);
-                    break;
-                case GameObjectOrder.Stop:
-                    ConsoleDebug.WriteLineColor("Stop: " + args.TargetPosition, ConsoleColor.Blue);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            ConsoleDebug.WriteLineColor(NavMesh.GetCollisionFlags(args.TargetPosition), ConsoleColor.DarkMagenta);
             if (args.Order == GameObjectOrder.MoveTo)
             {
                 //movement block code goes in here
@@ -424,7 +399,10 @@ namespace AdEvade
 
                     LastBlockedUserMoveTo = new EvadeCommand
                     {
-                        Order = EvadeOrderCommand.MoveTo, TargetPosition = args.TargetPosition.To2D(), Timestamp = EvadeUtils.TickCount, IsProcessed = false,
+                        Order = EvadeOrderCommand.MoveTo,
+                        TargetPosition = args.TargetPosition.To2D(),
+                        Timestamp = EvadeUtils.TickCount,
+                        IsProcessed = false,
                     };
 
                     args.Process = false; //Block the command
@@ -455,7 +433,10 @@ namespace AdEvade
 
                         LastBlockedUserMoveTo = new EvadeCommand
                         {
-                            Order = EvadeOrderCommand.MoveTo, TargetPosition = args.TargetPosition.To2D(), Timestamp = EvadeUtils.TickCount, IsProcessed = false,
+                            Order = EvadeOrderCommand.MoveTo,
+                            TargetPosition = args.TargetPosition.To2D(),
+                            Timestamp = EvadeUtils.TickCount,
+                            IsProcessed = false,
                         };
 
                         args.Process = false; //Block the command
@@ -493,9 +474,9 @@ namespace AdEvade
                     if (args.Order == GameObjectOrder.AttackUnit)
                     {
                         var target = args.Target;
-                        if (target != null && target.GetType() == typeof (Obj_AI_Base))
+                        if (target != null && target.GetType() == typeof(Obj_AI_Base))
                         {
-                            var baseTarget = (Obj_AI_Base) target;
+                            var baseTarget = (Obj_AI_Base)target;
                             if (baseTarget.IsValid())
                                 if (GameData.HeroInfo.ServerPos2D.Distance(baseTarget.ServerPosition.To2D()) > GameData.MyHero.AttackRange + GameData.HeroInfo.BoundingRadius + baseTarget.BoundingRadius)
                                 {
@@ -515,7 +496,7 @@ namespace AdEvade
 
             if (args.Process == true)
             {
-                LastIssueOrderGameTime = Game.Time*1000;
+                LastIssueOrderGameTime = Game.Time * 1000;
                 LastIssueOrderTime = EvadeUtils.TickCount;
                 LastIssueOrderArgs = args;
 
@@ -530,6 +511,40 @@ namespace AdEvade
                     LastStopPosition = GameData.MyHero.ServerPosition.To2D();
                 }
             }
+        }
+
+        private static void DebugIssueOrders(PlayerIssueOrderEventArgs args)
+        {
+            switch (args.Order)
+            {
+                case GameObjectOrder.HoldPosition:
+                    ConsoleDebug.WriteLineColor("HoldPosition: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.MoveTo:
+                    ConsoleDebug.WriteLineColor("MoveTo: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AttackUnit:
+                    ConsoleDebug.WriteLineColor("AttackUnit: " + args.Target.Name, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AutoAttackPet:
+                    ConsoleDebug.WriteLineColor("AutoAttackPet: " + args.Target.Name, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AutoAttack:
+                    ConsoleDebug.WriteLineColor("AutoAttack: " + args.Target.Name, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.MovePet:
+                    ConsoleDebug.WriteLineColor("MovePet: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.AttackTo:
+                    ConsoleDebug.WriteLineColor("AttackTo: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                case GameObjectOrder.Stop:
+                    ConsoleDebug.WriteLineColor("Stop: " + args.TargetPosition, ConsoleColor.Blue);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            ConsoleDebug.WriteLineColor(NavMesh.GetCollisionFlags(args.TargetPosition), ConsoleColor.DarkMagenta);
         }
 
         private void Orbwalking_BeforeAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)

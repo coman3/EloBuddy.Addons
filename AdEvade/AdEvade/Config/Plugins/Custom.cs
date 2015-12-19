@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using EloBuddy;
+using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
+using EloBuddy.SDK.Menu.Values;
 
 namespace AdEvade.Config.Plugins
 {
@@ -16,10 +18,8 @@ namespace AdEvade.Config.Plugins
         public override void InitiateConfig(ref Dictionary<ConfigValue, object> values)
         {
             Values = values;
-            if (!File.Exists(ConfigDataFile))
-            {
-                SaveConfigData();
-            }
+            LoadConfigData();
+
             Game.OnUpdate += Game_OnUpdate;
         } //Leaves config untouched and saves it, or loads it when this preset is selected
 
@@ -54,11 +54,12 @@ namespace AdEvade.Config.Plugins
         public bool LoadConfigData()
         {
             ConsoleDebug.WriteLineColor("Please ignore the following errors, as its a EloBuddy issue, and will only happen once per load. (this message will display twice).", ConsoleColor.Green, true);
+            if (!Directory.Exists(ConfigDataFolder) || !File.Exists(ConfigDataFile)) CreateConfigFile();
+
             FileStream file = File.OpenRead(ConfigDataFile);
             try
             {
-                if (!Directory.Exists(ConfigDataFolder)) return false;
-                if (!File.Exists(ConfigDataFile)) return false;
+
                 XmlSerializer x = new XmlSerializer(typeof (SerializableDictionary<ConfigValue, object>));
                 var temp = x.Deserialize(file) as SerializableDictionary<ConfigValue, object>;
                 if (temp != null)
@@ -85,6 +86,58 @@ namespace AdEvade.Config.Plugins
                 file.Close();
             }
             return false;
+        }
+
+        private void CreateConfigFile()
+        {
+            if (!Directory.Exists(ConfigDataFolder)) Directory.CreateDirectory(ConfigDataFolder);
+            if (!File.Exists(ConfigDataFile)) File.Create(ConfigDataFile).Close();
+
+            ConsoleDebug.WriteLine("Creating Config...");
+
+        }
+
+        public override void LoadMenu(Menu menu)
+        {
+            menu.Add("SaveCustomPresetConfig", new CheckBox("Save Current Settings", false)).OnValueChange +=
+                (sender, args) =>
+                {
+                    //If changing from true to false, don't run. (Stops Overflow Exceptions)
+                    if (args.OldValue || !args.NewValue) return;
+
+                    Core.DelayAction(() => sender.CurrentValue = false, 200);
+                    SaveConfigData();
+                   
+                };
+            menu.Add("LoadCustomPresetConfig", new CheckBox("Reload Previous Settings", false)).OnValueChange +=
+                (sender, args) =>
+                {
+                    //If changing from true to false, don't run. (Stops Overflow Exceptions)
+                    if (args.OldValue || !args.NewValue) return;
+
+                    Core.DelayAction(() => sender.CurrentValue = false, 200);
+                    LoadConfigData();
+                    
+                };
+            menu.Add("DeleteCustomPresetConfig", new CheckBox("Delete Previous Settings", false)).OnValueChange +=
+                (sender, args) =>
+                {
+                    //If changing from true to false, don't run. (Stops Overflow Exceptions)
+                    if (args.OldValue || !args.NewValue) return;
+
+                    Core.DelayAction(() => sender.CurrentValue = false, 200);
+                    RemoveConfig();
+                    
+                };
+        }
+
+        public void RemoveConfig()
+        {
+            if (!Directory.Exists(ConfigDataFolder)) return;
+            if (!File.Exists(ConfigDataFile)) return;
+            ConsoleDebug.WriteLine("Removing Config File.");
+            File.Delete(ConfigDataFile);
+            Directory.Delete(ConfigDataFolder);
         }
 
         public void SaveConfigData()

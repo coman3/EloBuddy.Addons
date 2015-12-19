@@ -119,7 +119,7 @@ namespace AdEvade.Helpers
                     }*/
 
 
-                    var path = MyHero.GetPath(pos.To3D());
+                    //var path = MyHero.GetPath(pos.To3D());
 
                     //Render.Circle.DrawCircle(path[path.Length - 1], (float)posRadius, Color.White, 3);
                     //Render.Circle.DrawCircle(new Vector3(pos.X, pos.Y, myHero.Position.Z), (float)posRadius, Color.White, 3);
@@ -1104,6 +1104,7 @@ namespace AdEvade.Helpers
 
         public static bool CheckPathCollision(Obj_AI_Base unit, Vector2 movePos)
         {
+            //var path = unit.Path;
             var path = unit.GetPath(GameData.HeroInfo.ServerPos2D.To3DWorld(), movePos.To3DWorld());
 
             if (path.Length > 0)
@@ -1119,6 +1120,7 @@ namespace AdEvade.Helpers
 
         public static bool CheckPointCollision(Obj_AI_Base unit, Vector2 movePos)
         {
+            //var path = unit.Path;
             var path = unit.GetPath(movePos.To3D());
 
             if (path.Length > 0)
@@ -1154,6 +1156,7 @@ namespace AdEvade.Helpers
 
 
             var path = MyHero.GetPath(movePos.To3D());
+            //var path = MyHero.Path;
             Vector2 lastPoint = Vector2.Zero;
 
             foreach (Vector3 point in path)

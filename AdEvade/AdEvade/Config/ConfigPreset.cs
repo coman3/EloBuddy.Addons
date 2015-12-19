@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdEvade.Config;
+using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
 namespace AdEvade.Config
@@ -27,6 +28,7 @@ namespace AdEvade.Config
                     Values.Add(key, value);
             if(raiseEvent) Properties.OnValueChanged(key, value);
         }
+        public virtual void LoadMenu(Menu menu) { }
         public virtual void InitiateConfig(ref Dictionary<ConfigValue, object> values)
         {
             values.Clear();
