@@ -29,7 +29,7 @@ namespace AdEvade
 {
     public class AdEvade
     {
-        public const string LastUpdate = "4:39 PM, 19th December 2015";
+        public const string LastUpdate = "8:54PM 6th January 2016";
         public static SpellDetector SpellDetector;
         private static SpellDrawer _spellDrawer;
         //private static EvadeTester _evadeTester;
