@@ -55,7 +55,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Aatrox",
                 Dangerlevel = SpellDangerLevel.Low,
-				MissileName = "AatroxEConeMissile"
+                MissileName = "AatroxEConeMissile",
                 Name = "Blade of Torment",
                 ProjectileSpeed = 1250,
                 Radius = 100,
@@ -110,7 +110,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Ahri",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "AhriOrbReturn"
+                MissileName = "AhriOrbReturn",
                 Name = "Orb of Deception Back",
                 ProjectileSpeed = 915,
                 Radius = 100,
@@ -131,10 +131,10 @@ namespace AdEvade.Data.Spells
                 CharName = "Alistar",
                 Dangerlevel = SpellDangerLevel.High,
                 Name = "Pulverize",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 365,
                 Range = 365,
-				SpellDelay = 0,
+                SpellDelay = 0,
                 SpellKey = SpellSlot.Q,
                 SpellName = "Pulverize",
                 SpellType = SpellType.Circular,
@@ -150,7 +150,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Amumu",
                 Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "CurseoftheSadMummy",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 560,
                 Range = 0,
                 SpellDelay = 250,
@@ -208,7 +208,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Annie",
                 Dangerlevel = SpellDangerLevel.Normal,
                 Name = "Incinerate",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 80,
                 Range = 625,
                 SpellDelay = 250,
@@ -315,22 +315,21 @@ namespace AdEvade.Data.Spells
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
 
             });
-			
+
             Spells.Add(
             new SpellData
-			{
-			    CharName = "Bard",
-				Dangerlevel = SpellDangerLevel.High
+            {
+                CharName = "Bard",
+                Dangerlevel = SpellDangerLevel.High,
                 SpellName = "BardR",
                 MissileName = "BardR",
-				ProjectileSpeed = 2100,
-				Radius = 350,
-				Range = 3400,
-				SpellDelay = 500,
+                ProjectileSpeed = 2100,
+                Radius = 350,
+                Range = 3400,
+                SpellDelay = 500,
                 SpellKey = SpellSlot.R,
-				SpellName = "BardR",
-				SpellType = SpellType.Circular,
-				
+                SpellType = SpellType.Circular,
+
             });
             #endregion Bard
 
@@ -354,7 +353,7 @@ namespace AdEvade.Data.Spells
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
 
             });
-			
+
             Spells.Add(
             new SpellData
             {
@@ -369,7 +368,7 @@ namespace AdEvade.Data.Spells
                 SpellKey = SpellSlot.R,
                 SpellName = "StaticField",
                 SpellType = SpellType.Circular,
-				
+
             });
             #endregion Blitzcrank
 
@@ -399,7 +398,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Brand",
                 Dangerlevel = SpellDangerLevel.Normal,
                 Name = "Pillar of Flame",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 250,
                 Range = 1100,
                 SpellDelay = 850,
@@ -417,7 +416,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Braum",
                 Dangerlevel = SpellDangerLevel.Extreme,
-				MissileName = "braumrmissile"
+                MissileName = "braumrmissile",
                 Name = "GlacialFissure",
                 ProjectileSpeed = 1400,
                 Radius = 115,
@@ -494,9 +493,9 @@ namespace AdEvade.Data.Spells
                 Angle = 40,
                 CharName = "Cassiopeia",
                 Dangerlevel = SpellDangerLevel.Extreme,
-				MissileName = "CassiopeiaPetrifyingGaze"
+                MissileName = "CassiopeiaPetrifyingGaze",
                 Name = "CassiopeiaPetrifyingGaze",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 80,
                 Range = 825,
                 SpellDelay = 600,
@@ -511,9 +510,9 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Cassiopeia",
                 Dangerlevel = SpellDangerLevel.Low,
-				MissileName = "CassiopeiaNoxiousBlast",
+                MissileName = "CassiopeiaNoxiousBlast",
                 Name = "CassiopeiaNoxiousBlast",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 200,
                 Range = 850,
                 SpellDelay = 750,
@@ -549,7 +548,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Chogath",
                 Dangerlevel = SpellDangerLevel.Normal,
                 Name = "FeralScream",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 20,
                 Range = 650,
                 SpellDelay = 250,
@@ -565,7 +564,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Chogath",
                 Dangerlevel = SpellDangerLevel.High,
                 Name = "Rupture",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 250,
                 Range = 950,
                 SpellDelay = 1200,
@@ -642,7 +641,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Darius",
                 Dangerlevel = SpellDangerLevel.High,
                 Name = "DariusAxeGrabCone",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 20,
                 Range = 570,
                 SpellDelay = 320,
@@ -995,10 +994,10 @@ namespace AdEvade.Data.Spells
                 CharName = "Galio",
                 Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "GalioIdolOfDurand",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 600,
                 Range = 0,
-				SpellDelay = 250,
+                SpellDelay = 250,
                 SpellKey = SpellSlot.R,
                 SpellName = "GalioIdolOfDurand",
                 SpellType = SpellType.Circular,
@@ -1031,7 +1030,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Gnar",
                 Dangerlevel = SpellDangerLevel.High,
                 Name = "GnarUlt",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 500,
                 Range = 0,
                 SpellDelay = 250,
@@ -1140,7 +1139,7 @@ namespace AdEvade.Data.Spells
                 SpellName = "GragasE",
                 SpellType = SpellType.Line,
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
-				
+
             });
 
             Spells.Add(
@@ -1194,8 +1193,8 @@ namespace AdEvade.Data.Spells
                 SpellKey = SpellSlot.R,
                 SpellName = "GravesChargeShot",
                 SpellType = SpellType.Line,
-				HasEndExplosion = true,
-				SecondaryRadius = 300,
+                HasEndExplosion = true,
+                SecondaryRadius = 300,
 
             });
             #endregion Graves
@@ -1237,7 +1236,7 @@ namespace AdEvade.Data.Spells
                 SpellType = SpellType.Circular,
 
             });
-			
+
             Spells.Add(
             new SpellData
             {
@@ -1255,7 +1254,7 @@ namespace AdEvade.Data.Spells
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
 
             });
-			
+
             #endregion Heimerdinger
 
             #region Irelia
@@ -1384,13 +1383,13 @@ namespace AdEvade.Data.Spells
                 UseEndPosition = true,
 
             });
-			
+
             Spells.Add(
             new SpellData
             {
                 CharName = "JarvanIV",
                 Dangerlevel = SpellDangerLevel.Low,
-				MissileName = "JarvanIVDemacianStandard"
+                MissileName = "JarvanIVDemacianStandard",
                 Name = "JarvanIVDemacianStandard",
                 ProjectileSpeed = float.MaxValue,
                 Radius = 175,
@@ -1478,7 +1477,7 @@ namespace AdEvade.Data.Spells
                 SpellKey = SpellSlot.R,
                 SpellName = "JinxR",
                 SpellType = SpellType.Line,
-               // CollisionObjects = new[] { CollisionObjectType.EnemyChampions, },
+                // CollisionObjects = new[] { CollisionObjectType.EnemyChampions, },
             });
 
             Spells.Add(
@@ -1569,7 +1568,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Karthus",
                 Dangerlevel = SpellDangerLevel.Low,
                 Name = "Lay Waste",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 190,
                 Range = 875,
                 SpellDelay = 900,
@@ -1590,7 +1589,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Kassadin",
                 Dangerlevel = SpellDangerLevel.Low,
                 Name = "RiftWalk",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 270,
                 Range = 700,
                 SpellDelay = 250,
@@ -1607,7 +1606,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Kassadin",
                 Dangerlevel = SpellDangerLevel.Normal,
                 Name = "ForcePulse",
-				ProjectileSpeed = float.MaxValue
+                ProjectileSpeed = float.MaxValue,
                 Radius = 20,
                 Range = 700,
                 SpellDelay = 250,
@@ -1695,7 +1694,7 @@ namespace AdEvade.Data.Spells
                 SpellType = SpellType.Circular,
 
             });
-			
+
             #endregion Khazix
 
             #region KogMaw
@@ -1722,7 +1721,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "KogMaw",
                 Dangerlevel = SpellDangerLevel.Low,
-				MissileName = "KogMawVoidOozeMissile"
+                MissileName = "KogMawVoidOozeMissile",
                 Name = "KogMawVoidOoze",
                 ProjectileSpeed = 1400,
                 Radius = 120,
@@ -1740,7 +1739,7 @@ namespace AdEvade.Data.Spells
                 CharName = "KogMaw",
                 Dangerlevel = SpellDangerLevel.Normal,
                 Name = "Living Artillery",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 235,
                 Range = 2200,
                 SpellDelay = 1100,
@@ -1854,7 +1853,7 @@ namespace AdEvade.Data.Spells
                 SpellType = SpellType.Line,
 
             });
-			
+
             #endregion LeeSin
 
             #region Leona
@@ -1864,9 +1863,9 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Leona",
                 Dangerlevel = SpellDangerLevel.Extreme,
-				MissileName = "LeonaSolarFlare"
+                MissileName = "LeonaSolarFlare",
                 Name = "Leona Solar Flare",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 300,
                 Range = 1200,
                 SpellDelay = 1000,
@@ -1934,7 +1933,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Lissandra",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "lissandraqshards"
+                MissileName = "lissandraqshards",
                 Name = "Ice Shard",
                 ProjectileSpeed = 2250,
                 Radius = 75,
@@ -1943,15 +1942,15 @@ namespace AdEvade.Data.Spells
                 SpellKey = SpellSlot.Q,
                 SpellName = "LissandraQShards",
                 SpellType = SpellType.Line,
-				
+
             });
-			
+
             Spells.Add(
             new SpellData
             {
                 CharName = "Lissandra",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "LissandraEMissile"
+                MissileName = "LissandraEMissile",
                 Name = "LissandraE",
                 ProjectileSpeed = 850,
                 Radius = 125,
@@ -1960,9 +1959,9 @@ namespace AdEvade.Data.Spells
                 SpellKey = SpellSlot.Q,
                 SpellName = "LissandraE",
                 SpellType = SpellType.Circular,
-				
+
             });
-			
+
             #endregion Lissandra
 
             #region Lucian
@@ -2008,7 +2007,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Lucian",
                 Dangerlevel = SpellDangerLevel.High,
-				MissileName = "lucianrmissileoffhand",
+                MissileName = "lucianrmissileoffhand",
                 Name = "LucianR",
                 ProjectileSpeed = 2800,
                 Radius = 110,
@@ -2018,7 +2017,7 @@ namespace AdEvade.Data.Spells
                 SpellName = "LucianRMis",
                 SpellType = SpellType.Line,
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
-				
+
             });
             #endregion Lucian
 
@@ -2300,7 +2299,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Olaf",
                 Dangerlevel = SpellDangerLevel.Low,
-				MissileName = "olafaxethrow"
+                MissileName = "olafaxethrow",
                 Name = "Undertow",
                 ProjectileSpeed = 1600,
                 Radius = 90,
@@ -2320,7 +2319,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Orianna",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "orianaizuna"
+                MissileName = "orianaizuna",
                 //HasEndExplosion = true,
                 Name = "OrianaIzunaCommand",
                 ProjectileSpeed = 1200,
@@ -2341,7 +2340,7 @@ namespace AdEvade.Data.Spells
                 CharName = "Orianna",
                 Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "OrianaDetonateCommand",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 410,
                 Range = 0,
                 SpellDelay = 500,
@@ -2356,26 +2355,26 @@ namespace AdEvade.Data.Spells
                 CharName = "Orianna",
                 Dangerlevel = SpellDangerLevel.Normal,
                 Name = "OrianaDissonanceCommand",
-				ProjectileSpeed = float.MaxValue,
+                ProjectileSpeed = float.MaxValue,
                 Radius = 250,
                 Range = 0,
-				SpellDelay = 100,
+                SpellDelay = 100,
                 SpellKey = SpellSlot.W,
                 SpellName = "OrianaDissonanceCommand",
                 SpellType = SpellType.Circular,
             });
-			
+
             Spells.Add(
             new SpellData
             {
                 CharName = "Orianna",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "orianaredact"
+                MissileName = "orianaredact",
                 Name = "OriannasE",
-				ProjectileSpeed = 1850,
+                ProjectileSpeed = 1850,
                 Radius = 85,
                 Range = 1500,
-				SpellDelay = 0,
+                SpellDelay = 0,
                 SpellKey = SpellSlot.E,
                 SpellName = "OriannasE",
                 SpellType = SpellType.Line,
@@ -2422,8 +2421,8 @@ namespace AdEvade.Data.Spells
             });
             #endregion Quinn
 
-			#region Poppy
-			
+            #region Poppy
+
             Spells.Add(
             new SpellData
             {
@@ -2440,7 +2439,7 @@ namespace AdEvade.Data.Spells
                 SpellType = SpellType.Line,
 
             });
-			
+
             Spells.Add(
             new SpellData
             {
@@ -2456,8 +2455,8 @@ namespace AdEvade.Data.Spells
                 SpellType = SpellType.Line,
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
             });
-			#endregion Poppy
-			
+            #endregion Poppy
+
             #region RekSai
 
             Spells.Add(
@@ -2507,7 +2506,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Riven",
                 Dangerlevel = SpellDangerLevel.Extreme,
-				MissileName = "RivenLightsaberMissile",
+                MissileName = "RivenLightsaberMissile",
                 Name = "WindSlash",
                 ProjectileSpeed = 1600,
                 Radius = 20,
@@ -2632,7 +2631,7 @@ namespace AdEvade.Data.Spells
                 SpellType = SpellType.Line,
 
             });
-			
+
             Spells.Add(
             new SpellData
             {
@@ -2648,7 +2647,7 @@ namespace AdEvade.Data.Spells
                 SpellName = "SejuaniArcticAssault",
                 SpellType = SpellType.Line,
                 CollisionObjects = new[] { CollisionObjectType.EnemyChampions, CollisionObjectType.EnemyMinions },
-				
+
             });
             #endregion Sejuani
 
@@ -2807,7 +2806,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Sona",
                 Dangerlevel = SpellDangerLevel.Extreme,
-				MissileName = "SonaR"
+                MissileName = "SonaR",
                 Name = "Crescendo",
                 ProjectileSpeed = 2400,
                 Radius = 150,
@@ -2953,12 +2952,12 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Talon",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "talonrakemissileone"
+                MissileName = "talonrakemissileone",
                 Name = "TalonRake",
                 ProjectileSpeed = 2300,
                 Radius = 20,
                 Range = 780,
-				SpellDelay = 250
+                SpellDelay = 250,
                 SpellKey = SpellSlot.W,
                 SpellName = "TalonRake",
                 SpellType = SpellType.Cone,
@@ -2969,12 +2968,12 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Talon",
                 Dangerlevel = SpellDangerLevel.Normal,
-				MissileName = "talonrakemissiletwo"
+                MissileName = "talonrakemissiletwo",
                 Name = "TalonRakeReturn",
                 ProjectileSpeed = 2300,
                 Radius = 20,
                 Range = 780,
-				SpellDelay = 250
+                SpellDelay = 250,
                 SpellKey = SpellSlot.W,
                 SpellName = "TalonRakeReturn",
                 SpellType = SpellType.Cone,
@@ -3259,7 +3258,7 @@ namespace AdEvade.Data.Spells
             {
                 CharName = "Vi",
                 Dangerlevel = SpellDangerLevel.High,
-				MissileName = "ViQMissile"
+                MissileName = "ViQMissile",
                 Name = "Vi-q",
                 ProjectileSpeed = 1500,
                 Radius = 90,
@@ -3286,7 +3285,7 @@ namespace AdEvade.Data.Spells
                 ProjectileSpeed = 780,
                 Radius = 80,
                 Range = 800,
-				SpellDelay = 250,
+                SpellDelay = 250,
                 SpellKey = SpellSlot.E,
                 SpellName = "Laser",
                 ExtraMissileNames = new[] { "viktoreaugmissile", },
@@ -3461,18 +3460,18 @@ namespace AdEvade.Data.Spells
             Spells.Add(
             new SpellData
             {
-                charName = "Zed",
+                CharName = "Zed",
                 Dangerlevel = SpellDangerLevel.Low,
-                name = "ZedE",
-				ProjectileSpeed = float.MaxValue
-                radius = 290,
-                range = 290,
-				SpellDelay = 250
+                Name = "ZedE",
+                ProjectileSpeed = float.MaxValue,
+                Radius = 290,
+                Range = 290,
+                SpellDelay = 250,
                 SpellKey = SpellSlot.E,
-                spellName = "ZedE",
-                spellType = SpellType.Circular,
-                isSpecial = true,
-                defaultOff = true,
+                SpellName = "ZedE",
+                SpellType = SpellType.Circular,
+                IsSpecial = true,
+                DefaultOff = true,
             });
 
             #endregion Zed
@@ -3616,16 +3615,16 @@ namespace AdEvade.Data.Spells
             Spells.Add(
             new SpellData
             {
-                charName = "Zyra",
+                CharName = "Zyra",
                 Dangerlevel = SpellDangerLevel.Extreme,
-                name = "ZyraR",
-				ProjectileSpeed = float.MaxValue,
-                radius = 525,
-                range = 700,
-                spellDelay = 500,
+                Name = "ZyraR",
+                ProjectileSpeed = float.MaxValue,
+                Radius = 525,
+                Range = 700,
+                SpellDelay = 500,
                 SpellKey = SpellSlot.R,
-                spellName = "ZyraBrambleZone",
-                spellType = SpellType.Circular,
+                SpellName = "ZyraBrambleZone",
+                SpellType = SpellType.Circular,
 
             });
             #endregion Zyra
