@@ -29,7 +29,7 @@ namespace AdEvade
 {
     public class AdEvade
     {
-        public const string LastUpdate = "8:54PM 6th January 2016";
+        public const string LastUpdate = "3:30PM 24th January 2016";
         public static SpellDetector SpellDetector;
         private static SpellDrawer _spellDrawer;
         //private static EvadeTester _evadeTester;
@@ -115,7 +115,8 @@ namespace AdEvade
         private void Game_OnGameLoad(EventArgs args)
         {
             ConsoleDebug.WriteLineColor("Loading...", ConsoleColor.Blue, true);
-            ConfigPluginControler.LoadConfigPresets();
+            ConfigPluginControler.LoadDefaultConfig(); //Disabling Presets to temp fix movement issues
+            //ConfigPluginControler.LoadConfigPresets();
 
             try
             {
