@@ -22,19 +22,33 @@ namespace DrawingBuddy
 
         private static void OnLoadingComplete(EventArgs args)
         {
-            Drawing.OnDraw += Drawing_OnDraw;
+            AIHeroClient.OnDeath += Player_OnDeath;
+            Game.OnUpdate += Game_OnUpdate;
+            Console.WriteLine("Loaded!");
             
         }
 
-        private static void Drawing_OnDraw(EventArgs args)
+        private static void Game_OnUpdate(EventArgs args)
         {
-            foreach (var enemy in EntityManager.Heroes.Enemies)
+            if (Player.Instance.IsDead)
             {
-                // If enemy is on screen, or the cursor is arround the posistion of the enemy
-                if (enemy.Position.IsOnScreen() || enemy.Position.Distance(Game.CursorPos) < 2000)
-                    Line.DrawLine(Color.Gray, 2, enemy.Path);
+                Console.WriteLine("OnDeath");
+                unsafe
+                {
+                    byte* f = (byte*)(Player.Instance.MemoryAddress + 0x118);
+                    *f = 0;
+                    Console.WriteLine("Setting...");
+                }
+                Game.OnUpdate -= Game_OnUpdate;
             }
         }
+
+        private static void Player_OnDeath(Obj_AI_Base sender, OnHeroDeathEventArgs args)
+        {
+
+        }
+
+        
 
     
 

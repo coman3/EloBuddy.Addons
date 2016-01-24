@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1E30554-D3E6-4994-99A0-1EE8FB26B57C}</ProjectGuid>
+    <ProjectGuid>{8DF44D81-348C-470A-ACE0-57C859AC2D37}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DrawingBuddy</RootNamespace>
-    <AssemblyName>DrawingBuddy</AssemblyName>
+    <RootNamespace>CameraBuddy</RootNamespace>
+    <AssemblyName>CameraBuddy</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -22,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,17 +31,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EloBuddy">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.dll</HintPath>
     </Reference>
     <Reference Include="EloBuddy.Sandbox">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.Sandbox.dll</HintPath>
     </Reference>
-    <Reference Include="EloBuddy.SDK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6b574a82b1ea937e, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="EloBuddy.SDK">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\EloBuddy\System\EloBuddy.SDK.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
@@ -62,6 +59,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera\CameraMovement.cs" />
+    <Compile Include="Camera\CameraState.cs" />
+    <Compile Include="Game\Heroes.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="IntelligenceMenuGroup.cs" />
+    <Compile Include="MenuGroups\AutoMoveOnDamage.cs" />
+    <Compile Include="MenuGroups\AutoPositionCamera.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
