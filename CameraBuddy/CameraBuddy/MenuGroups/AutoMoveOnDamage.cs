@@ -17,7 +17,7 @@ namespace CameraBuddy.MenuGroups
         public AutoMoveOnDamage()
         {
             AttackableUnit.OnDamage += Player_OnDamage;
-            Game.OnUpdate += Game_OnUpdate;
+            EloBuddy.Game.OnUpdate += Game_OnUpdate;
         }
 
         private void Game_OnUpdate(EventArgs args)
@@ -33,7 +33,7 @@ namespace CameraBuddy.MenuGroups
         private void MoveCamera()
         {
             CameraState = new CameraState {Position = Player.Instance.Position.To2D()};
-            CameraState.Set(false);
+            CameraState.Set();
         }
 
         private void Player_OnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)

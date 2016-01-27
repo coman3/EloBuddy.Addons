@@ -1,21 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CameraBuddy.Game;
 using EloBuddy;
 using EloBuddy.SDK;
 using SharpDX;
+using GameObject = CameraBuddy.Game.GameObject;
 
 namespace CameraBuddy
 {
     public static class Helpers
     {
-        public static float MaxDistance(this IEnumerable<Obj_AI_Base> entitys, Vector3 basePos, out Obj_AI_Base furthestEntity)
+        public static float MaxDistance(this IEnumerable<GameObject> entitys, Vector3 basePos, out GameObject furthestEntity)
         {
             var list = entitys.ToList();
             var maxDist = 0f;
             furthestEntity = null;
             foreach (var entity in list)
             {
-                var dist = entity.Distance(basePos);
+                var dist = entity.GetPosistion().Distance(basePos);
                 if(dist <= maxDist) continue;
 
                 maxDist = dist;
@@ -23,14 +25,18 @@ namespace CameraBuddy
             }
             return maxDist;
         }
-        public static Vector3 AveragePosition(this IEnumerable<Obj_AI_Base> entitys)
+        public static Vector3 AveragePosition(this IEnumerable<GameObject> entitys)
         {
             var list = entitys.ToList();
-            var posx = list.Average(x => x.Position.X);
-            var posy = list.Average(x => x.Position.Y);
-            var posz = list.Average(x => x.Position.Z);
+            var posx = list.Average(x => x.GetPosistion().X);
+            var posy = list.Average(x => x.GetPosistion().Y);
+            var posz = list.Average(x => x.GetPosistion().Z);
 
             return new Vector3(posx, posy, posz);
+        }
+        public static Vector3 OffsetTowardHero(this Vector3 pos, GameObject gameObject, float distance = 10)
+        {
+            return pos.Extend(gameObject.GetPosistion(), distance).To3D((int)pos.Z);
         }
     }
 }

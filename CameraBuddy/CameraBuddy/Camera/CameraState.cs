@@ -9,10 +9,6 @@ namespace CameraBuddy.Camera
     {
         private CameraState _oldState;
 
-        public bool ToggleLock { get; private set; }
-        public bool Snaped { get; private set; }
-
-        public bool BlockMovement { get; set; }
         public float Zoom { get; set; }
         public Vector2 Position { get; set; }
 
@@ -29,11 +25,6 @@ namespace CameraBuddy.Camera
             YawPitch = yawPitch;
             Position = screenPos;
             Zoom = zoomDistance;
-
-            EloBuddy.Camera.OnUpdate += Camera_OnUpdate;
-            EloBuddy.Camera.OnSnap += Camera_OnSnap;
-            EloBuddy.Camera.OnToggleLock += Camera_OnToggleLock;
-            EloBuddy.Camera.OnZoom += Camera_OnZoom;
         }
 
         /// <summary>
@@ -55,32 +46,7 @@ namespace CameraBuddy.Camera
 
         }
 
-        private void Camera_OnZoom(CameraZoomEventArgs args)
-        {
-            args.Process = !BlockMovement;
-            Console.WriteLine("OnZoom");
-        }
-
-        private void Camera_OnToggleLock(CameraLockToggleEventArgs args)
-        {
-            args.Process = !BlockMovement;
-            ToggleLock = !ToggleLock;
-            Console.WriteLine("Camera_OnToggleLock");
-        }
-
-        private void Camera_OnSnap(CameraSnapEventArgs args)
-        {
-            args.Process = !BlockMovement;
-            Snaped = !Snaped;
-            Console.WriteLine("Camera_OnSnap");
-        }
-
-        private void Camera_OnUpdate(CameraUpdateEventArgs args)
-        {
-            args.Process = !BlockMovement;
-        }
-
-        public void Set(bool blockManualMovement = true, float speed = -1)
+        public void Set(float speed = -1)
         {
             _oldState = new CameraState();
             EloBuddy.Camera.Pitch = Pitch;
@@ -90,24 +56,18 @@ namespace CameraBuddy.Camera
                 CameraMovement.MoveToSmooth(Priority.LowMedium, Position, speed);
             else
                 EloBuddy.Camera.ScreenPosition = Position;
-            BlockMovement = blockManualMovement;
         }
 
         public void Clear()
         {
-            BlockMovement = false;
-            _oldState.Set(false);
+            _oldState.Set();
             _oldState.Dispose();
             _oldState = null;
         }
 
         public void Dispose()
         {
-            if(_oldState != null) _oldState.Set(false);
-            EloBuddy.Camera.OnUpdate -= Camera_OnUpdate;
-            EloBuddy.Camera.OnSnap -= Camera_OnSnap;
-            EloBuddy.Camera.OnToggleLock -= Camera_OnToggleLock;
-            EloBuddy.Camera.OnZoom -= Camera_OnZoom;
+            if(_oldState != null) _oldState.Set();
         }
     }
 }

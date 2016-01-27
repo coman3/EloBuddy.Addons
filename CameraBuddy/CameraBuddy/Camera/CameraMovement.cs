@@ -48,13 +48,13 @@ namespace CameraBuddy.Camera
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Game.CursorPos2D.X < 20 || Game.CursorPos2D.Y < 20) IsMoving = false;
-            if (Drawing.Width - Game.CursorPos2D.X < 20 || Drawing.Height - Game.CursorPos2D.Y < 20) IsMoving = false;
+            if (EloBuddy.Game.CursorPos2D.X < 20 || EloBuddy.Game.CursorPos2D.Y < 20) IsMoving = false;
+            if (Drawing.Width - EloBuddy.Game.CursorPos2D.X < 20 || Drawing.Height - EloBuddy.Game.CursorPos2D.Y < 20) IsMoving = false;
             if(AfterMoveState == null || BeforeMoveState == null) return;
 
             if (EloBuddy.Camera.ScreenPosition.Distance(AfterMoveState.Position) < 5)
             {
-                AfterMoveState.Set(false);
+                AfterMoveState.Set();
                 IsMoving = false;
             }
 

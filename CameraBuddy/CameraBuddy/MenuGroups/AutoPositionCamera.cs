@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CameraBuddy.Camera;
+using CameraBuddy.Game;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
@@ -8,147 +9,191 @@ using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using SharpDX;
 using Color = System.Drawing.Color;
+using GameObject = CameraBuddy.Game.GameObject;
+using Point = System.Drawing.Point;
+
 namespace CameraBuddy.MenuGroups
 {
     public class AutoPositionCamera : IntelligenceMenuGroup
     {
-        public KeyBind DirectCameraTowardsEnemy { get; set; }
+        private const float CrosshairSize = 10f;
+        private readonly Vector2 _centerScreen = new Vector2(Drawing.Width / 2f, Drawing.Height / 2f);
+
+        public KeyBind DirectCameraTowardsHeroes { get; set; }
         public KeyBind DirectCameraTowardsMinions { get; set; }
         public KeyBind DirectCameraTowardsMouse { get; set; }
-        public KeyBind DirectCameraTowardsEntry { get; set; }
+        private CameraModeSelector CameraMode
+        {
+            get
+            {
+                if(DirectCameraTowardsMouse.CurrentValue) return CameraModeSelector.Mouse;
+                if (DirectCameraTowardsHeroes.CurrentValue) return CameraModeSelector.Heroes;
+                if (DirectCameraTowardsMinions.CurrentValue) return CameraModeSelector.Minions;
+                return CameraModeSelector.None;
+            }
+        }
 
-        public Slider EntityDetectionRange { get; set; }
-
-        public CheckBox AllowZooming { get; set; }
-        public CheckBox SnapToChamp { get; set; }
-        public Slider MaxExtraZoom { get; set; }
+        public Slider HeroDetectionRange { get; set; }
+        public Slider MinionDetectionRange { get; set; }
+        public CheckBox DrawFocusPoint { get; set; }
+        public CheckBox DrawCrosshair { get; set; }
+        public CheckBox DrawDetectionRange { get; set; }
         public Slider ExtraDistance { get; set; }
-        public Slider SnapLockDistance { get; set; }
-        public Vector2[] Crosshair;
-        public readonly float CrosshairSize = 10f;
+
+
+        private Vector2[] Crosshair { get; set; }
+        private CameraState CameraState { get; set; }
+        private Vector2 FocusPoint { get; set; }
+        private bool CrosshairMade { get; set; }
         public AutoPositionCamera()
         {
             Drawing.OnDraw += Draw;
-            Crosshair = new Vector2[5];
-            Crosshair[0] = new Vector2(Drawing.Width / 2f - CrosshairSize, Drawing.Height / 2f);
-            Crosshair[1] = new Vector2(Drawing.Width / 2f + CrosshairSize, Drawing.Height / 2f);
-            Crosshair[2] = new Vector2(Drawing.Width / 2f, Drawing.Height / 2f);
-            Crosshair[3] = new Vector2(Drawing.Width / 2f, Drawing.Height / 2f + CrosshairSize);
-            Crosshair[4] = new Vector2(Drawing.Width / 2f, Drawing.Height / 2f - CrosshairSize);
-
+            EloBuddy.Game.OnUpdate += OnUpdate;
+            CameraState = new CameraState();
+            FocusPoint = Vector2.Zero;
         }
 
-        private void Draw(System.EventArgs args)
+        private void CreateCrosshair(Vector2 centerPos)
         {
+            Crosshair = new Vector2[5];
+            Crosshair[0] = new Vector2(centerPos.X - CrosshairSize, centerPos.Y);
+            Crosshair[1] = new Vector2(centerPos.X + CrosshairSize, centerPos.Y);
+            Crosshair[2] = new Vector2(centerPos.X, centerPos.Y);
+            Crosshair[3] = new Vector2(centerPos.X, centerPos.Y + CrosshairSize);
+            Crosshair[4] = new Vector2(centerPos.X, centerPos.Y - CrosshairSize);
+            CrosshairMade = true;
+        }
+
+        private void OnUpdate(EventArgs args)
+        {
+            CheckCrosshair();
+            var distance = 0f;
+            var playerPos = Player.Instance.Position;
+            switch (CameraMode)
+            {
+                case CameraModeSelector.None:
+                    return;
+                case CameraModeSelector.Heroes:
+                    var heroes =
+                        Heroes.Enemies.Where(
+                            x =>
+                                x.GetPosistion().Distance(Player.Instance.Position) < HeroDetectionRange.CurrentValue &&
+                                x.IsAlive()).ToList();
+                    if (heroes.Count <= 0)
+                    {
+                        CameraState.Position = playerPos.To2D();
+                        CameraState.Set();
+                        return;
+                    }
+                    distance = Math.Min(ExtraDistance.CurrentValue, playerPos.Distance(FocusPoint));
+                    FocusPoint = heroes.AveragePosition().To2D();
+                    FocusPoint = playerPos.Extend(FocusPoint, distance);
+                    break;
+                case CameraModeSelector.Minions:
+                    var minions = Minions.Enemy.Where(x => x.GetPosistion().Distance(Player.Instance.Position) < MinionDetectionRange.CurrentValue / 2f && x.IsAlive()).ToList();
+                    if (minions.Count <= 0)
+                    {
+                        minions = Minions.Ally.Where(x => x.GetPosistion().Distance(Player.Instance.Position) < MinionDetectionRange.CurrentValue / 2f && x.IsAlive()).ToList();
+                        if (minions.Count <= 0)
+                        {
+                            CameraState.Position = playerPos.To2D();
+                            CameraState.Set();
+                            return;
+                        }
+                    }
+                    FocusPoint = minions.AveragePosition().To2D();
+                    distance = Math.Min(ExtraDistance.CurrentValue, playerPos.Distance(FocusPoint));
+                    FocusPoint = playerPos.Extend(FocusPoint, distance);
+                    break;
+                case CameraModeSelector.Mouse:
+                    var pos = EloBuddy.Game.CursorPos2D;
+                    distance = Math.Min(pos.Distance(_centerScreen), ExtraDistance.CurrentValue);
+                    var angle = new Vector2(-(_centerScreen.X - pos.X) / _centerScreen.Distance(pos),
+                        -(pos.Y - _centerScreen.Y) / _centerScreen.Distance(pos));
+                    FocusPoint = new Vector2(Player.Instance.Position.X + angle.X * distance,
+                        Player.Instance.Position.Y + angle.Y * distance);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private void CheckCrosshair()
+        {
+            if (DrawCrosshair.CurrentValue)
+            {
+                if (Crosshair == null || Crosshair.Length <= 0)
+                {
+                    CreateCrosshair(_centerScreen);
+                }
+            }
+        }
+
+        private void Draw(EventArgs args)
+        {
+
             if(!Enabled) return;
-            Line.DrawLine(Color.Black, Crosshair);
-            Line.DrawLine(Color.Blue, Crosshair[2], Game.CursorPos2D);
-
-            Line.DrawLine(Color.Red, Player.Instance.Position, new Vector3(Crosshair[2].ScreenToWorld().X, Crosshair[2].ScreenToWorld().Y + 700, Crosshair[2].ScreenToWorld().Z));
-            if (SnapToChamp.CurrentValue)
-                Circle.Draw(new ColorBGRA(255, 255, 255, 127), SnapLockDistance.CurrentValue, Player.Instance.Position);
-            if (DirectCameraTowardsMouse.CurrentValue)
+            Drawing.DrawText(new Vector2(EloBuddy.Game.CursorPos2D.X + 20, EloBuddy.Game.CursorPos2D.Y - 10), Color.White, EloBuddy.Game.CursorPos.ToString(), 10);
+            if (DrawCrosshair.CurrentValue && CrosshairMade)
             {
-                var camState = new CameraState();
+                Line.DrawLine(Color.White, Crosshair);
+            }
 
-                if (Game.CursorPos.Distance(Player.Instance.Position) > SnapLockDistance.CurrentValue)
-                    camState.Position = Player.Instance.Position.Extend(Game.CursorPos, ExtraDistance.CurrentValue);
-                else if (SnapToChamp.CurrentValue)
-                    camState.Position = Player.Instance.Position.To2D();
-                else
-                    camState.Position = Player.Instance.Position.Extend(Game.CursorPos, ExtraDistance.CurrentValue / 4f);
-                camState.Set(false);
+            if (CameraState == null) return;
+            if (FocusPoint == Vector2.Zero) return;
 
-            }
-            else if (DirectCameraTowardsEnemy.CurrentValue)
+            var mode = CameraMode;
+            if (mode != CameraModeSelector.None)
             {
-                var playerPos = Player.Instance.Position;
-                var pos = new CameraState();
-                var heroes = EntityManager.Heroes.Enemies.Where(x=> x.Position.Distance(playerPos) < EntityDetectionRange.CurrentValue && x.IsHPBarRendered).ToList();
-                if (heroes.Count <= 0)
-                {
-                    if(!SnapToChamp.CurrentValue) return;
-                    pos.Position = playerPos.To2D();
-                    pos.Set(false);
-                    return;
-                }
-                var averagePos = heroes.AveragePosition();
-                Obj_AI_Base furthestItem;
-                var maxDistance = heroes.MaxDistance(playerPos, out furthestItem);
-                if (furthestItem == null) return;
-                if (averagePos.Distance(Player.Instance.Position) > SnapLockDistance.CurrentValue)
-                {
-                    pos.Position = playerPos.Extend(averagePos, ExtraDistance.CurrentValue);
-                    pos.Set(false);
-                }
-                else if (SnapToChamp.CurrentValue)
-                {
-                    pos.Position = Player.Instance.Position.To2D();
-                    pos.Set(false);
-                }
+                CameraState.Position = FocusPoint;
+                CameraState.Set();
             }
-            else if (DirectCameraTowardsMinions.CurrentValue)
-            {
-                var playerPos = Player.Instance.Position;
-                var pos = new CameraState();
-                var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(x => x.Position.Distance(playerPos) < EntityDetectionRange.CurrentValue / 2f && x.IsHPBarRendered).ToList();
-                if (minions.Count <= 0)
-                {
-                    if (!SnapToChamp.CurrentValue) return;
-                    pos.Position = playerPos.To2D();
-                    pos.Set(false);
-                    return;
-                }
-                var averagePos = minions.AveragePosition();
-                Obj_AI_Base furthestItem;
-                var maxDistance = minions.MaxDistance(playerPos, out furthestItem);
-                if (furthestItem == null) return;
-                if (averagePos.Distance(Player.Instance.Position) > SnapLockDistance.CurrentValue)
-                {
-                    pos.Position = playerPos.Extend(averagePos, ExtraDistance.CurrentValue);
-                    pos.Set(false);
-                }
-                else if (SnapToChamp.CurrentValue)
-                {
-                    pos.Position = Player.Instance.Position.To2D();
-                    pos.Set(false);
-                }
-            }
-            //else if (DirectCameraTowardsEntry.CurrentValue)
-            //{
-                
-            //}
+            if(DrawDetectionRange.CurrentValue)
+                Circle.Draw(new ColorBGRA(100, 100, 100, 100),
+                    mode != CameraModeSelector.Minions
+                        ? HeroDetectionRange.CurrentValue
+                        : MinionDetectionRange.CurrentValue, Player.Instance.Position);
+            if (DrawFocusPoint.CurrentValue)
+                Circle.Draw(new ColorBGRA(255, 255, 100, 100), 40, FocusPoint.To3D());
+
+            
         }
 
         public override void AddToMenu(Menu menuBase)
         {
             var menu = menuBase.Parent.AddSubMenu("     - Auto Position");
-            menu.AddLabel("'Auto Position' will automatically move the camera relatively towards Enemy heroes, Minions or Lane entries.");
+            menu.AddLabel("'Auto Position' will automatically move the camera relatively towards Enemy heroes, Minions, the mouse or Lane entries.");
             menu.AddLabel("It will always keep your player visible within the view port.");
-            menu.AddLabel("Snap is when the focus point is nearby the player, and moving the camera around would cause distortion, ");
-            menu.AddLabel("making the camera 'wobble'. This is usually best to have set to your heroes attack range.");
             menu.AddSeparator(10);
 
-            DirectCameraTowardsEnemy = AddKeyBind(new KeyBind("Direct Towards Heroes", false, KeyBind.BindTypes.HoldActive));
+            DirectCameraTowardsHeroes = AddKeyBind(new KeyBind("Direct Towards Heroes", false, KeyBind.BindTypes.HoldActive));
             DirectCameraTowardsMinions = AddKeyBind(new KeyBind("Direct Towards Minions", false, KeyBind.BindTypes.HoldActive));
             DirectCameraTowardsMouse = AddKeyBind(new KeyBind("Direct Towards Mouse", false, KeyBind.BindTypes.HoldActive));
             //DirectCameraTowardsEntry = AddKeyBind(new KeyBind("Direct Towards Entry", false, KeyBind.BindTypes.HoldActive));
 
-            EntityDetectionRange = AddSlider(new Slider("Entity Detection Range", 3000, 500, 5000));
+            HeroDetectionRange = AddSlider(new Slider("Hero Detection Range", 3000, 500, 5000));
+            MinionDetectionRange = AddSlider(new Slider("Minion Detection Range", 3000, 500, 5000));
 
-            AllowZooming = AddCheckbox(new CheckBox("Allow Zooming"));
-            MaxExtraZoom = AddSlider(new Slider("Maximum Extra Zoom", 300, 0, 2000));
+            DrawFocusPoint = AddCheckbox(new CheckBox("Draw Focus Point"));
+            DrawCrosshair = AddCheckbox(new CheckBox("Draw Crosshair"));
+            DrawDetectionRange = AddCheckbox(new CheckBox("Draw Detection Range"));
             ExtraDistance = AddSlider(new Slider("Extra Distance towards focus point", 100, 0, 1000));
-            SnapLockDistance = AddSlider(new Slider("Distance of Snap (see above)", 500, 500, 1500));
-            SnapToChamp = AddCheckbox(new CheckBox("Snap To Player (Disabled: Free Cam)"));
+
 
             base.AddToMenu(menu);
-
-
         }
+
         public override string GetUniqueId()
         {
             return "AutoPositionCamera";
+        }
+
+        private enum CameraModeSelector
+        {
+            None,
+            Heroes,
+            Minions,
+            Mouse
         }
     }
 }

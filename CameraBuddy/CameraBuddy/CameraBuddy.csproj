@@ -62,6 +62,7 @@
     <Compile Include="Camera\CameraMovement.cs" />
     <Compile Include="Camera\CameraState.cs" />
     <Compile Include="Game\Heroes.cs" />
+    <Compile Include="Game\Minions.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="IntelligenceMenuGroup.cs" />
     <Compile Include="MenuGroups\AutoMoveOnDamage.cs" />

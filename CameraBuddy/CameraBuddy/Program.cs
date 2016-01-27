@@ -52,7 +52,7 @@ namespace CameraBuddy
         {
             Console.WriteLine("SwitchMode");
             var cameraState = new CameraState { Position = Player.Instance.Position.To2D() };
-            cameraState.Set(false, 25);
+            cameraState.Set(25);
         }
 
         private static void Reset()
