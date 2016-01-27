@@ -95,14 +95,23 @@ namespace AdEvade.Config
             _blockChangedEvent = false;
         }
 
+        public static void LoadDefaultConfig()
+        {
+            //_configMenu = MainMenu.AddMenu("AdEvade Presets", "AdEvadePreset", "AdEvade Preset Manager");
+           // _configMenu.AddGroupLabel("Installed Presets");
+            Configs = new Dictionary<ConfigPluginAttribute, ConfigPreset>();
+            var cfg = new Default();
+            Configs.Add(cfg.GetAttribute(), cfg);
+            LoadDefault();
+        }
+
         public static void LoadConfigPresets()
         {
             Drawing.OnEndScene += Drawing_OnEndScene;
             _configMenu = MainMenu.AddMenu("AdEvade Presets", "AdEvadePreset", "AdEvade Preset Manager");
             _configMenu.AddGroupLabel("Installed Presets");
             Configs = new Dictionary<ConfigPluginAttribute, ConfigPreset>();
-            //var cfg = new Default();
-            //Configs.Add(cfg.GetAttribute(), cfg);
+
             ConsoleDebug.WriteLine("Loading Config Presets...");
             var types = Assembly.GetExecutingAssembly().GetTypes();
             var plugins = types.Where(IsConfigPlugin).ToList();
@@ -144,8 +153,13 @@ namespace AdEvade.Config
         {
             for (int i = 0; i < Configs.Count; i++)
             {
-                if(Configs.ElementAt(i).Key.Name == "Default")
+                if (Configs.ElementAt(i).Key.Name == "Default")
+                {
                     MoveTo(i, false, true);
+                    return;
+                }
+
+
             }
         }
 
