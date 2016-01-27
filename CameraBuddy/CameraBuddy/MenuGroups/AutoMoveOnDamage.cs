@@ -23,6 +23,8 @@ namespace CameraBuddy.MenuGroups
         private void Game_OnUpdate(EventArgs args)
         {
             if (CrowdControlChecks() && OnlyMoveOnCc.CurrentValue) MoveCamera();
+
+            DamageRecivedCount.MaxValue = (int) Player.Instance.MaxHealth;
         }
 
         private static bool CrowdControlChecks()

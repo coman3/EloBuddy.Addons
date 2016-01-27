@@ -81,13 +81,13 @@ namespace CameraBuddy.MenuGroups
                                 x.IsAlive()).ToList();
                     if (heroes.Count <= 0)
                     {
-                        CameraState.Position = playerPos.To2D();
-                        CameraState.Set();
+                        FocusPoint = playerPos.To2D();
                         return;
                     }
-                    distance = Math.Min(ExtraDistance.CurrentValue, playerPos.Distance(FocusPoint));
                     FocusPoint = heroes.AveragePosition().To2D();
+                    distance = Math.Min(ExtraDistance.CurrentValue, playerPos.Distance(FocusPoint));
                     FocusPoint = playerPos.Extend(FocusPoint, distance);
+
                     break;
                 case CameraModeSelector.Minions:
                     var minions = Minions.Enemy.Where(x => x.GetPosistion().Distance(Player.Instance.Position) < MinionDetectionRange.CurrentValue / 2f && x.IsAlive()).ToList();
@@ -96,8 +96,7 @@ namespace CameraBuddy.MenuGroups
                         minions = Minions.Ally.Where(x => x.GetPosistion().Distance(Player.Instance.Position) < MinionDetectionRange.CurrentValue / 2f && x.IsAlive()).ToList();
                         if (minions.Count <= 0)
                         {
-                            CameraState.Position = playerPos.To2D();
-                            CameraState.Set();
+                            FocusPoint = playerPos.To2D();
                             return;
                         }
                     }
@@ -133,7 +132,6 @@ namespace CameraBuddy.MenuGroups
         {
 
             if(!Enabled) return;
-            Drawing.DrawText(new Vector2(EloBuddy.Game.CursorPos2D.X + 20, EloBuddy.Game.CursorPos2D.Y - 10), Color.White, EloBuddy.Game.CursorPos.ToString(), 10);
             if (DrawCrosshair.CurrentValue && CrosshairMade)
             {
                 Line.DrawLine(Color.White, Crosshair);
@@ -145,6 +143,8 @@ namespace CameraBuddy.MenuGroups
             var mode = CameraMode;
             if (mode != CameraModeSelector.None)
             {
+                if (DrawFocusPoint.CurrentValue)
+                    Circle.Draw(new ColorBGRA(255, 255, 100, 100), 40, FocusPoint.To3D());
                 CameraState.Position = FocusPoint;
                 CameraState.Set();
             }
@@ -153,8 +153,7 @@ namespace CameraBuddy.MenuGroups
                     mode != CameraModeSelector.Minions
                         ? HeroDetectionRange.CurrentValue
                         : MinionDetectionRange.CurrentValue, Player.Instance.Position);
-            if (DrawFocusPoint.CurrentValue)
-                Circle.Draw(new ColorBGRA(255, 255, 100, 100), 40, FocusPoint.To3D());
+
 
             
         }
@@ -162,14 +161,13 @@ namespace CameraBuddy.MenuGroups
         public override void AddToMenu(Menu menuBase)
         {
             var menu = menuBase.Parent.AddSubMenu("     - Auto Position");
-            menu.AddLabel("'Auto Position' will automatically move the camera relatively towards Enemy heroes, Minions, the mouse or Lane entries.");
+            menu.AddLabel("'Auto Position' will automatically move the camera relatively towards Enemy Heroes, Minions, or The Mouse.");
             menu.AddLabel("It will always keep your player visible within the view port.");
             menu.AddSeparator(10);
 
             DirectCameraTowardsHeroes = AddKeyBind(new KeyBind("Direct Towards Heroes", false, KeyBind.BindTypes.HoldActive));
             DirectCameraTowardsMinions = AddKeyBind(new KeyBind("Direct Towards Minions", false, KeyBind.BindTypes.HoldActive));
             DirectCameraTowardsMouse = AddKeyBind(new KeyBind("Direct Towards Mouse", false, KeyBind.BindTypes.HoldActive));
-            //DirectCameraTowardsEntry = AddKeyBind(new KeyBind("Direct Towards Entry", false, KeyBind.BindTypes.HoldActive));
 
             HeroDetectionRange = AddSlider(new Slider("Hero Detection Range", 3000, 500, 5000));
             MinionDetectionRange = AddSlider(new Slider("Minion Detection Range", 3000, 500, 5000));
