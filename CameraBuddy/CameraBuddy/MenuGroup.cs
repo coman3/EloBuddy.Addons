@@ -8,7 +8,7 @@ using EloBuddy.SDK.Menu.Values;
 
 namespace CameraBuddy
 {
-    public abstract class IntelligenceMenuGroup : IMenuGroup
+    public abstract class MenuGroup : IMenuGroup
     {
         private Dictionary<string, CheckBox> CheckBoxs { get; set; }
         private Dictionary<string, Slider> Sliders { get; set; }
@@ -16,7 +16,7 @@ namespace CameraBuddy
 
         public bool Enabled { get; set; }
 
-        protected IntelligenceMenuGroup()
+        protected MenuGroup()
         {
             Enabled = true;
             CheckBoxs = new Dictionary<string, CheckBox>();

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CameraBuddy.Camera;
 using CameraBuddy.MenuGroups;
+using CameraBuddy.MenuGroups.Events;
+using CameraBuddy.MenuGroups.Inteli;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
@@ -17,6 +19,8 @@ namespace CameraBuddy
     {
         public static Menu MainMenu { get; set; }
         public static Menu IntelligenceMenu { get; set; }
+        public static Menu EventMenu { get; set; }
+        public static CameraState DefaultCameraState { get; set; }
         static void Main()
         {
             Loading.OnLoadingComplete += OnLoad;
@@ -24,6 +28,7 @@ namespace CameraBuddy
 
         private static void OnLoad(EventArgs args)
         {
+            DefaultCameraState = new CameraState();
             LoadMenu();
         }
 
@@ -37,15 +42,17 @@ namespace CameraBuddy
                     Reset();
                     sender.CurrentValue = false;
                 };
+            EventMenu = MainMenu.AddSubMenu("Events");
+            EventMenu.AddGroup(new AutoMoveOnDamage());
+            //EventMenu.AddGroup(new DeathSpectate());
 
             IntelligenceMenu = MainMenu.AddSubMenu("Intelligence");
-            IntelligenceMenu.AddGroup(new AutoMoveOnDamage());
             IntelligenceMenu.AddGroup(new AutoPositionCamera());
         }
 
         private static void Reset()
         {
-            
+            DefaultCameraState.Set();
         }
     }
 }

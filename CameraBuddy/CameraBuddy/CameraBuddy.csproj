@@ -64,11 +64,31 @@
     <Compile Include="Game\Heroes.cs" />
     <Compile Include="Game\Minions.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="IntelligenceMenuGroup.cs" />
-    <Compile Include="MenuGroups\AutoMoveOnDamage.cs" />
-    <Compile Include="MenuGroups\AutoPositionCamera.cs" />
+    <Compile Include="MenuGroup.cs" />
+    <Compile Include="MenuGroups\Events\AutoMoveOnDamage.cs" />
+    <Compile Include="MenuGroups\Inteli\AutoPositionCamera.cs" />
+    <Compile Include="MenuGroups\Events\DeathSpectate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spectate\Core\Camera.cs" />
+    <Compile Include="Spectate\Core\ChampionController.cs" />
+    <Compile Include="Spectate\Core\ChampionPlugin.cs" />
+    <Compile Include="Spectate\Core\Helpers.cs" />
+    <Compile Include="Spectate\Core\Movement.cs" />
+    <Compile Include="Spectate\Core\Random.cs" />
+    <Compile Include="Spectate\Core\SpellAvaliblity.cs" />
+    <Compile Include="Spectate\Data\FightData.cs" />
+    <Compile Include="Spectate\Data\Lanes.cs" />
+    <Compile Include="Spectate\Data\Region.cs" />
+    <Compile Include="Spectate\Data\Timing.cs" />
+    <Compile Include="Spectate\Extensions\SmartList.cs" />
+    <Compile Include="Spectate\Situation\Buildings.cs" />
+    <Compile Include="Spectate\Situation\Game.cs" />
+    <Compile Include="Spectate\Situation\Heros.cs" />
+    <Compile Include="Spectate\Situation\Jungle.cs" />
+    <Compile Include="Spectate\Situation\Minions.cs" />
+    <Compile Include="Spectate\Situation\Player.cs" />
+    <Compile Include="Spectate\Spectator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

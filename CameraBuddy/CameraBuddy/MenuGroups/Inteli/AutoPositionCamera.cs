@@ -9,12 +9,10 @@ using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using SharpDX;
 using Color = System.Drawing.Color;
-using GameObject = CameraBuddy.Game.GameObject;
-using Point = System.Drawing.Point;
 
-namespace CameraBuddy.MenuGroups
+namespace CameraBuddy.MenuGroups.Inteli
 {
-    public class AutoPositionCamera : IntelligenceMenuGroup
+    public class AutoPositionCamera : MenuGroup
     {
         private const float CrosshairSize = 10f;
         private readonly Vector2 _centerScreen = new Vector2(Drawing.Width / 2f, Drawing.Height / 2f);
@@ -160,7 +158,7 @@ namespace CameraBuddy.MenuGroups
 
         public override void AddToMenu(Menu menuBase)
         {
-            var menu = menuBase.Parent.AddSubMenu("     - Auto Position");
+            var menu = menuBase.Parent.AddSubMenu("     Auto Position");
             menu.AddLabel("'Auto Position' will automatically move the camera relatively towards Enemy Heroes, Minions, or The Mouse.");
             menu.AddLabel("It will always keep your player visible within the view port.");
             menu.AddSeparator(10);

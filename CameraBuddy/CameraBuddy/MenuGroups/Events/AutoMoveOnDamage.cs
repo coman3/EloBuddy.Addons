@@ -5,9 +5,9 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
-namespace CameraBuddy.MenuGroups
+namespace CameraBuddy.MenuGroups.Events
 {
-    public class AutoMoveOnDamage : IntelligenceMenuGroup
+    public class AutoMoveOnDamage : MenuGroup
     {
         public Slider DamageRecivedCount { get; set; }
         public CheckBox IgnoreMinionDamage { get; set; }
@@ -56,7 +56,7 @@ namespace CameraBuddy.MenuGroups
 
         public override void AddToMenu(Menu menuBase)
         {
-            var menu = menuBase.Parent.AddSubMenu("     - On Hurt");
+            var menu = menuBase.Parent.AddSubMenu("     On Hurt");
             menu.AddLabel("'On Hurt' will automatically move the camera towards your player if you \nreceive damage or CC (Crowd Control), within the specified parameters");
             menu.AddSeparator(10);
 
