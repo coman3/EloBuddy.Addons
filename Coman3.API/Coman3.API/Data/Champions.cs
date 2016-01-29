@@ -138,6 +138,11 @@ namespace Coman3.API.Data
 
     public static class ChampionHelpers
     {
+        /// <summary>
+        /// Returns the name of a champion from <see cref="Champions"/>
+        /// </summary>
+        /// <param name="champion"></param>
+        /// <returns></returns>
         public static string GetChampionName(this Champions champion)
         {
             return Enum.GetName(typeof (Champions), champion);

@@ -131,6 +131,12 @@ namespace Coman3.API.Data
         }
 
         #region Utilities
+        /// <summary>
+        /// Draws the region with the specified <see cref="Color"/> and line width
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="color"></param>
+        /// <param name="width"></param>
         public static void DrawRegion(Location region, Color color, int width = 2)
         {
             if (!Regions.ContainsKey(region)) {  Drawing.DrawText(0, 0, Color.Red, "Region Not In Database!"); return;}
@@ -145,7 +151,11 @@ namespace Coman3.API.Data
             }
             Drawing.DrawText(10, Drawing.Height - 20, Color.Red, "Region: " + region, 15);
         }
-
+        /// <summary>
+        /// Returns the surrounding <see cref="Location"/>s around a specified <see cref="Location"/>
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public static Location[] SurroundingRegions(this Location location)
         {
             switch (location)
@@ -213,7 +223,12 @@ namespace Coman3.API.Data
             }
             return new Location[0];
         }
-
+        /// <summary>
+        /// Draws a specified region onto the mini-map
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="color"></param>
+        /// <param name="width"></param>
         public static void DrawRegionOnMiniMap(Location region, Color color, int width = 2)
         {
             if (!Regions.ContainsKey(region))
@@ -279,17 +294,32 @@ namespace Coman3.API.Data
         }
 
         #endregion
-
+        /// <summary>
+        /// Returns if the specified position is inside the specified <see cref="Location"/>s
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="locations"></param>
+        /// <returns></returns>
         public static bool IsInRegion(Vector3 point, params Location[] locations)
         {
             return locations.Any(location => IsPointInPolygon(Regions[location], point));
         }
 
+        /// <summary>
+        /// Returns the <see cref="Location"/> the specified position is in
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public static Location InWhatRegion(this Vector3 point)
         {
             return Regions.Any(location => IsPointInPolygon(location.Value, point)) ? Regions.First(location => IsPointInPolygon(location.Value, point)).Key : Location.None;
         }
 
+        /// <summary>
+        /// Returns all of the players inside of a specified region
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public static List<AIHeroClient> PlayersInRegion(Location location)
         {
             return Heroes.AllHeros.Where(hero => hero.Position.InWhatRegion() == location).ToList();

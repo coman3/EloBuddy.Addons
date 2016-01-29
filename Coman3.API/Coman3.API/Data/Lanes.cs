@@ -38,19 +38,39 @@ namespace Coman3.API.Data
         private static readonly GraphicsPath MidLanePath;
         private static readonly GraphicsPath BotLanePath;
 
+        /// <summary>
+        /// Is the specified location inside bottom lane
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public static bool IsInBotLane(this Vector3 pos)
         {
             return BotLanePath.IsVisible(pos.ToPointF());
         }
+        /// <summary>
+        /// Is the specified location inside mid lane
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public static bool IsInMidLane(this Vector3 pos)
         {
             return MidLanePath.IsVisible(pos.ToPointF());
         }
+        /// <summary>
+        /// Is the specified location inside top lane
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public static bool IsInTopLane(this Vector3 pos)
         {
             return TopLanePath.IsVisible(pos.ToPointF());
         }
 
+        /// <summary>
+        /// Returns what lane the specified location is inside
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public static Lane InWhatLane(this Vector3 pos)
         {
             if (pos.IsInLane(Lane.Top))
@@ -61,6 +81,12 @@ namespace Coman3.API.Data
                 return Lane.Middle;
             return Lane.Jungle;
         }
+        /// <summary>
+        /// Returns if the specified location is inside the specified lane
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="lane"></param>
+        /// <returns></returns>
         public static bool IsInLane(this Vector3 pos,  Lane lane)
         {
             return pos.InWhatLane() == lane;
