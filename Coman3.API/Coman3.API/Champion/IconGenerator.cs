@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
+using System.Linq;
 using EloBuddy;
 
 namespace Coman3.API.Champion
@@ -14,6 +17,8 @@ namespace Coman3.API.Champion
         public Color BorderColor { get; set; }
         public float BorderWidth { get; set; }
         public float Padding  { get; set; }
+        public static readonly Color DefaultGoldColor = Color.FromArgb(143, 122, 72);
+        public static readonly Color DefaultGreenColor = Color.FromArgb(44, 99, 94);
         public IconGenerator(IconType type, int width, int height, Color borderColor, float borderWidth)
         {
             Type = type;
@@ -24,27 +29,46 @@ namespace Coman3.API.Champion
             BorderWidth = borderWidth;
         }
 
-        //public Bitmap GetChampionIcon(AIHeroClient hero)
-        //{
-        //    return GetChampionIcon(hero.ChampionName);
-        //}
-        public Bitmap GetChampionIcon(string championName)
+        public Tuple<string, Bitmap>[] GenerateAllIcons()
+        {
+            var items = Properties.Resources.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, true).GetEnumerator();
+            List<string> allIcons = new List<string>();
+            while (items.MoveNext())
+            {
+                allIcons.Add((string) items.Key);
+            }
+            return allIcons.Select(x=> new Tuple<string, Bitmap>(x, GetIcon(x))).ToArray();
+        }
+        public Bitmap GetIcon(string itemName)
         {
             var container = new IconContatiner(Width, Height);
             var resource =
-                Properties.Resources.ResourceManager.GetObject(string.Format("{0}_Square_0", championName)) as Bitmap;
+                Properties.Resources.ResourceManager.GetObject(itemName) as Bitmap;
             if (resource == null) return CreateErrorIcon(container);
 
-            container.DrawImage(Type, resource, new IconContatiner.Padding(Padding, Padding *2));
+            container.DrawImage(Type, resource, new IconContatiner.Padding(Padding, Padding * 2));
 
             if (Type == IconType.Circle)
                 container.Graphics.DrawEllipse(new Pen(BorderColor, BorderWidth), Padding, Padding, Width - Padding * 2, Height - Padding * 2);
-            else 
+            else
                 container.Graphics.DrawRectangle(new Pen(BorderColor, BorderWidth), Padding, Padding, Width - Padding * 2, Height - Padding * 2);
             return container.Icon;
-
-
-
+        }
+        public Bitmap GetSpellIcon(string name)
+        {
+            return GetIcon(name);
+        }
+        public Bitmap GetSpellIcon(SpellData data)
+        {
+            return GetIcon(data.Name);
+        }
+        public Bitmap GetChampionIcon(AIHeroClient champion)
+        {
+            return GetIcon(string.Format("{0}_Square_0", champion.ChampionName));
+        }
+        public Bitmap GetChampionIcon(string championName)
+        {
+            return GetIcon(string.Format("{0}_Square_0", championName));
         }
 
         private Bitmap CreateErrorIcon(IconContatiner container)
