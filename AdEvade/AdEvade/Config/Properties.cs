@@ -49,6 +49,7 @@ namespace AdEvade.Config
         {
             return new SpellConfig
             {
+                SData = spell,
                 DangerLevel = spell.Dangerlevel,
                 Dodge = true,
                 Draw = true,
@@ -76,16 +77,8 @@ namespace AdEvade.Config
         {
             if (Spells.Any(i => i.Key == key))
             {
-                ConsoleDebug.WriteLineColor(string.Format("Spell Found: {0}", Spells[key]), ConsoleColor.Yellow);
                 return Spells[key];
             }
-            if (ConfigValue.EnableSpellTester.GetBool())
-                if (SpellDatabase.Spells.Any(x => x.SpellName == key))
-                {
-                    var spellfromdb = SpellDatabase.Spells.First(x => x.SpellName == key);
-                    return new SpellConfig { DangerLevel = spellfromdb.Dangerlevel, Radius = spellfromdb.Radius, Dodge = true, Draw = true, EvadeSpellMode = SpellModes.Always};
-                }
-            ConsoleDebug.WriteLineColor("Spell: " + key + " Not Found, Returning: DO NOT DODGE", ConsoleColor.Red);
             return new SpellConfig { DangerLevel = SpellDangerLevel.Normal, Dodge = false, Draw = true, EvadeSpellMode = SpellModes.Undodgeable, Radius = 20 };
 
         }
@@ -101,15 +94,16 @@ namespace AdEvade.Config
 
         public static int GetInt(ConfigValue key)
         {
-            return ConfigPluginControler.SelectedPreset.GetInt(key);
+            return (int)Values[key];
         }
         public static bool GetBool(ConfigValue key)
         {
-            return ConfigPluginControler.SelectedPreset.GetBoolean(key);
+            return (bool)Values[key];
         }
         public static void SetValue(ConfigValue key, object value, bool raiseEvent = true)
         {
-            ConfigPluginControler.SelectedPreset.SetValue(key, value, raiseEvent);
+            Values[key] = value;
+            if(OnConfigValueChanged != null && raiseEvent) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
         }
         public static void SetSpell(string id, SpellConfig value, bool raiseEvent = true)
         {
@@ -157,6 +151,7 @@ namespace AdEvade.Config
 
     public class SpellConfig
     {
+        public SpellData SData { get; set; }
         public bool Dodge { get; set; }
         public bool Draw { get; set; }
         public float Radius { get; set; }
@@ -166,7 +161,7 @@ namespace AdEvade.Config
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}:{2}:{3}:{4}:{5}", Dodge, Draw, Radius, DangerLevel, EvadeSpellMode, PlayerName);
+            return string.Format("{6} (Dodge:{0} Draw:{1} Radius:{2} DangerLevel:{3} EvadeSpellMode:{4} PlayerName:{5})", Dodge, Draw, Radius, DangerLevel, EvadeSpellMode, PlayerName,SData != null ? SData.SpellName : "");
         }
     }
 }

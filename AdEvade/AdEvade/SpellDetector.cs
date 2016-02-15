@@ -29,13 +29,18 @@ namespace AdEvade
     public class SpellDetector
     {
         public delegate void OnCreateSpellHandler(Spell spell);
+
         public static event OnCreateSpellHandler OnCreateSpell;
 
         public delegate void OnProcessDetectedSpellsHandler();
+
         public static event OnProcessDetectedSpellsHandler OnProcessDetectedSpells;
 
-        public delegate void OnProcessSpecialSpellHandler(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args,
-            SpellData spellData, SpecialSpellEventArgs specialSpellArgs);
+        public delegate void OnProcessSpecialSpellHandler(Obj_AI_Base hero,
+            GameObjectProcessSpellCastEventArgs args,
+            SpellData spellData,
+            SpecialSpellEventArgs specialSpellArgs);
+
         public static event OnProcessSpecialSpellHandler OnProcessSpecialSpell;
 
         //public static event OnDeleteSpellHandler OnDeleteSpell;
@@ -85,7 +90,8 @@ namespace AdEvade
         private void SpellMissile_OnCreate(GameObject obj, EventArgs args)
         {
             MissileClient missile;
-            if (obj.IsMissileClient(out missile)) return;
+            if (obj.IsMissileClient(out missile))
+                return;
 
             SpellData spellData;
             if (missile.IsValidEvadeSpell(out spellData))
@@ -94,7 +100,7 @@ namespace AdEvade
                 {
                     var hero = missile.SpellCaster;
 
-                    if (!hero.IsVisible &&ConfigValue.DodgeFowSpells.GetBool())
+                    if (!hero.IsVisible && ConfigValue.DodgeFowSpells.GetBool())
                     {
                         CreateSpellData(hero, missile.StartPosition, missile.EndPosition, spellData, obj);
                         return;
@@ -114,7 +120,8 @@ namespace AdEvade
 
                         if (spell.Info.MissileName == missile.SData.Name
                             && spell.HeroId == missile.SpellCaster.NetworkId
-                            && dir.AngleBetween(spell.Direction) < 10) {
+                            && dir.AngleBetween(spell.Direction) < 10)
+                        {
                             if (spell.Info.IsThreeWay == false
                                 && spell.Info.IsSpecial == false)
                             {
@@ -142,7 +149,7 @@ namespace AdEvade
         public void RemoveNonDangerousSpells()
         {
             foreach (var spell in Spells.Values.ToList().Where(
-                s => ((int)s.GetSpellDangerLevel() < (int)SpellDangerLevel.High)))
+                s => ((int) s.GetSpellDangerLevel() < (int) SpellDangerLevel.High)))
             {
                 Core.DelayAction(() => DeleteSpell(spell.SpellId), 1);
             }
@@ -177,9 +184,17 @@ namespace AdEvade
             }
         }
 
-        public static void CreateSpellData(Obj_AI_Base hero, Vector3 spellStartPos, Vector3 spellEndPos,
-            SpellData spellData, GameObject obj = null, float extraEndTick = 0.0f, bool processSpell = true,
-            SpellType spellType = SpellType.None, bool checkEndExplosion = true, float spellRadius = 0)
+        public static void CreateSpellData(
+            Obj_AI_Base hero,
+            Vector3 spellStartPos,
+            Vector3 spellEndPos,
+            SpellData spellData,
+            GameObject obj = null,
+            float extraEndTick = 0.0f,
+            bool processSpell = true,
+            SpellType spellType = SpellType.None,
+            bool checkEndExplosion = true,
+            float spellRadius = 0)
         {
             if (checkEndExplosion && spellData.HasEndExplosion)
             {
@@ -209,18 +224,18 @@ namespace AdEvade
                 {
                     if (endPosition.Distance(startPosition) > spellData.Range)
                     {
-                        endPosition = startPosition + direction*spellData.Range;
+                        endPosition = startPosition + direction * spellData.Range;
                     }
                 }
                 if (spellType == SpellType.Line)
                 {
-                    endTick = spellData.SpellDelay + (spellData.Range/spellData.ProjectileSpeed)*1000;
-                    endPosition = startPosition + direction*spellData.Range;
+                    endTick = spellData.SpellDelay + (spellData.Range / spellData.ProjectileSpeed) * 1000;
+                    endPosition = startPosition + direction * spellData.Range;
 
                     if (spellData.UseEndPosition)
                     {
                         var range = spellEndPos.To2D().Distance(spellStartPos.To2D());
-                        endTick = spellData.SpellDelay + (range/spellData.ProjectileSpeed)*1000;
+                        endTick = spellData.SpellDelay + (range / spellData.ProjectileSpeed) * 1000;
                         endPosition = spellEndPos.To2D();
                     }
 
@@ -241,10 +256,10 @@ namespace AdEvade
                             spellData.HasEndExplosion &&
                             spellData.UseEndPosition == false)
                         {
-                            endPosition = startPosition + direction*spellData.Range;
+                            endPosition = startPosition + direction * spellData.Range;
                         }
 
-                        endTick = endTick + 1000*startPosition.Distance(endPosition)/spellData.ProjectileSpeed;
+                        endTick = endTick + 1000 * startPosition.Distance(endPosition) / spellData.ProjectileSpeed;
                     }
                 }
                 else if (spellType == SpellType.Arc)
@@ -280,7 +295,7 @@ namespace AdEvade
                     newSpell.ProjectileId = obj.NetworkId;
                 }
                 int spellId = CreateSpell(newSpell, processSpell);
-                Core.DelayAction(() => DeleteSpell(spellId), (int)(endTick + spellData.ExtraEndTime));
+                Core.DelayAction(() => DeleteSpell(spellId), (int) (endTick + spellData.ExtraEndTime));
             }
         }
 
@@ -369,7 +384,7 @@ namespace AdEvade
 
                 if (spell.SpellType == SpellType.Line)
                 {
-                    var walkRadius = GameData.HeroInfo.MoveSpeed*(spell.EndTime - EvadeUtils.TickCount)/1000 +
+                    var walkRadius = GameData.HeroInfo.MoveSpeed * (spell.EndTime - EvadeUtils.TickCount) / 1000 +
                                      GameData.HeroInfo.BoundingRadius + spell.Info.Radius + extraDist + 10;
                     var spellPos = spell.CurrentSpellPosition;
                     var spellEndPos = spell.GetSpellEndPosition();
@@ -380,7 +395,7 @@ namespace AdEvade
                 }
                 else if (spell.SpellType == SpellType.Circular)
                 {
-                    var walkRadius = GameData.HeroInfo.MoveSpeed*(spell.EndTime - EvadeUtils.TickCount)/1000 +
+                    var walkRadius = GameData.HeroInfo.MoveSpeed * (spell.EndTime - EvadeUtils.TickCount) / 1000 +
                                      GameData.HeroInfo.BoundingRadius + spell.Info.Radius + extraDist + 10;
 
                     if (heroPos.Distance(spell.EndPos) < walkRadius)
@@ -392,10 +407,10 @@ namespace AdEvade
                 else if (spell.SpellType == SpellType.Arc)
                 {
                     var spellRange = spell.StartPos.Distance(spell.EndPos);
-                    var midPoint = spell.StartPos + spell.Direction*(spellRange/2);
-                    var arcRadius = spell.Info.Radius*(1 + spellRange/100);
+                    var midPoint = spell.StartPos + spell.Direction * (spellRange / 2);
+                    var arcRadius = spell.Info.Radius * (1 + spellRange / 100);
 
-                    var walkRadius = GameData.HeroInfo.MoveSpeed*(spell.EndTime - EvadeUtils.TickCount)/1000 +
+                    var walkRadius = GameData.HeroInfo.MoveSpeed * (spell.EndTime - EvadeUtils.TickCount) / 1000 +
                                      GameData.HeroInfo.BoundingRadius + arcRadius + extraDist + 10;
 
                     if (heroPos.Distance(midPoint) < walkRadius)
@@ -465,7 +480,7 @@ namespace AdEvade
 
                     if (!Spells.ContainsKey(spell.SpellId))
                     {
-                        if (Config.Properties.GetSpell(newSpell.Info.SpellName).Dodge && !(AdEvade.IsDodgeDangerousEnabled() && (int)newSpell.Dangerlevel < (int)SpellDangerLevel.High))
+                        if (Config.Properties.GetSpell(newSpell.Info.SpellName).Dodge && !(AdEvade.IsDodgeDangerousEnabled() && (int) newSpell.Dangerlevel < (int) SpellDangerLevel.High))
                         {
                             if (newSpell.SpellType == SpellType.Circular
                                 && !ConfigValue.DodgeCircularSpells.GetBool())
@@ -659,7 +674,7 @@ namespace AdEvade
 
                     if ((int) dangerlevel > maxDanger)
                     {
-                        maxDanger = (int)dangerlevel;
+                        maxDanger = (int) dangerlevel;
                         maxDangerSpell = spell;
                     }
                 }
@@ -740,7 +755,7 @@ namespace AdEvade
                 var championPlugin = Assembly
                     .GetExecutingAssembly()
                     .GetTypes()
-                    .FirstOrDefault(t => t.IsClass && t.Name == hero.ChampionName && t.GetInterfaces().Contains(typeof(IChampionPlugin)));
+                    .FirstOrDefault(t => t.IsClass && t.Name == hero.ChampionName && t.GetInterfaces().Contains(typeof (IChampionPlugin)));
                 if (championPlugin != null)
                 {
                     if (!ChampionPlugins.ContainsKey(hero.ChampionName))
@@ -758,81 +773,89 @@ namespace AdEvade
             LoadSpecialSpellPlugins();
             foreach (var hero in EntityManager.Heroes.AllHeroes)
             {
-                if (hero.IsMe)
+                try
                 {
-                    foreach (var spell in SpellWindupDatabase.Spells.Where(
-                        s => (s.CharName == hero.ChampionName)))
+
+                    if (hero.IsMe)
                     {
-                        if (!WindupSpells.ContainsKey(spell.SpellName))
+                        foreach (var spell in SpellWindupDatabase.Spells.Where(
+                            s => (s.CharName == hero.ChampionName)))
                         {
-                            WindupSpells.Add(spell.SpellName, spell);
+                            if (!WindupSpells.ContainsKey(spell.SpellName))
+                            {
+                                WindupSpells.Add(spell.SpellName, spell);
+                            }
                         }
                     }
-                }
-                if (hero.Team != MyHero.Team)
-                {
-                    ConsoleDebug.WriteLine("        Hero Found: " +  hero.ChampionName);
-                    foreach (var spell in SpellDatabase.Spells.Where(
-                        s => (s.CharName == hero.ChampionName) || (s.CharName == Constants.AllChampions)))
+                    if (hero.Team != MyHero.Team)
                     {
-                        ConsoleDebug.WriteLine("        Hero Spell Found: " + spell.SpellName); 
-
-                        if (!(spell.SpellType == SpellType.Circular
-                              || spell.SpellType == SpellType.Line
-                              || spell.SpellType == SpellType.Arc))
-                            continue;
-
-                        if (spell.CharName == Constants.AllChampions)
+                        ConsoleDebug.WriteLine("        Hero Found: " + hero.ChampionName);
+                        foreach (var spell in SpellDatabase.Spells.Where(
+                            s => (s.CharName == hero.ChampionName) || (s.CharName == Constants.AllChampions)))
                         {
-                            SpellSlot slot = hero.GetSpellSlotFromName(spell.SpellName);
-                            if (slot == SpellSlot.Unknown)
-                            {
-                                ConsoleDebug.WriteLineColor("        Slot not Found!", ConsoleColor.Red);
+                            ConsoleDebug.WriteLine("            Hero Spell Found: " + spell.SpellName);
+
+                            if (!(spell.SpellType == SpellType.Circular
+                                  || spell.SpellType == SpellType.Line
+                                  || spell.SpellType == SpellType.Arc))
                                 continue;
-                            }
-                        }
 
-                        if (!OnProcessSpells.ContainsKey(spell.SpellName))
-                        {
-                            if (spell.MissileName == "")
-                                spell.MissileName = spell.SpellName;
-
-                            OnProcessSpells.Add(spell.SpellName, spell);
-                            OnMissileSpells.Add(spell.MissileName, spell);
-
-                            if (spell.ExtraSpellNames != null)
+                            if (spell.CharName == Constants.AllChampions)
                             {
-                                foreach (string spellName in spell.ExtraSpellNames)
+                                SpellSlot slot = hero.GetSpellSlotFromName(spell.SpellName);
+                                if (slot == SpellSlot.Unknown)
                                 {
-                                    OnProcessSpells.Add(spellName, spell);
+                                    ConsoleDebug.WriteLineColor("           {0}: Not Found!", ConsoleColor.Yellow, false, spell.SpellName);
+                                    continue;
                                 }
                             }
 
-                            if (spell.ExtraMissileNames != null)
+                            if (!OnProcessSpells.ContainsKey(spell.SpellName))
                             {
-                                foreach (string spellName in spell.ExtraMissileNames)
+                                if (spell.MissileName == "")
+                                    spell.MissileName = spell.SpellName;
+
+                                OnProcessSpells.Add(spell.SpellName, spell);
+                                OnMissileSpells.Add(spell.MissileName, spell);
+
+                                if (spell.ExtraSpellNames != null)
                                 {
-                                    OnMissileSpells.Add(spellName, spell);
+                                    foreach (string spellName in spell.ExtraSpellNames)
+                                    {
+                                        OnProcessSpells.Add(spellName, spell);
+                                    }
+                                }
+
+                                if (spell.ExtraMissileNames != null)
+                                {
+                                    foreach (string spellName in spell.ExtraMissileNames)
+                                    {
+                                        OnMissileSpells.Add(spellName, spell);
+                                    }
+                                }
+
+                                LoadSpecialSpell(spell);
+                                if (!Config.Properties.Spells.Any(x => x.Key == spell.SpellName))
+                                {
+                                    string menuName = spell.CharName + " (" + spell.SpellKey + ") Settings";
+                                    var enableSpell = !spell.DefaultOff;
+                                    var spellConfig = new SpellConfigControl(SpellMenu, menuName, spell, enableSpell);
+                                    spellConfig.AddToMenu();
+
+                                    Config.Properties.SetSpell(spell.SpellName, spell.GetSpellConfig(spellConfig));
                                 }
                             }
 
-                            LoadSpecialSpell(spell);
-                            if (!Config.Properties.Spells.Any(x => x.Key == spell.SpellName))
-                            {
-                                string menuName = spell.CharName + " (" + spell.SpellKey + ") Settings";
-                                var enableSpell = !spell.DefaultOff;
-                                var spellConfig = new SpellConfigControl(SpellMenu, menuName, spell, enableSpell);
-                                spellConfig.AddToMenu();
-
-                                Config.Properties.SetSpell(spell.SpellName, spell.GetSpellConfig(spellConfig));
-                            }
                         }
-
                     }
                 }
-
+                catch (Exception ex)
+                {
+                    
+                    ConsoleDebug.WriteLine(ex.ToString(), ConsoleColor.Red);
+                    throw;
+                }
             }
         }
-
     }
 }

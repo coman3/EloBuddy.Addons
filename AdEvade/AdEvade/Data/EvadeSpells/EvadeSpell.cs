@@ -31,7 +31,7 @@ namespace AdEvade.Data.EvadeSpells
         {
             Menu = mainMenu;
 
-            //Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
 
             EvadeSpellMenu = Menu.AddSubMenu("Evade Spells", "EvadeSpells");
 
@@ -41,7 +41,7 @@ namespace AdEvade.Data.EvadeSpells
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            //CheckDashing();
+            CheckDashing();
         }
 
         public static void CheckDashing()
@@ -49,7 +49,6 @@ namespace AdEvade.Data.EvadeSpells
             if (EvadeUtils.TickCount - LastSpellEvadeCommand.Timestamp < 250 && MyHero.IsDashing()
                 && LastSpellEvadeCommand.EvadeSpellData.EvadeType == EvadeType.Dash)
             {
-                //ConsoleDebug.WriteLine("" + dashInfo.EndPos.Distance(lastSpellEvadeCommand.targetPosition));
                 LastSpellEvadeCommand.TargetPosition = Prediction.Position.GetDashPos(Player.Instance);
             }
         }
@@ -372,7 +371,7 @@ namespace AdEvade.Data.EvadeSpells
             }
 
 
-            /*float activationTime = Evade.menu.SubMenu("MiscSettings").SubMenu("EvadeSpellMisc").Item("EvadeSpellActivationTime")
+            /*float activationTime = Evade.Menu.SubMenu("MiscSettings").SubMenu("EvadeSpellMisc").Item("EvadeSpellActivationTime")
                 .Cast<Slider>().CurrentValue + ObjectCache.gamePing;
 
             if (spell.spellHitTime != float.MinValue && activationTime > spell.spellHitTime - spell.evadeTime)

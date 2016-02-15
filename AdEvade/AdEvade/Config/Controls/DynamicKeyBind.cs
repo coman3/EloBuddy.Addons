@@ -2,7 +2,7 @@
 
 namespace AdEvade.Config.Controls
 {
-    public class DynamicKeyBind
+    public class DynamicKeyBind : IDynamicControl<bool>
     {
         public KeyBind KeyBind;
         private readonly ConfigValue _configKey;
@@ -19,6 +19,21 @@ namespace AdEvade.Config.Controls
         private void KeyBind_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
             Properties.SetValue(_configKey, KeyBind.CurrentValue, false);
+        }
+
+        public ConfigValue GetConfigValue()
+        {
+            return _configKey;
+        }
+
+        public object GetValue()
+        {
+            return KeyBind.CurrentValue;
+        }
+
+        public ValueBase<bool> GetControl()
+        {
+            return KeyBind;
         }
     }
 }

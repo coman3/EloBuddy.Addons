@@ -2,52 +2,53 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{648946D0-6BAC-4E3E-A200-3C6FBEA532B8}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AdEvade</RootNamespace>
     <AssemblyName>AdEvade</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EloBuddy">
-      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\EloBuddy.dll</HintPath>
+      <HintPath>C:\Users\lveld\AppData\Roaming\EloBuddy\Addons\Libraries\EloBuddy.dll</HintPath>
     </Reference>
     <Reference Include="EloBuddy.Sandbox">
-      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\EloBuddy.Sandbox.dll</HintPath>
+      <HintPath>C:\Users\lveld\AppData\Roaming\EloBuddy\Addons\Libraries\EloBuddy.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="EloBuddy.SDK">
-      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\EloBuddy.SDK.dll</HintPath>
+      <HintPath>C:\Users\lveld\AppData\Roaming\EloBuddy\Addons\Libraries\EloBuddy.SDK.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\SharpDX.dll</HintPath>
+      <HintPath>C:\Users\lveld\AppData\Roaming\EloBuddy\Addons\Libraries\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\lveld\Documents\Projects\EloBuddy\AdEvade\AdEvade\Dependencies\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\Users\lveld\AppData\Roaming\EloBuddy\Addons\Libraries\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -64,12 +65,8 @@
     <Compile Include="AdEvade.cs" />
     <Compile Include="Config\ConsoleDebug.cs" />
     <Compile Include="Config\Controls\ColorConfig.cs" />
-    <Compile Include="Config\ConfigPluginControler.cs" />
+    <Compile Include="Config\Controls\IDynamicControl.cs" />
     <Compile Include="Config\Enums.cs" />
-    <Compile Include="Config\Plugins\Custom.cs" />
-    <Compile Include="Config\Plugins\Streaming.cs" />
-    <Compile Include="Config\Plugins\UltraSafe.cs" />
-    <Compile Include="Config\Plugins\JustDraw.cs" />
     <Compile Include="Config\Properties.cs" />
     <Compile Include="Config\Constants.cs" />
     <Compile Include="Config\Controls\DynamicCheckBox.cs" />
@@ -116,9 +113,11 @@
     <Compile Include="Data\EvadeSpells\EvadeSpellData.cs" />
     <Compile Include="Data\EvadeSpells\EvadeSpellDatabase.cs" />
     <Compile Include="Data\EvadeSpells\SpecialEvadeSpell.cs" />
+    <Compile Include="Config\Controls\DynamicComboBox.cs" />
     <Compile Include="Helpers\AutoSetPing.cs" />
     <Compile Include="Helpers\EvadeCommand.cs" />
     <Compile Include="Helpers\EvadeHelper.cs" />
+    <Compile Include="Helpers\MenuHelpers.cs" />
     <Compile Include="Helpers\Position.cs" />
     <Compile Include="Helpers\Situation.cs" />
     <Compile Include="Data\EvadeSpells\Items.cs" />
@@ -133,8 +132,6 @@
     </Compile>
     <Compile Include="Render.cs" />
     <Compile Include="Data\Spells\Spell.cs" />
-    <Compile Include="Config\ConfigPreset.cs" />
-    <Compile Include="Config\Plugins\Default.cs" />
     <Compile Include="SpellDetector.cs" />
     <Compile Include="Utils\DelayAction.cs" />
     <Compile Include="Utils\EvadeUtils.cs" />

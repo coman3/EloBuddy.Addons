@@ -95,7 +95,6 @@ namespace AdEvade
         private void Load()
         {
             Loading.OnLoadingComplete += Game_OnGameLoad;
-            //Loading.OnLoadingComplete += Game_OnGameLoad_Disabled;
         }
 
         private void Game_OnGameLoad_Disabled(EventArgs args)
@@ -115,8 +114,6 @@ namespace AdEvade
         private void Game_OnGameLoad(EventArgs args)
         {
             ConsoleDebug.WriteLineColor("Loading...", ConsoleColor.Blue, true);
-            ConfigPluginControler.LoadDefaultConfig(); //Disabling Presets to temp fix movement issues
-            //ConfigPluginControler.LoadConfigPresets();
 
             try
             {
@@ -152,23 +149,17 @@ namespace AdEvade
                 Menu.AddLabel("Last Update: " + LastUpdate);
 
                 Menu mainMenu = Menu.AddSubMenu("Main", "Main");
-                mainMenu.Add(ConfigValue.DodgeSkillShots.Name(), new DynamicKeyBind(ConfigValue.DodgeSkillShots, "Dodge SkillShots", true, KeyBind.BindTypes.PressToggle, 'K').KeyBind);
-                mainMenu.Add(ConfigValue.ActivateEvadeSpells.Name(), new DynamicKeyBind(ConfigValue.ActivateEvadeSpells, "Use Evade Spells", true, KeyBind.BindTypes.PressToggle, 'K').KeyBind);
-                mainMenu.Add(ConfigValue.OnlyDodgeDangerous.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.OnlyDodgeDangerous, "Dodge Only Dangerous", false).CheckBox);
-                mainMenu.Add(ConfigValue.DodgeFowSpells.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DodgeFowSpells, "Dodge FOW SkillShots", true).CheckBox);
-                mainMenu.Add(ConfigValue.DodgeCircularSpells.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DodgeCircularSpells, "Dodge Circular SkillShots", true).CheckBox);
+                mainMenu.Add(new DynamicKeyBind(ConfigValue.DodgeSkillShots, "Dodge SkillShots", true, KeyBind.BindTypes.PressToggle, 'K'));
+                mainMenu.Add(new DynamicKeyBind(ConfigValue.ActivateEvadeSpells, "Use Evade Spells", true, KeyBind.BindTypes.PressToggle, 'K'));
+                mainMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.OnlyDodgeDangerous, "Dodge Only Dangerous", false));
+                mainMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DodgeFowSpells, "Dodge FOW SkillShots", true));
+                mainMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DodgeCircularSpells, "Dodge Circular SkillShots", true));
                 mainMenu.AddSeparator();
-                mainMenu.Add(ConfigValue.DodgeDangerousKeysEnabled.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DodgeDangerousKeysEnabled, "Enable Dodge Only Dangerous Keys", false).CheckBox);
-
-                mainMenu.Add(ConfigValue.DodgeDangerousKey1.Name(), new DynamicKeyBind(ConfigValue.DodgeDangerousKey1, "Dodge Only Dangerous Key", false, KeyBind.BindTypes.HoldActive, 32).KeyBind);
-                mainMenu.Add(ConfigValue.DodgeDangerousKey2.Name(), new DynamicKeyBind(ConfigValue.DodgeDangerousKey2, "Dodge Only Dangerous Key 2", false, KeyBind.BindTypes.HoldActive, 'V').KeyBind);
-
+                mainMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DodgeDangerousKeysEnabled, "Enable Dodge Only Dangerous Keys", false));
+                mainMenu.Add(new DynamicKeyBind(ConfigValue.DodgeDangerousKey1, "Dodge Only Dangerous Key", false, KeyBind.BindTypes.HoldActive, 32));
+                mainMenu.Add(new DynamicKeyBind(ConfigValue.DodgeDangerousKey2, "Dodge Only Dangerous Key 2", false, KeyBind.BindTypes.HoldActive, 'V'));
                 mainMenu.AddSeparator();
-                mainMenu.AddGroupLabel("Evade Mode");
-
-                var sliderEvadeMode = new StringSlider(ConfigDataType.Data, "EvadeMode", "Evade Mode", 2, SpellConfigProperty.None, Enum.GetNames(typeof(EvadeMode)));
-                sliderEvadeMode.Slider.Slider.OnValueChange += OnEvadeModeChange;
-                mainMenu.Add("EvadeMode", sliderEvadeMode.Slider.Slider);
+                mainMenu.Add(new DynamicComboBox(ConfigDataType.Data, ConfigValue.EvadeMode, "Evade Mode", 1, Enum.GetNames(typeof(EvadeMode))));
 
                 ConsoleDebug.WriteLineColor("       Detecting Spells...", ConsoleColor.Yellow, true);
                 SpellDetector = new SpellDetector(Menu);
@@ -176,56 +167,54 @@ namespace AdEvade
 
                 ConsoleDebug.WriteLineColor("       Adding Humanizer and Miscellaneous Menus...", ConsoleColor.Yellow, true);
                 Menu miscMenu = Menu.AddSubMenu("Misc Settings", "MiscSettings");
-                miscMenu.Add(ConfigValue.HighPrecision.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.HighPrecision, "Enhanced Dodge Precision", false).CheckBox);
-                miscMenu.Add(ConfigValue.RecalculatePath.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.RecalculatePath, "Recalculate Path", true).CheckBox);
-                miscMenu.Add(ConfigValue.ContinueMovement.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ContinueMovement, "Continue Last Movement", true).CheckBox);
-                miscMenu.Add(ConfigValue.CalculateWindupDelay.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.CalculateWindupDelay, "Calculate Windup Delay", true).CheckBox);
-                miscMenu.Add(ConfigValue.CheckSpellCollision.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.CheckSpellCollision, "Check Spell Collision", false).CheckBox);
-                miscMenu.Add(ConfigValue.PreventDodgingUnderTower.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.PreventDodgingUnderTower, "Prevent Dodging Under Tower", false).CheckBox);
-                miscMenu.Add(ConfigValue.PreventDodgingNearEnemy.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.PreventDodgingNearEnemy, "Prevent Dodging Near Enemies", false).CheckBox);
-                miscMenu.Add(ConfigValue.AdvancedSpellDetection.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.AdvancedSpellDetection, "Advanced Spell Detection", false).CheckBox);
-                miscMenu.Add(ConfigValue.ExtraDetectionRange.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraDetectionRange, "Extra Detection Range", 1000, 500, 5000).Slider);
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.HighPrecision, "Enhanced Dodge Precision", false));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.RecalculatePath, "Recalculate Path", true));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ContinueMovement, "Continue Last Movement", true));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.CalculateWindupDelay, "Calculate Windup Delay", true));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.CheckSpellCollision, "Check Spell Collision", false));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.PreventDodgingUnderTower, "Prevent Dodging Under Tower", false));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.PreventDodgingNearEnemy, "Prevent Dodging Near Enemies", false));
+                miscMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.AdvancedSpellDetection, "Advanced Spell Detection", false));
+                miscMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraDetectionRange, "Extra Detection Range", 1000, 500, 5000));
                 //TODO: Add Reset
                 //miscMenu.AddSeparator(100);
                 //miscMenu.AddGroupLabel("Reset");
                 //miscMenu.Add("ResetConfig", new DynamicCheckBox(ConfigDataType.Data, "ResetConfig", "Reset Properties", false).CheckBox);
 
                 Menu fastEvadeMenu = Menu.AddSubMenu("Fast Evade", "FastEvade");
-                fastEvadeMenu.Add(ConfigValue.FastMovementBlock.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.FastMovementBlock, "Fast Movement Block", false).CheckBox);
-                fastEvadeMenu.Add(ConfigValue.FastEvadeActivationTime.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.FastEvadeActivationTime, "FastEvade Activation Time", 65, 0, 500).Slider);
-                fastEvadeMenu.Add(ConfigValue.SpellActivationTime.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.SpellActivationTime, "Spell Activation Time", 200, 0, 1000).Slider);
-                fastEvadeMenu.Add(ConfigValue.RejectMinDistance.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.RejectMinDistance, "Collision Distance Buffer", 10, 0, 100).Slider);
+                fastEvadeMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.FastMovementBlock, "Fast Movement Block", false));
+                fastEvadeMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.FastEvadeActivationTime, "FastEvade Activation Time", 65, 0, 500));
+                fastEvadeMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.SpellActivationTime, "Spell Activation Time", 200, 0, 1000));
+                fastEvadeMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.RejectMinDistance, "Collision Distance Buffer", 10, 0, 100));
 
                 Menu limiterMenu = Menu.AddSubMenu("Humanizer", "Limiter");
-                limiterMenu.Add(ConfigValue.ClickOnlyOnce.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ClickOnlyOnce, "Click Only Once", true).CheckBox);
-                limiterMenu.Add(ConfigValue.EnableEvadeDistance.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableEvadeDistance, "Extended Evade", false).CheckBox);
-                limiterMenu.Add(ConfigValue.TickLimiter.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.TickLimiter, "Tick Limiter", 100, 0, 500).Slider);
-                limiterMenu.Add(ConfigValue.SpellDetectionTime.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.SpellDetectionTime, "Spell Detection Time", 0, 0, 1000).Slider);
-                limiterMenu.Add(ConfigValue.ReactionTime.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ReactionTime, "Reaction Time", 0, 0, 500).Slider);
-                limiterMenu.Add(ConfigValue.DodgeInterval.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.DodgeInterval, "Dodge Interval", 0, 0, 2000).Slider);
+                limiterMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ClickOnlyOnce, "Click Only Once", true));
+                limiterMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableEvadeDistance, "Extended Evade", false));
+                limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.TickLimiter, "Tick Limiter", 100, 0, 500));
+                limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.SpellDetectionTime, "Spell Detection Time", 0, 0, 1000));
+                limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ReactionTime, "Reaction Time", 0, 0, 500));
+                limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.DodgeInterval, "Dodge Interval", 0, 0, 2000));
                 
 
                 Menu bufferMenu = Menu.AddSubMenu("Adv. Humanizer", "ExtraBuffers");
-                bufferMenu.Add(ConfigValue.ExtraPingBuffer.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraPingBuffer, "Extra Ping Buffer", 65, 0, 200).Slider);
-                bufferMenu.Add(ConfigValue.ExtraCpaDistance.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraCpaDistance, "Extra Collision Distance", 10, 0, 150).Slider);
-                bufferMenu.Add(ConfigValue.ExtraSpellRadius.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraSpellRadius, "Extra Spell Radius", 0, 0, 100).Slider);
-                bufferMenu.Add(ConfigValue.ExtraEvadeDistance.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraEvadeDistance, "Extra Evade Distance", 100, 0, 300).Slider);
+                bufferMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraPingBuffer, "Extra Ping Buffer", 65, 0, 200));
+                bufferMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraCpaDistance, "Extra Collision Distance", 10, 0, 150));
+                bufferMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraSpellRadius, "Extra Spell Radius", 0, 0, 100));
+                bufferMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraEvadeDistance, "Extra Evade Distance", 100, 0, 300));
                 //bufferMenu.Add(ConfigValue.ExtraSpellRadius.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraSpellRadius, "Extra Avoid Distance", 50, 0, 300).Slider);
-                bufferMenu.Add(ConfigValue.MinimumComfortZone.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.MinimumComfortZone, "Minimum Distance to Champions", 550, 0, 1000).Slider);
+                bufferMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.MinimumComfortZone, "Minimum Distance to Champions", 550, 0, 1000));
 
                 Menu debugMenu = Menu.AddSubMenu("Debug", "DebugMenu");
 
                 debugMenu.AddGroupLabel("Debug");
-                debugMenu.Add(ConfigValue.ShowDebugInfo.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ShowDebugInfo, "Show Debug Info (Console)", false).CheckBox).OnValueChange +=
+                debugMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.ShowDebugInfo, "Show Debug Info (Console)", false)).OnValueChange +=
                     (sender, changeArgs) =>
                     {
                         ConsoleDebug.Enabled = sender.CurrentValue;
                     };
-                //debugMenu.Add("DebugWithMySpells", new DynamicCheckBox(ConfigDataType.Data, "DebugWithMySpells", "Detect and draw my spells", false).CheckBox); //TODO: Remove From Addon
 
                 debugMenu.AddSeparator();
-                //debugMenu.Add(ConfigValue.EnableSpellTester.Name(), new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableSpellTester, "Enable Spell Tester", false).CheckBox);
-                //debugMenu.AddLabel("Press F5 after enabling / disabling the Spell Tester to load / unload it.");
+
                 _spellDrawer = new SpellDrawer(Menu);
 
                 ConsoleDebug.WriteLineColor("   Hooking Events...", ConsoleColor.Yellow, true);
@@ -244,7 +233,6 @@ namespace AdEvade
                 Orbwalker.OnPreAttack += Orbwalking_BeforeAttack;
 
                 ConsoleDebug.WriteLineColor("   Setting Loaded Presets Values...", ConsoleColor.Yellow, true);
-                ConfigPluginControler.SelectedPreset.LoadConfig();
 
             }
             catch (Exception e)
@@ -610,13 +598,13 @@ namespace AdEvade
                 //if (() Properties.Properties.Data["ResetConfig"].Cast<CheckBox>().CurrentValue)
                 //{
                 //    ResetConfig();
-                //    menu["ResetConfig"].Cast<CheckBox>().CurrentValue = false;
+                //    Menu["ResetConfig"].Cast<CheckBox>().CurrentValue = false;
                 //}
 
                 //if (() Properties.Properties.Data["ResetConfig200"].Cast<CheckBox>().CurrentValue)
                 //{
                 //    SetPatchConfig();
-                //    menu["ResetConfig200"].Cast<CheckBox>().CurrentValue = false;
+                //    Menu["ResetConfig200"].Cast<CheckBox>().CurrentValue = false;
                 //}
 
                 var limitDelay = ConfigValue.TickLimiter.GetInt();

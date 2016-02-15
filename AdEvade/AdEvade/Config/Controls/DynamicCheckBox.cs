@@ -4,7 +4,7 @@ using EloBuddy.SDK.Menu.Values;
 
 namespace AdEvade.Config.Controls
 {
-    public class DynamicCheckBox
+    public class DynamicCheckBox : IDynamicControl<bool>
     {
         public CheckBox CheckBox;
         private readonly ConfigDataType _type;
@@ -50,7 +50,6 @@ namespace AdEvade.Config.Controls
 
         private void CheckBox_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
-            Debug.DrawTopLeft(_type + ": " +  _spellProperty + ": " + _configKey + ": " + "Value Changed To " + sender.CurrentValue);
             switch (_type)
             {
                 case ConfigDataType.Data:
@@ -88,6 +87,21 @@ namespace AdEvade.Config.Controls
                     }
                     break;
             }
+        }
+
+        public ConfigValue GetConfigValue()
+        {
+            return _configKey;
+        }
+
+        public object GetValue()
+        {
+            return CheckBox.CurrentValue;
+        }
+
+        public ValueBase<bool> GetControl()
+        {
+            return CheckBox;
         }
     }
 }

@@ -431,7 +431,7 @@ namespace AdEvade.Helpers
             int radiusIndex = 0;
 
             var extraDelayBuffer = Config.Properties.GetInt(ConfigValue.ExtraPingBuffer);
-            var extraEvadeDistance = 100;// Evade.menu.SubMenu("MiscSettings").SubMenu("ExtraBuffers").Item("ExtraEvadeDistance");
+            var extraEvadeDistance = 100;// Evade.Menu.SubMenu("MiscSettings").SubMenu("ExtraBuffers").Item("ExtraEvadeDistance");
             var extraDist = ConfigValue.ExtraCpaDistance.GetInt();
 
             Vector2 heroPoint = GameData.HeroInfo.ServerPos2DPing;

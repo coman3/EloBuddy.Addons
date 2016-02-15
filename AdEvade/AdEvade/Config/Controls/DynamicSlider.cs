@@ -4,11 +4,11 @@ using EloBuddy.SDK.Menu.Values;
 
 namespace AdEvade.Config.Controls
 {
-    public enum SpellConfigProperty
+    public enum SpellConfigProperty 
     {
         Dodge, Draw, Radius, DangerLevel, SpellMode, UseEvadeSpell, None, 
     }
-    public class DynamicSlider
+    public class DynamicSlider : IDynamicControl<int>
     {
         public Slider Slider;
         private readonly ConfigDataType _type;
@@ -54,7 +54,6 @@ namespace AdEvade.Config.Controls
 
         private void Slider_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
         {
-            Debug.DrawTopLeft(_type + ": " + _spellProperty + ": " + _configKey + ": " + "Value Changed To " + sender.CurrentValue);
             switch (_type)
             {
                 case ConfigDataType.Data:
@@ -100,6 +99,21 @@ namespace AdEvade.Config.Controls
                     }
                     break;
             }
+        }
+
+        public ConfigValue GetConfigValue()
+        {
+            return _configKey;
+        }
+
+        public object GetValue()
+        {
+            return Slider.CurrentValue;
+        }
+
+        public ValueBase<int> GetControl()
+        {
+            return Slider;
         }
     }
 }
