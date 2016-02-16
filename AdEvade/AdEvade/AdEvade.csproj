@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="AdEvade.cs" />
     <Compile Include="Config\ConsoleDebug.cs" />
-    <Compile Include="Config\Controls\ColorConfig.cs" />
+    <Compile Include="Config\Controls\ColorPicker.cs" />
     <Compile Include="Config\Controls\IDynamicControl.cs" />
     <Compile Include="Config\Enums.cs" />
     <Compile Include="Config\Properties.cs" />
@@ -130,6 +130,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Randomizer\Random.cs" />
     <Compile Include="Render.cs" />
     <Compile Include="Data\Spells\Spell.cs" />
     <Compile Include="SpellDetector.cs" />

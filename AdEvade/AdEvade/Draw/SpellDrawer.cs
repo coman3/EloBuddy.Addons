@@ -20,17 +20,16 @@ namespace AdEvade.Draw
         public static Menu Menu;
 
         private static AIHeroClient MyHero { get { return ObjectManager.Player; } }
-        public ColorConfig LowDanger;
-        public ColorConfig NormalDanger;
-        public ColorConfig HighDanger;
-        public ColorConfig ExtremeDanger;
+        public ColorPicker[] DangerColorPickers { get; set; }
 
         public SpellDrawer(Menu mainMenu)
         {
             Drawing.OnDraw += Drawing_OnDraw;
-
             Menu = mainMenu;
+            DangerColorPickers = new ColorPicker[4];
             Game_OnGameLoad();
+
+            
         }
 
         private void Game_OnGameLoad()
@@ -49,20 +48,21 @@ namespace AdEvade.Draw
             Menu lowDangerMenu = dangerMenu.Parent.AddSubMenu(" Low", "LowDrawing");
             lowDangerMenu.Add(ConfigValue.LowDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.LowDangerDrawWidth, "Line Width", 3, 1, 15).Slider);
             lowDangerMenu.AddGroupLabel("Color");
-            LowDanger = new ColorConfig(lowDangerMenu, "LowDangerColorConfig", Color.LightGray);
+            DangerColorPickers[(int)SpellDangerLevel.Low] = lowDangerMenu.Add("LowDangerColorConfig", new ColorPicker("Low Danger Line Color", Color.LightGray));
             Menu normalDangerMenu = dangerMenu.Parent.AddSubMenu(" Normal", "NormalDrawing");
             normalDangerMenu.Add(ConfigValue.NormalDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.NormalDangerDrawWidth, "Line Width", 3, 1, 15).Slider);
             normalDangerMenu.AddGroupLabel("Color");
-            NormalDanger = new ColorConfig(normalDangerMenu, "NormalDangerColorConfig", Color.White);
+            DangerColorPickers[(int)SpellDangerLevel.Normal] = normalDangerMenu.Add("NormalDangerColorConfig", new ColorPicker("Normal Danger Line Color", Color.White));
+            
             Menu highDangerMenu = dangerMenu.Parent.AddSubMenu(" High", "HighDrawing");
             highDangerMenu.Add(ConfigValue.HighDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.HighDangerDrawWidth, "Line Width", 4, 1, 15).Slider);
             highDangerMenu.AddGroupLabel("Color");
-            HighDanger = new ColorConfig(highDangerMenu, "HighDangerColorConfig", Color.DarkOrange);
+            DangerColorPickers[(int) SpellDangerLevel.High] = highDangerMenu.Add("HighDangerColorConfig", new ColorPicker("High Danger Line Color", Color.DarkOrange));
 
             Menu extremeDangerMenu = dangerMenu.Parent.AddSubMenu(" Extreme", "ExtremeDrawing");
             extremeDangerMenu.Add(ConfigValue.ExtremeDangerDrawWidth.Name(), new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtremeDangerDrawWidth, "Line Width", 4, 1, 15).Slider);
             extremeDangerMenu.AddGroupLabel("Color");
-            ExtremeDanger = new ColorConfig(extremeDangerMenu, "ExtremeDangerColorConfig", Color.OrangeRed);
+            DangerColorPickers[(int) SpellDangerLevel.Extreme] = extremeDangerMenu.Add("ExtremeDangerColorConfig", new ColorPicker("Extreme Danger Line Color", Color.OrangeRed));
             /*
             Menu undodgeableDangerMenu = new Menu("Undodgeable", "Undodgeable");
             undodgeableDangerMenu.AddItem(new MenuItem("Width", "Line Width").SetValue(new Slider(6, 1, 15)));
@@ -130,19 +130,7 @@ namespace AdEvade.Draw
 
         private Color GetSpellColor(SpellDangerLevel dangerLevel)
         {
-            switch (dangerLevel)
-            {
-                case SpellDangerLevel.Low:
-                    return LowDanger.GetSystemColor();
-                case SpellDangerLevel.Normal:
-                    return NormalDanger.GetSystemColor();
-                case SpellDangerLevel.High:
-                    return HighDanger.GetSystemColor();
-                case SpellDangerLevel.Extreme:
-                    return ExtremeDanger.GetSystemColor();
-                default:
-                    return NormalDanger.GetSystemColor();
-            }
+            return DangerColorPickers[(int) dangerLevel].CurrentValue;
         }
 
         private void Drawing_OnDraw(EventArgs args)

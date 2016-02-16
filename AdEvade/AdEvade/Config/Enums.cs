@@ -39,6 +39,8 @@ namespace AdEvade.Config
         HighDangerDrawWidth,
         ExtremeDangerDrawWidth,
         AutoSetPingPercentile,
+        RandomizerPercentage,
+        RandomizerMaxDangerLevel,
 
         #endregion
 
@@ -79,6 +81,8 @@ namespace AdEvade.Config
         DrawSpellPosition,
         DrawEvadePosition,
         AutoSetPing,
+        EnableRandomizer,
+        DrawBlockedRandomizerSpells
 
 
 

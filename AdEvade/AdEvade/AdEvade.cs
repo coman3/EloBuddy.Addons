@@ -7,6 +7,7 @@ using AdEvade.Config;
 using AdEvade.Config.Controls;
 using AdEvade.Data;
 using AdEvade.Data.EvadeSpells;
+using AdEvade.Data.Spells;
 using AdEvade.Draw;
 using AdEvade.Helpers;
 using AdEvade.Utils;
@@ -194,7 +195,12 @@ namespace AdEvade
                 limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.SpellDetectionTime, "Spell Detection Time", 0, 0, 1000));
                 limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ReactionTime, "Reaction Time", 0, 0, 500));
                 limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.DodgeInterval, "Dodge Interval", 0, 0, 2000));
-                
+
+                Menu randomizerMenu = Menu.AddSubMenu("Randomizer", "Randomizer");
+                randomizerMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableRandomizer, "Enable", true));
+                randomizerMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DrawBlockedRandomizerSpells, "Draw Blocked Spells", true));
+                randomizerMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.RandomizerPercentage, "Accuracy", 0, 0, 100));
+                randomizerMenu.Add(new DynamicComboBox(ConfigDataType.Data, ConfigValue.RandomizerMaxDangerLevel, "Maximum Danger Level", (int)SpellDangerLevel.High, Enum.GetNames(typeof(SpellDangerLevel))));
 
                 Menu bufferMenu = Menu.AddSubMenu("Adv. Humanizer", "ExtraBuffers");
                 bufferMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.ExtraPingBuffer, "Extra Ping Buffer", 65, 0, 200));
@@ -237,7 +243,7 @@ namespace AdEvade
             }
             catch (Exception e)
             {
-                Chat.Print(e);
+                ConsoleDebug.WriteLineColor(e, ConsoleColor.Red, true);
             }
             ConsoleDebug.WriteLineColor("Successfully Loaded!", ConsoleColor.Green, true);
         }

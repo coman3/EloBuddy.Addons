@@ -4,7 +4,7 @@ namespace AdEvade.Config
 {
     public static class ConsoleDebug
     {
-        public static bool Enabled = true;
+        public static bool Enabled = false;
         public static bool DrawAddonTag = true;
         public const string AddonTag = "[AdEvade] ";
 

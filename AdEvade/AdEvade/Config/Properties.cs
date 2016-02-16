@@ -43,8 +43,10 @@ namespace AdEvade.Config
 
         public static Dictionary<ConfigValue, object> Values = new Dictionary<ConfigValue, object>();
         public static readonly Dictionary<string, SpellConfig> Spells = new Dictionary<string, SpellConfig>();
+        private static Randomizer.Randomizer _randomizer = new Randomizer.Randomizer();
 
         public static readonly Dictionary<string, EvadeSpellConfig> EvadeSpells = new Dictionary<string, EvadeSpellConfig>();
+        
         public static SpellConfig GetSpellConfig(this SpellData spell, SpellConfigControl control)
         {
             return new SpellConfig
@@ -57,18 +59,6 @@ namespace AdEvade.Config
                 PlayerName = spell.CharName
             };
         }
-
-        //public static T GetData<T>(string key)
-        //{
-        //    if (Data.Any(i => i.Key == key))
-        //    {
-        //        if(Data[key] is T)
-        //            return (T) Data[key];
-        //        else 
-        //            Debug.DrawTopLeft("Tried To Access key with wrong type: " + key);
-        //    }
-        //    return default(T);
-        //}
         public static void OnValueChanged(ConfigValue key, object value)
         {
             if(OnConfigValueChanged != null) OnConfigValueChanged.Invoke(new ConfigValueChangedArgs(key, value));
@@ -77,11 +67,30 @@ namespace AdEvade.Config
         {
             if (Spells.Any(i => i.Key == key))
             {
-                return Spells[key];
+                return Randomize(Spells[key]);
             }
             return new SpellConfig { DangerLevel = SpellDangerLevel.Normal, Dodge = false, Draw = true, EvadeSpellMode = SpellModes.Undodgeable, Radius = 20 };
 
         }
+
+        private static SpellConfig Randomize(SpellConfig spellConfig)
+        {
+            if (spellConfig == null) return null;
+            if(_randomizer == null) _randomizer = new Randomizer.Randomizer();
+            if (!KeysExist(ConfigValue.EnableRandomizer, ConfigValue.RandomizerMaxDangerLevel, ConfigValue.RandomizerPercentage, ConfigValue.DrawBlockedRandomizerSpells))
+            {
+                ConsoleDebug.WriteLine("Config Keys Not Found!", true);
+                return spellConfig;
+            }
+
+            if (GetBool(ConfigValue.EnableRandomizer) && GetInt(ConfigValue.RandomizerMaxDangerLevel) > (int) spellConfig.DangerLevel)
+            {
+                spellConfig.Dodge = _randomizer.IsAbovePercentage(1f - GetInt(ConfigValue.RandomizerPercentage) / 100f);
+                spellConfig.Draw = spellConfig.Draw && GetBool(ConfigValue.DrawBlockedRandomizerSpells);
+            }
+            return spellConfig;
+        }
+
         public static EvadeSpellConfig GetEvadeSpell(string key)
         {
             if (EvadeSpells.Any(i => i.Key == key))
@@ -90,6 +99,12 @@ namespace AdEvade.Config
             }
             ConsoleDebug.WriteLineColor("Evade Spell: " + key + " Not Found, Returning: DO NOT USE", ConsoleColor.Red);
             return new EvadeSpellConfig { DangerLevel = SpellDangerLevel.Low, SpellMode = SpellModes.Undodgeable, Use = false};
+        }
+
+        public static bool KeysExist(params ConfigValue[] values)
+        {
+            if (Values == null) return false;
+            return values.All(configValue => Values.ContainsKey(configValue));
         }
 
         public static int GetInt(ConfigValue key)
