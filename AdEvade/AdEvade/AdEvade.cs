@@ -197,9 +197,9 @@ namespace AdEvade
                 limiterMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.DodgeInterval, "Dodge Interval", 0, 0, 2000));
 
                 Menu randomizerMenu = Menu.AddSubMenu("Randomizer", "Randomizer");
-                randomizerMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableRandomizer, "Enable", true));
+                randomizerMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.EnableRandomizer, "Enable", false));
                 randomizerMenu.Add(new DynamicCheckBox(ConfigDataType.Data, ConfigValue.DrawBlockedRandomizerSpells, "Draw Blocked Spells", true));
-                randomizerMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.RandomizerPercentage, "Accuracy", 0, 0, 100));
+                randomizerMenu.Add(new DynamicSlider(ConfigDataType.Data, ConfigValue.RandomizerPercentage, "Accuracy", 80, 0, 100));
                 randomizerMenu.Add(new DynamicComboBox(ConfigDataType.Data, ConfigValue.RandomizerMaxDangerLevel, "Maximum Danger Level", (int)SpellDangerLevel.High, Enum.GetNames(typeof(SpellDangerLevel))));
 
                 Menu bufferMenu = Menu.AddSubMenu("Adv. Humanizer", "ExtraBuffers");
