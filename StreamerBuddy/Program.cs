@@ -32,14 +32,12 @@ namespace StreamerBuddy
         private static void Chat_OnClientSideMessage(ChatClientSideMessageEventArgs args)
         {
             args.Message =  StripSummonerNames(args.Message);
-            Console.WriteLine(args.Message);
         }
 
 
         private static void Chat_OnMessage(AIHeroClient sender, ChatMessageEventArgs args)
         {
             args.Message = StripSummonerNames(args.Message);
-            Console.WriteLine(args.Message);
         }
         private static void Drawing_OnDraw(EventArgs args)
         {
