@@ -62,7 +62,7 @@ namespace StreamerBuddy
         private static string CoverName(string name)
         {
             var coverstring = name;
-            for (int l = name.Length < 6 ? 1 : 3; l < name.Length - (name.Length < 6 ? 1 : 3); l++)
+            for (int l = name.Length < 8 ? 1 : 3; l < name.Length - (name.Length < 6 ? 1 : 3); l++)
             {
                 coverstring = coverstring.Remove(l, 1);
                 coverstring = coverstring.Insert(l, "*");
