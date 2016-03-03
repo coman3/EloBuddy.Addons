@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AdEvade.Utils;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -18,9 +19,9 @@ namespace AdEvade.Data.Spells.SpecialSpells
         }
         public void LoadSpecialSpell(SpellData spellData)
         {
-            /*if (spellData.spellName == "JayceShockBlastWall")
+            if (spellData.SpellName == "JayceShockBlastWall")
             {
-                AIHeroClient hero = EntityManager.Heroes.Enemies.FirstOrDefault(h => h.CharName == "Jayce");
+                AIHeroClient hero = EntityManager.Heroes.Enemies.FirstOrDefault(h => h.ChampionName == "Jayce");
                 if (hero == null)
                 {
                     return;
@@ -29,12 +30,11 @@ namespace AdEvade.Data.Spells.SpecialSpells
                 Obj_AI_Minion.OnCreate += (obj, args) => OnCreateObj_jayceshockblast(obj, args, hero, spellData);
                 //AIHeroClient.OnProcessSpellCast += OnProcessSpell_jayceshockblast;
                 //SpellDetector.OnProcessSpecialSpell += ProcessSpell_jayceshockblast;
-            }*/
+            }
         }
 
         private static void OnCreateObj_jayceshockblast(GameObject obj, EventArgs args, AIHeroClient hero, SpellData spellData)
         {
-            return;
 
             if (obj.IsEnemy && obj.Type == GameObjectType.obj_GeneralParticleEmitter
                 && obj.Name.Contains("Jayce") && obj.Name.Contains("accel_gate_start"))
@@ -52,7 +52,7 @@ namespace AdEvade.Data.Spells.SpecialSpells
                 {
                     var spell = entry.Value;
 
-                    if (spell.Info.SpellName == "jayceshockblast")
+                    if (spell.Info.SpellName == "JayceShockBlast")
                     {
                         var tHero = spell.HeroId;
 
@@ -68,7 +68,7 @@ namespace AdEvade.Data.Spells.SpecialSpells
                     }
                 }
 
-                //SpellDetector.CreateSpellData(hero, pos1.To3D(), pos2.To3D(), spellData, null, 0);                               
+                SpellDetector.CreateSpellData(hero, pos1.To3D(), pos2.To3D(), spellData, null, 0);                               
             }
         }
 

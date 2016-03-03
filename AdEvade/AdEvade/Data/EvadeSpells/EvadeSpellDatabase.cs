@@ -676,7 +676,7 @@ namespace AdEvade.Data.EvadeSpells
                 CharName = Config.Constants.AllChampions,
                 Dangerlevel = SpellDangerLevel.Extreme,
                 Name = "Flash",
-                SpellName = "summonerflash",
+                SpellName = "SummonerFlash",
                 Range = 400,
                 FixedRange = true, //test
                 SpellDelay = 50,
